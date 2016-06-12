@@ -1,0 +1,743 @@
+<apex:page controller="SalesIQ.RosterCtlr" sidebar="false" id="mainpage" tabstyle="Territory_Management__tab">
+<apex:stylesheet value="{!URLFOR($Resource.SalesIQ__Roster_CSS, 'Roster_CSS/EmployeeSwap.css')}"/>
+        <head> 
+            <style> 
+
+  body button, body .x-btn, body .btn, body .btnDisabled, body .btnCancel, body .menuButton .menuButtonButton {
+    padding: 2px 6px ;
+} 
+html {
+    background:repeat scroll 0 0 #fff !important;
+    height: 100%;
+}
+.dynatree-container{
+    border:0px !important;
+    }
+  .notes-text-box3{
+    float:left;
+    border:1px solid #277aa8;
+    width:150px !important;
+    height:23px;
+    padding-left: 5px;
+}  
+
+.box-main{
+    width:100%;
+    margin:30px auto;             
+} 
+.box-main-popup{
+    width:100%;
+    margin:-2px auto;             
+} 
+
+.box-content{
+    background-color:#f7f7f7;
+    padding:5px;
+    border:1px solid #cccccc;
+}
+.box-content-popup{
+    background-color:#fff;
+    padding:10px;
+    border:1px solid #000;
+    font-size:12px;
+}
+td{
+    font-size:11px !important;
+}
+.box-top{ 
+    border-top:3px solid #00335B;
+    -moz-border-top:3px solid #00335B;
+    -webkit-border-top:3px solid #00335B;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    -moz-border-top-left-radius:10px;
+    -moz-border-top-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    background-color:#F8F8F8;
+    border-left:1px solid #cccccc;
+    border-right:1px solid #cccccc;
+    color:#000;
+    padding:12px 0 0 15px;
+    font-weight:600;
+    font-size:18px;
+    height:30px;
+} 
+.box-top-popup{ 
+    border-top:3px solid #00335B;
+    -moz-border-top:3px solid #00335B;
+    -webkit-border-top:3px solid #00335B;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    -moz-border-top-left-radius:10px;
+    -moz-border-top-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    background-color:#F8F8F8;
+    border-left:1px solid #000;
+    border-right:1px solid #000;
+    color:#000;
+    padding:12px 0 0 15px;
+    font-weight:600;
+    font-size:18px;
+    height:30px;
+}
+.tablecontent{
+    vertical-align:top;
+    height:600px;
+    background-color:#fff;
+    margin-left:20px;
+    border:1px solid #989898;
+    font-size:12px;
+    overflow-y:auto;
+
+}
+.box-top-div1{
+   
+    font-weight:800;
+    font-size:16px;
+    float:left;
+    text-align:left;
+    height:25px;
+    color:#666 !important;
+    
+}
+.box-top-div2{
+    width:25%;
+    font-weight:400;
+    font-size:12px;
+    float:left;
+    text-align:center;
+    height:25px;
+    
+}
+.box-top-div3{
+    width:15%;
+    font-weight:400;
+    font-size:12px;
+    float:left;
+    height:25px;
+}
+.box-top-div4{
+    width:25%;
+    font-weight:600;
+    font-size:13px;
+    float:left;
+    height:25px;
+    
+}
+.box-top-div5{
+   
+    font-size:12px;
+    text-align:right;
+    float:right;
+    height:25px;
+    padding-right: 10px;
+}
+.box-top-div5-1{
+  
+    font-size:12px;
+    text-align:right;
+    float:right;
+    height:25px;
+    padding-right: 10px;
+}
+.searchbutton1{
+    width:80px;
+    height:23px;
+    font-size:11px !important;
+    margin-left:-80px !important;
+    border:1px solid #666 !important;
+    background-color:#55a4da !important;
+    z-index:1;
+}
+.searchtxt1{
+    border: 1px solid #666;
+    border-radius: 5px;
+    height: 20px;
+   /* margin-left: 100px; */
+    padding-top: 0px;
+    width: 200px;
+}
+.button{
+   padding:1px 10px !important;
+   border:1px solid #3fa9f5 !important;
+   font-size:11px !important;
+   font-weight:bold !important;
+   height:22px !important;
+   text-align:right;
+    }
+.tree1{
+    width:275px;
+    vertical-align:top;
+    float:left;
+    height:600px;
+    background-color:#fff;
+    border:1px solid #989898;
+    overflow-y:auto;
+}
+.clear{
+    clear:both;
+}
+
+th{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:11.5px !important;
+    line-height:20px;
+}
+
+.table_header_tree{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:12px !important;
+    font-weight:bold;
+    line-height:30px !important;
+    padding-left:12px;
+    -webkit-overflow-scrolling: touch;
+}
+.table_header_main{
+    color:#404041 !important;
+    background-color:#277AA8 !important;
+    font-size:16px !important;
+    text-align:center;
+    line-height:30px !important;
+}
+td{
+    line-height:20px ;
+}
+.even { 
+   /* background-color: White !important;*/
+ 
+}
+.odd {
+   /* background-color: #e6f5fc !important; */
+}
+.number{
+   
+    text-align: left;
+}
+.text{
+    text-align:center;
+}
+.table{
+    border:1px solid ;
+    line-height:25px !important;
+}
+.table-side-header{
+    margin-left:20px;
+    text-align:left;
+    font-weight:bold;
+    }
+.pure-table{border-collapse:collapse;border-spacing:0;empty-cells:show; border:1px solid #cbcbcb}
+.pure-table caption{color:#000;font:italic 85%/1 arial,sans-serif;padding:1em 0;text-align:center}
+.pure-table td,.pure-table th{border-left:1px solid #cbcbcb; border-width:0 0 0 1px; font-size:inherit; line-height:20px; margin:0; overflow:visible; padding:.25em .50em  }
+.pure-table td:first-child,.pure-table th:first-child{border-left-width:0}
+.pure-table thead{background:#e0e0e0;color:#000;text-align:left;vertical-align:bottom}
+.pure-table td{background-color:transparent}
+.pure-table-odd td{background-color:#e6f5fc}
+.pure-table-striped tr:nth-child(2n-1) td{background-color:#f2f2f2}
+.pure-table-bordered td{border-bottom:1px solid #cbcbcb}
+.pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td{border-bottom-width:0}
+.pure-table-horizontal td,.pure-table-horizontal th{border-width:0 0 1px;border-bottom:1px solid #cbcbcb}
+.pure-table-horizontal tbody>tr:last-child td{border-bottom-width:0}
+
+span.dynatree-node a{
+    font-size :11px !important ;
+
+}
+.wrapper1 .tooltip {
+    color: black;
+    display: block;
+    left: 92px;
+    margin-bottom: 15px; 
+    opacity: 0;
+    padding: 20px;
+    pointer-events: none;
+    position: absolute;
+    -webkit-transform: translateY(10px);
+    -moz-transform: translateY(10px);
+    -ms-transform: translateY(10px);
+    -o-transform: translateY(10px);
+    transform: translateY(10px);
+    -webkit-transition: all .25s ease-out;
+    -moz-transition: all .25s ease-out;
+    -ms-transition: all .25s ease-out;
+    -o-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+    -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+.link{
+    
+    text-decoration:underline;
+    color:#0b71be !important;
+    font-weight:normal !important;
+    padding-right:10px;
+    }
+.notes{
+    height:25px;
+    font-weight:bold;
+    text-align:right;
+   font-size:12px;
+    width:105px !important;
+    float:left;
+    position:relative;
+}
+.notes-text-box{
+    float:left;
+    border:1px solid #333;
+    width:180px !important;
+    height:23px;
+    padding-left: 5px;
+}
+.notes-text-box1{
+    float:left;
+    border:1px solid #333;
+    width:187px !important;
+    height:23px;
+    padding-left: 5px;
+}
+.notes-text-box2{
+    float:left;
+    border:1px solid #666;
+    width:167px !important;
+    height:21px;
+    padding-left: 5px;
+}
+
+.notes-text-box3{
+    float:left;
+    border:1px solid #333;
+    width:75px !important;
+    height:23px;
+    padding-left: 5px;
+}
+.notes1{
+   
+    font-weight:bold;
+    text-align:right;
+    width:200px;
+    padding-left:30px;
+    font-size:12px;
+    float:left;
+    position:relative;
+}
+.notes-textbox{
+    float:left;
+    border:1px solid #333;
+    width:400px;
+    height:50px;
+    padding-left:5px;
+    position:relative;
+    margin-left:20px;
+    margin-bottom:20px;
+    
+}
+.popup_top_info{
+            background-color: #e3e3e3;
+            border-bottom: 1px solid #000;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 18px;
+            margin-right: 0;
+            margin-top: 0;
+        padding: 10px 567px 9px 5px !important;
+        }
+.headerRow1{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:11.5px !important;
+    line-height:20px;
+}  
+  .Popup4
+    {   
+        background-color:white;         
+        text-align:centre;
+        z-index: 0;
+        left: 50%;
+        position: absolute;
+        width: 600px;
+        height:360px;
+        margin-left: -250px;
+        valign:top;
+        border-style: solid;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-width: 3px 1px 1px;
+        -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        font-size:12px;
+        top:20%;
+    } 
+
+.Popup_Terr
+    {        
+    
+        background-color: white;
+        border: #000 1px solid;
+        text-align: center;
+        z-index: 0;
+        left: 50%;
+        position: absolute;
+        width: 600px;
+        height: 250px;
+        margin-left: -450px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        valign: top;
+        -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        font-size: 14px;
+        top: 20%;
+    
+    }    
+ .popupBackground{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+    
+    .popupBackgroundworkbench{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+.customPopup {
+  
+    padding: 10px;
+    left: 50%;
+    margin-left: -350px;
+    position: absolute;
+     z-index: 2000;
+    width: 700px;
+    top: 20%;
+    }
+.customPopupSc {
+    background-color: white;
+    border-style: solid;
+    border: #003f77 1px solid;
+  
+    border-top: #003f77 2px solid;
+    padding: 10px;
+    left: 50%;
+    margin-left: -350px;
+    position: absolute;
+    z-index: 2222;
+    width: 700px;
+    top: 20%;
+    }   
+.customPopup_OK {
+    background-color: white;
+    border-style: solid;
+    border: #003f77 1px solid;
+ 
+    border-top: #003f77 2px solid;
+    padding: 20px;
+    height: 200px;
+    left: 50%;
+    margin-left: -200px;
+    position: absolute;
+    z-index: 2000;
+    width: 450px;
+    height: 400px;
+    top: 20%;
+    }
+.pagination{
+    width:750px;
+    text-align:center;
+    height:30px;
+    padding:7px 0px;
+    margin-left:25%;
+    }
+    
+.page-buttons{
+   font-size:12px !important; 
+    font-weight:bold !important;
+    height:22px !important;
+    text-align:right;
+    }  
+.pending{
+background-color:#fbc9b1; padding-right:20px;text-align:left;
+}
+.notpending{
+padding-right:20px;text-align:left;
+}
+}
+             
+br{
+line-height:10px !important;
+}
+</style>
+</head>
+<script type="text/javascript">
+    function stopRKey(evt) {
+      var evt = (evt) ? evt : ((event) ? event : null);
+      var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+      if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
+    }
+    document.onkeypress = stopRKey;
+</script>
+<form id="msform">
+    <!-- progressbar -->
+    
+    <ul id="progressbar">
+        <li class="active"><b>Select Employee</b></li>
+        <li><span class="active"></span><b>Un-Assign </b></li>
+        <li><span class="active"></span><b>Assign   </b></li>
+    </ul>
+    
+    <!-- fieldsets -->
+   <!--  <fieldset>
+    <h2 class="fs-title">&nbsp;</h2>
+<input type="button" class="next action-button" value="Next1" onclick="toggleNavSelected(1);" />
+<input type="button" class="next action-button" value="Next2" onclick="toggleNavSelected(2);" />
+<input type="button" class="next action-button" value="Next3" onclick="toggleNavSelected(3);" /> 
+    </fieldset> -->
+</form>
+    <apex:form id="form1"> 
+    <apex:pageMessages id="myMsg" />
+<apex:outputText id="script">
+<script>
+function toggleNavSelected(el){    
+    var list = document.getElementById('progressbar');    
+    
+    if (el==1) {
+        
+        list.children[0].classList.add("active");       
+        list.children[1].classList.remove("active");        
+        list.children[2].classList.remove("active");
+    }
+    else if (el==2) {
+      
+        list.children[0].classList.add("active");       
+        list.children[1].classList.add("active");       
+        list.children[2].classList.remove("active");
+    }
+    else if (el==3) {
+        
+        list.children[0].classList.add("active");       
+        list.children[1].classList.add("active");       
+        list.children[2].classList.add("active");
+    } 
+}
+</script>
+</apex:outputText>
+<!--  ------------------- Loading Status ---------------------------- -->
+        <apex:actionStatus id="myStatus" onstop="appendSorting();">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground" ></div>
+                    <div class="PopupPanel" style="position: absolute; left: 50%; top:7%;">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+<!-- -----------------------------------------VF Page---------------------------------------------- -->
+            
+            <div class="box-main">
+            <apex:outputPanel id="mainPanel">
+                <div class="box-top">  
+                 
+                  
+                    <div class="box-top-div1">{!if(nTerReg!='' && nTerReg!=null,nTerReg,selPosition.Territory__r.Region__c)} <span style="font-size:13px">( Available Employees in {!if(nTerDist!='' && nTerDist!=null,DistrictName,selPosition.Territory__r.SalesIQ__District__c)} ) </span> </div>
+                    <div class="box-top-div2" style="margin-top:-3px;" >
+                        <apex:inputtext value="{!searchterm1}" styleclass="searchtxt1"  ></apex:inputtext><apex:commandbutton value="Search" rerender="TerritoryPanel" styleclass="searchbutton1" action="{!populateUsers}" /> 
+                    </div>
+                    
+                
+                     <div class="box-top-div3"><apex:selectlist size="1" value="{!districtRole}" styleclass="notes-text-box2" disabled="{!$UserRole.Id==districtRole}"  >
+                                        <apex:selectOptions value="{!allDistricts}" />
+                                        <apex:actionsupport event="onchange" rerender="TerritoryPanel,mainPanel,myMsg" action="{!populateUsers}"/>
+                                        </apex:selectlist></div>
+                    <div class="box-top-div5-1">  
+                        <apex:commandbutton value="Back" action="{!Back}" style="font-size:11px;"></apex:commandbutton>&nbsp;&nbsp;  
+                        <apex:commandbutton value="Assign AC" action="{!openAssignPopup}" style="font-size:11px;" rendered="{!!enableAssignAccounts}" rerender="input1,popupAssign,popupAssignUnAv,thePBasd,myMsg"></apex:commandbutton>&nbsp;&nbsp; 
+<!--                         <apex:commandbutton id="accbutton" value="Assign Accounts" style="font-size:11px;" action="{!assignAccounts}" reRender="thePBasd" rendered="{!enableAssignAccounts}"></apex:commandbutton> -->
+                    </div>   
+                                       
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel id="TerritoryPanel">
+                <apex:pageBlock id="thePBasd" mode="maindetail" >
+                    
+                    
+                    <apex:pageblocktable value="{!lsWrapPosition}" var="wrap" id="maintable" rowClasses="one,two">
+                        <apex:column headerValue="Action" styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                            <apex:outputpanel rendered="{!!(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved')}"><input type="radio" name="userid" onclick="passSelected('{!wrap.user.id}');" />
+                            </apex:outputpanel>
+                        </apex:column>
+                        <apex:column headerValue="Employee Name" styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                        <apex:outputlink value="/{!wrap.user.id}" target="_blank">{!wrap.user.name}</apex:outputlink>
+                        </apex:column>
+                        <apex:column headerValue="District Name" styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                        {!if(nTerDist!='' && nTerDist!=null,DistrictName,selPosition.Territory__r.SalesIQ__District__c)}
+                        </apex:column>
+                        <apex:column headerValue="Territory" styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                        {!wrap.Territory}
+                        </apex:column>
+                        <apex:column headerValue="Effective Start Date"  styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}"  >
+                        {!wrap.effectivestartDate}
+                        </apex:column>
+                        <apex:column headerValue="Effective End Date"  styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}"  >
+                        {!wrap.effectiveEndDate}
+                        </apex:column>
+                        <apex:column headerValue="Availability" styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                         <apex:image url="{!$Resource.SalesIQ__Green_updated}" rendered="{!wrap.available}"></apex:image>
+                         <apex:image url="{!$Resource.SalesIQ__Red_updated}" rendered="{!!wrap.available}"></apex:image>
+                        </apex:column>
+                    </apex:pageblocktable>
+                </apex:pageBlock>
+            </apex:outputPanel>
+       </div>
+       <script type="text/javascript">
+         function passSelected(position){
+         
+           //alert(position);
+           document.getElementById("mainpage:form1:input1").value =  position;
+         }
+        </script>
+        
+        <apex:inputhidden id="input1" value="{!selectedUserId}"/>
+<!--------------------------------------- Assign Available AC PopUp Window----------------------------------->
+            <apex:outputPanel id="popupAssign" >
+                <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUpAssign}"/>
+                    <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!displayPopUpAssign}">
+                    <div class="box-main-popup" >
+                       <div class="box-top-popup">
+                            <div class="box-top-div1">Assign AC </div>
+                       </div>
+                       <div class="box-content-popup" style="text-align:center;">
+                              <apex:pageMessages id="popupMsg" />  
+                            <apex:pageblock mode="maindetail">
+                                <apex:outputpanel rendered="{!personAvailable && !personAssignedReqPending}" id="outp1">Are you sure you want to assign <b>"{!selectedUserName}"</b> to <b>"{!if(selectedTerritory=='',nTerName,TerToAssign)}"</b>?
+                                
+                                 <br/> <br/>  
+                                 <div class="notes" style="width:270px !important;">Effective Start Date :</div><apex:inputText value="{!effectiveStartdate}" styleclass="notes-text-box" id="pnlstartdate" disabled="true"/>
+<!--                                         <apex:selectOptions value="{!StartDates}"/> -->
+<!--                                         </apex:selectlist> -->
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!personAssignedReqPending }"><b>"{!selectedUserName}"</b> is assigned to <b>"{!if(selectedTerritory=='',nTerName,TerToAssign)}"</b>.</apex:outputpanel>
+                                
+                           
+                            </apex:pageblock><br/>
+                            <div style="text-align:center">
+                            	<apex:actionstatus id="confSave">
+                            		<apex:facet name="start">
+                            			<apex:commandButton style="background:#36647D;color: #FFF; width:120px; height:25px; font-size:12px;" status="confSave"  value="Processing..." disabled="true" rerender="confSave,popupAssign"/>
+                                	</apex:facet>
+                                	<apex:facet name="stop">
+                                		<apex:commandButton value="Confirm & Save" status="confSave" style="background:#36647D;color: #FFF; width:120px; height:25px; font-size:12px;" action="{!ConfirmAssignUser}" rerender="popupAssign,outp1,confSave,popupMessage" rendered="{!!(personAssignedReqPending || combReqPending) }" oncomplete="toggleNavSelected(3);"/>
+                                	</apex:facet>
+                                </apex:actionstatus>
+                                <apex:commandButton value="Assign Accounts" style="background:#36647D;color: #FFF; width:120px; height:25px; font-size:12px;" action="{!assignAccounts}" rerender="popupAssign" rendered="{!personAssignedReqPending}"/>
+                                <apex:commandButton value="Close" style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;" action="{!closeAssignPopup}" rerender="popupAssign,thePBasd,mainPanel"  />
+                                <!--<apex:commandButton value="Cancel" style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;" action="{!cancelRequest}" rerender="popupAssign,thePBasd,mainPanel" rendered="{!enableCancelAvUser }"/>-->
+                            </div><br/>
+                        </div>
+                      </div>
+                  </apex:outputPanel>
+        </apex:outputPanel> 
+<!-- ----------------------------Assign Unavailable AC PopUp Window------------------------------------------------- -->
+        <apex:outputPanel id="popupAssignUnAv" >
+                <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUpAssignUnAv}"/> 
+                    <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!displayPopUpAssignUnAv}">
+                    <div class="box-main-popup" style="margin-top:-2px;">
+                       <div class="box-top-popup">
+                            <div class="box-top-div1">Assign AC</div>
+                       </div>
+                       <div class="box-content-popup" style="text-align:center;">
+                          <apex:pageMessages id="popupMsgUnAv" />  
+                        <br/>
+                            <apex:outputpanel rendered="{!(!personAvailable) && (!confirmUnAssign)}" id="outp2"><b>"{!selectedUserName}"</b> is already assigned to <b>"{!oldTerName}"</b>.<br/> Before assigning to <b>"{!if(nTerName=='',selPosition.Territory__r.name,nTerName)}"</b>, un-assign it.
+                               <br/> <br/> <div class="notes" style="width:275px !important;">Effective Start Date :</div><apex:inputText value="{!effectiveStartdate}" rendered="{!!personAvailable}" styleclass="notes-text-box" disabled="true" />  <!-- <apex:selectlist size="1" value="{!effectiveStartdate}" styleclass="notes-text-box" id="pnlstartdate" disabled="{!!personAvailable}"> -->
+                                        <div style="clear:both">&nbsp;</div>
+<!--                                 <div class="notes" style="width:200px !important;">Effective End Date :</div> -->
+<!--                                 <apex:selectlist size="1" value="{!effectiveEndDate}" styleclass="notes-text-box" id="enddate" > -->
+<!--                                             <apex:selectOptions value="{!Dates}"/> -->
+<!--                                             <apex:actionSupport event="onchange" action="{!displaywarning}" rerender="popupMsgUnAv"/> -->
+<!--                                 </apex:selectlist> -->
+                            </apex:outputpanel>
+                       
+                        <br/> 
+                        <div style="text-align:center">
+<!--                            <apex:commandButton value="Save" style="background:#36647D;color: #FFF; width:108px; height:25px; font-size:12px;" action="{!save}" rerender="popupAssignUnAv" rendered="{!!confirmUnAssign}"/> -->
+<!--                             <apex:commandButton value="Un-Assign AC" style="background:#36647D;color: #FFF; width:140px; height:25px; font-size:12px;" action="{!unAssignUser}" rerender="popupAssignUnAv,outp2" rendered="{!!confirmUnAssign}" oncomplete="toggleNavSelected(2);"/> &nbsp;&nbsp; -->
+                                <apex:commandButton value="Confirm & Save" style="background:#36647D;color: #FFF; width:155px; height:25px; font-size:12px;" action="{!ConfirmAssignUser}" rerender="popupAssignUnAv2,popupAssignUnAv" rendered="{!!confirmUnAssign}" oncomplete="toggleNavSelected(3);"/>&nbsp;&nbsp;
+                            
+                            <apex:commandButton value="Close" style="background:#36647D;color: #FFF; width:80px; height:25px; font-size:12px;" action="{!closeAssignPopup}" rerender="popupAssignUnAv,thePBasd" />
+                        </div><br/>
+                        </div>
+                        </div> 
+                  </apex:outputPanel>
+        </apex:outputPanel> 
+        <!--------------------------------------- Message Popup----------------------------------->
+            <apex:outputPanel id="popupMessage" >
+                <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopupConfirm}"/>
+                    <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!displayPopupConfirm}">
+                    <div class="box-main-popup" >
+                    <div class="box-top-popup">
+                            <div class="box-top-div1"></div>
+                    </div>
+                    <div class="box-content-popup" style="text-align:center;">
+                       <apex:pageMessages id="msgPopup" /> 
+                            <div style="text-align:center">
+                                <apex:commandButton value="Close" style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;" action="{!closeAssignPopup}" rerender="popupAssign,thePBasd,mainPanel"  />
+                            </div><br/>
+                      </div>
+                      </div>
+                  </apex:outputPanel>
+        </apex:outputPanel> 
+<!-- ----------------------------Assign AC (Confirm for Unavailable User) PopUp Window------------------------------------------------- -->
+        <apex:outputPanel id="popupAssignUnAv2" >
+                <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUpAssignUnAv2}"/> 
+                    <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!displayPopUpAssignUnAv2}">
+                    <div class="box-main-popup" >
+                       <div class="box-top-popup">
+                            <div class="box-top-div1">Assign AC</div>
+                       </div>
+                       <div class="box-content-popup" style="text-align:center;">
+                          <apex:pageMessages id="popupMsgUnAv2" />  
+                          <br/>
+                                <apex:outputpanel id="outp4"> <b>"{!selectedUserName}"</b> is assigned to <b>"{!if(nTerName=='',selPosition.Territory__r.name,nTerName)}"</b>. </apex:outputpanel><br/>
+                       <br/>
+                        <div style="text-align:center">
+                            <apex:commandButton value="Assign Accounts" style="background:#36647D;color: #FFF; width:130px; height:25px; font-size:12px;" action="{!assignAccounts}" rerender="popupAssignUnAv2,thePBasd" rendered="{!personAssignedReqPending}"/>&nbsp;&nbsp;
+                            <apex:commandButton value="Close" style="background:#36647D;color: #FFF; width:70px; height:25px; font-size:12px;" action="{!closeAssignPopup}" rerender="popupAssignUnAv2,thePBasd,mainPanel" rendered="{!!enableCancelReq}"/>&nbsp;&nbsp;
+                            <apex:commandButton value="Cancel" title="Cancel the complete transaction." style="background:#36647D;color: #FFF; width:70px; height:25px; font-size:12px;" action="{!cancelRequest}" rerender="popupAssignUnAv2,thePBasd,mainPanel" rendered="{!enableCancelReq}"/>    
+                        </div><br/>
+                        </div>
+                        </div>
+                  </apex:outputPanel>
+        </apex:outputPanel>                    
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+<!--    <script> var previousOnload = window.onload; window.onload = function() { if (previousOnload) { previousOnload(); } toggleNavSelected(1); } </script> -->
+</apex:page>

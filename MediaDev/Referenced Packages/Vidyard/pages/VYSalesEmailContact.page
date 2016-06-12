@@ -1,0 +1,92 @@
+<apex:page showHeader="true" sidebar="true" standardStylesheets="false" StandardController="Contact" extensions="vidyard.vidyard_Email">
+  <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+
+  <style type="text/css">
+    .sfdcBody {
+      padding: 0 !important;
+    }
+  </style>
+
+  <script type="text/javascript">
+    var j$ = jQuery.noConflict();
+
+    function resizeCanvas() {
+      var height = j$(window).height();
+      if(j$('#globalHeaderBar').length) {
+        height -= j$('#globalHeaderBar').height();
+      }
+      if(j$('#AppBodyHeader').length) {
+        height -= (j$('#AppBodyHeader').height() + 5);
+      }
+      j$('#canvas').height(height);
+
+      Sfdc.canvas.parent.publish({
+        name: 'canvasResize',
+        payload: {
+          width: j$('#canvas').width(),
+          height: j$('#canvas').height()
+        }
+      });
+    }
+
+    function handleResult(result, event) {
+      if(event.status){
+        if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+          var lid = '{!Contact.Id}';
+          sforce.one.navigateToSObject(lid);
+        } else {
+          window.top.location.href = '{!URLFOR($Action.Contact.View, Contact.Id)}';
+        }
+      }
+    }
+
+     Sfdc.canvas.parent.subscribe({
+      name: 'appStarted',
+      onData: function() {
+        resizeCanvas();
+      }
+    });
+
+    Sfdc.canvas.parent.subscribe({
+      name: 'appLoaded',
+      onData: function() {
+        Sfdc.canvas.parent.publish({
+          name: 'startApp'
+        });
+        resizeCanvas();  // For Safari - the outer iframe doesn't resize correctly
+      }
+    });
+
+    Sfdc.canvas.parent.subscribe({
+      name: 'vy_email.send',
+      onData: function(payload){
+        Visualforce.remoting.Manager.invokeAction(
+          '{!$RemoteAction.vidyard_Email.sendAnEmail}',
+          payload.user,
+          payload.subject,
+          payload.message, handleResult
+        );
+      }
+    });
+    
+    j$(window).on('resize', function() {
+      resizeCanvas();
+    });
+  </script>
+
+  <div id="canvas"></div>
+  <input type="hidden" id="theContact" name="email" value="{!Contact.email}"></input>
+  <apex:canvasApp applicationName="Vidyard_prod"
+                  namespacePrefix="vidyard"
+                  containerId="canvas"
+                  width="100%"
+                  height="100%"
+                  parameters="{ 
+                    route: 'sales_email', 
+                    userId: '{!Contact.Id}', 
+                    userEmail: '{!Contact.email}' ,
+                    features: {
+                      delayStart: true
+                    }
+                  }" />
+</apex:page>

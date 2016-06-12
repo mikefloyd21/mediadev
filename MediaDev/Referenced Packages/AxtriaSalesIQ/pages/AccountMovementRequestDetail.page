@@ -1,0 +1,68 @@
+<apex:page standardController="SalesIQ__Request__c" extensions="SalesIQ.AccountMovementRequestDetailExt" sidebar="false">
+    <style>
+        .container{
+            overflow:auto;
+            height:300px;
+        }
+    </style>
+    <apex:form >
+    	<apex:pageBlock rendered="{!!createNassign}">
+        	
+            <apex:pageBlockSection title="Territory Details" columns="2">
+                <apex:outputField value="{!SalesIQ__Request__c.Name}" />
+                <apex:outputField value="{!SalesIQ__Request__c.SalesIQ__Status__c}" />
+                <apex:outputField value="{!SalesIQ__Request__c.SalesIQ__Request_Type__c}"/>
+                <apex:outputField value="{!accountMoveReq[0]['Effective_Start_Date__c']}" />
+                
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Moved Accounts Details" columns="1">
+                <apex:outputpanel styleClass="container" layout="block" id="accPnl">
+                <apex:pageBlockTable value="{!movedAccounts}" var="ma" >
+                    <apex:column headerValue="Account Name"><a href="/{!ma.accountId}" target="_blank">{!ma.accountName}</a></apex:column>
+                    <apex:column headerValue="Source Territory" value="{!ma.sourceTerritoryName}"></apex:column>
+                    <apex:column headerValue="Destination Territory" value="{!ma.destTerritoryName}"></apex:column>
+                    <apex:column headerValue="Reason" value="{!ma.reason}"></apex:column>
+                    <apex:column headerValue="Remove" rendered="{! IF (Request__c.Status__c == 'Pending', true, false)}">
+	                        <apex:commandLink styleClass="alpha-link" action="{!removeSelectedAccount}" rerender="accPnl" >
+	                             <apex:param value="{!ma.accountId}" name="select1" assignTo="{!SelectedAccount}" />
+	                             <apex:image url="{!$Resource.SalesIQ__reject}" width="20" height="20" />
+	                        </apex:commandLink>
+                    </apex:column> 
+                </apex:pageBlockTable>
+                </apex:outputpanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!createNassign}">
+        	
+            <apex:pageBlockSection title="New Territory Details"  columns="2">
+                <apex:outputField value="{!SalesIQ__Request__c.Name}" />
+                <apex:outputField value="{!SalesIQ__Request__c.SalesIQ__Status__c}" />
+                <apex:outputField value="{!SalesIQ__Request__c.SalesIQ__Request_Type__c}" />
+                <apex:outputField value="{!rosterReq[0]['Territory_Name__c']}" />
+                <apex:outputField value="{!rosterReq[0]['Proposed_User__c']}" />
+                <apex:outputField value="{!rosterReq[0]['Effective_Start_Date__c']}" />
+                <apex:outputField value="{!rosterReq[0]['Effective_End_Date__c']}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Moved Accounts Details" columns="1">
+                <apex:outputpanel styleClass="container" layout="block" id="accPnl">
+                <apex:pageBlockTable value="{!movedAccounts}" var="ma" >
+                    <apex:column headerValue="Account Name"><a href="/{!ma.accountId}" target="_blank">{!ma.accountName}</a></apex:column>
+                    <apex:column headerValue="Source Territory" value="{!ma.sourceTerritoryName}"></apex:column>
+                    <apex:column headerValue="Destination Territory" value="{!ma.destTerritoryName}"></apex:column>
+                    <apex:column headerValue="Reason" value="{!ma.reason}"></apex:column>
+                    <apex:column headerValue="Remove" rendered="{! IF (Request__c.Status__c == 'Pending', true, false)}">
+                        <apex:commandLink styleClass="alpha-link" action="{!removeSelectedAccount}" rerender="accPnl" >
+                             <apex:param value="{!ma.accountId}" name="select1" assignTo="{!SelectedAccount}" />
+                             <apex:image url="{!$Resource.SalesIQ__reject}" width="20" height="20" />
+                        </apex:commandLink>
+                    </apex:column> 
+                </apex:pageBlockTable>
+                </apex:outputpanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

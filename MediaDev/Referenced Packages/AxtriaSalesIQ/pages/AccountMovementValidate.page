@@ -1,0 +1,347 @@
+<apex:page controller="SalesIQ.AccountMovementMapCtlr" sidebar="false"
+    standardStylesheets="false" tabstyle="Account_Movement__tab">
+    <apex:stylesheet value="{!$Resource.SalesIQ__salesiq}" />
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <style>
+.popup {
+    top: 20%;
+}
+.number{
+    text-align: left;
+}
+
+</style>
+    <apex:form id="form_id">
+        <!--  ------------------- Loading Status ---------------------------- -->
+        <apex:actionStatus id="myStatus" onstop="appendSorting();">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground"></div>
+                    <div class="PopupPanel"
+                        style="position: absolute; left: 50%; top: 7%;">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <!-----    Top Table Starts Here    -------->
+        <apex:pageBlock mode="maindetail">
+            <apex:pageMessages id="pgMsg" />
+            <div class="box-main">
+                <div class="box-top">
+                    <div class="box-top-div1" style="width: 40%;">{!$User.FirstName
+                        + $User.LastName}({!$Profile.Name})</div>
+
+                    <div class="box-top-div5" style="width: 40%;">
+                        <apex:commandButton action="{!backToMapPage}" value="Cancel" />
+                        <apex:commandButton action="{!showPopupAndSave}"
+                            value="Submit Request" rerender="popupConfirmation, pgMsg"
+                            status="myStatus" />
+                    </div>
+                </div>
+                <div class="box-content">
+                    <table width="100%" border="0" cellspacing="10" cellpadding="0">
+                        <tr>
+                            <td rowspan="2" style="width: 50%">
+                                <span>Impact Analysis</span>
+                                <!-----    Graph Starts Here    -------->
+                                <apex:outputPanel id="impactChart">
+                                <apex:chart data="{!impactData}" width="90%" height="100%">
+                                    <apex:axis type="Category" position="left" fields="xAxis"
+                                        title="" />
+                                    <apex:axis type="Numeric" position="bottom" fields="yAxis"
+                                        title="" minimum="0" />
+                                    <apex:barSeries orientation="horizontal" axis="bottom"
+                                        xField="yAxis" yField="xAxis" colorSet="#8B2,#28B,#8B2,#28B"
+                                        colorsProgressWithinSeries="true">
+                                        <apex:chartTips height="40" width="120" />
+                                    </apex:barSeries>
+                                </apex:chart>
+                                </apex:outputPanel>
+                                <!-----    Graph Ends Here    --------></td>
+                            <td>
+                                <!-----    Source Table Starts Here    -------->
+                                <div class="impacts">
+                                    <div class="impact-table-header">
+                                        <div style="float: left; width: 50%;">
+                                            <span>Source Impact</span>
+                                        </div>
+                                        <div style="float: left; width: 50%;">
+                                            <span>Source:</span>
+                                            <apex:selectList size="1" multiselect="false"
+                                                value="{!selectedTerr}">
+                                                <apex:selectOptions value="{!territoriesOptions}" />
+                                                <apex:actionSupport event="onchange" action="{!analyseData}" status="myStatus"
+                                                    rerender="sourceImpactPbTbl, destinationImpactPbTbl, impactChart" oncomplete="currency();"/>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <div class="impact-table-content">
+                                       <apex:outputPanel id="sourceImpactPbTbl">
+                                        <apex:pageBlockTable value="{!sourceTotalImpact}"
+                                            var="impact">
+                                            <apex:column headerValue="" value="{!impact.state}"></apex:column>
+                                            <apex:column headerValue="# Accounts"
+                                                value="{!impact.numberOfAccounts}"></apex:column>
+                                            <apex:column headerValue="Billable">
+                                                <span class="currency">{!impact.billable}</span>
+                                            </apex:column>
+                                            <apex:column headerValue="Opportunity">
+                                                <span class="currency">{!impact.potential}</span>
+                                            </apex:column>
+                                            <apex:column headerValue="Alignment Index">
+                                                <span class="number">{!impact.alignmentIndex}</span>
+                                            </apex:column>
+
+                                            <!-- <apex:column headerValue="Alignment Index"> -->
+                                               <!-- <apex:outputText value="{0, number, ###,###}"> -->
+                                                   <!-- <apex:param value="{!impact.alignmentIndex}" /> -->
+                                               <!-- </apex:outputText> -->
+                                           <!-- </apex:column> -->
+
+                                        </apex:pageBlockTable>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div> <!-----    Source Table Ends Here    -------->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="impact-table-header">
+                                    <div style="float: left; width: 50%;">Destination Impact</div>
+                                    <div style="float: left; width: 50%;">
+                                        Destination :
+                                        <apex:inputText value="{!destinationTerrName}" disabled="true" />
+                                    </div>
+                                </div>
+                                <div class="impact-table-content">
+                                    <apex:outputPanel id="destinationImpactPbTbl">
+                                    <apex:pageBlockTable value="{!destinationTotalImpact}"
+                                        var="impact">
+                                        <apex:column headerValue="" value="{!impact.state}"></apex:column>
+                                        <apex:column headerValue="# Accounts"
+                                            value="{!impact.numberOfAccounts}"></apex:column>
+                                        <apex:column headerValue="Billable">
+                                            <span class="currency">{!impact.billable}</span>
+                                        </apex:column>
+                                        <apex:column headerValue="Opportunity">
+                                            <span class="currency">{!impact.potential}</span>
+                                        </apex:column>
+                                        <apex:column headerValue="Alignment Index">
+                                            <span class="number">{!impact.alignmentIndex}</span>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    </apex:outputPanel>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </apex:pageBlock>
+        <!-----    Top Table Ends Here    -------->
+        <!-----    Bottom Table Starts Here    -------->
+        <apex:pageblock mode="maindetail">
+            <div class="box-main">
+                <div class="box-top">
+                    <div class="box-top-div1"></div>
+                    <div class="box-top-div2"></div>
+                    <div class="box-top-div3"></div>
+                    <div class="box-top-div4"></div>
+                    <div class="box-top-div5"></div>
+                </div>
+                <div class="box-content">
+                    <apex:outputPanel layout="block" styleClass="container">
+                        <apex:pageBlockTable value="{!listSelectedPositionAccounts}"
+                            var="posNew" width="100%" id="posPbTableNew">
+                            <apex:column headerValue="Action">
+                                <apex:actionRegion >
+                                <apex:inputCheckbox value="{!posNew.isSelected}">
+                                    <apex:actionSupport event="onchange" action="{!analyseData}" status="myStatus"
+                                        rerender="sourceImpactPbTbl, destinationImpactPbTbl, impactChart, pgMsg" oncomplete="currency();"/>
+                                </apex:inputCheckbox>
+                                </apex:actionRegion>
+                            </apex:column>
+                            <apex:column headerValue="Account Name"
+                                value="{!posNew.AccountName}"></apex:column>
+                            <apex:column headerValue="Dealer Id"
+                                value="{!posNew.atcDealerId}"></apex:column>
+                            <apex:column headerValue="Territory"
+                                value="{!posNew.territoryName}"></apex:column>
+                            <apex:column headerValue="Billable">
+                                <span class="currency">{!posNew.billable}</span>
+                            </apex:column>
+                            <apex:column headerValue="Opportunity">
+                                <span class="currency">{!posNew.potential}</span>
+                            </apex:column>
+                            <apex:column headerValue="Alignment Index">
+                                <span class="number">{!posNew.alignmentIndex}</span>
+                            </apex:column>
+                            <apex:column headerValue="SVOC Status"
+                                value="{!posNew.AccountStatus}"></apex:column>
+                            <apex:column headerValue="Paying/Prospect"
+                                value="{!posNew.isProspect}"></apex:column>
+                            <!--                             <apex:column headerValue="Region" value="{!posNew.AccountRegion}"></apex:column> -->
+                            <!--                             <apex:column headerValue="District" value="{!posNew.District}"></apex:column> -->
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </apex:pageblock>
+        <!-----    Bottom Table Ends Here    -------->
+        <!-----    Popup Starts Here    -------->
+        <div id="pop-up-box">
+            <apex:outputPanel id="popupConfirmation" layout="block">
+                <apex:outputPanel styleClass="popupBg" layout="block"
+                    rendered="{!displaySavePopup}" />
+                <apex:outputPanel styleClass="popup" layout="block"
+                    rendered="{!displaySavePopup}">
+                    <div class="box-main-popup">
+                        <div class="box-top-popup">
+                            <div class="box-top-div1-popup">Account Assignment</div>
+                        </div>
+                        <div class="box-content-popup">
+                            <div style="text-align: center">
+                                <apex:pageMessages id="myMsg" />
+                                Are you sure you want to move selected accounts to Territory <b>"{!destinationTerrName}"</b>
+                            </div>
+                            <br />
+                            <div style="width: 100%; height: 10px;">
+                                <span class="notes" style="width: 170px !important;">Effective
+                                    Date : </span>
+                                <apex:selectList size="1" multiselect="false"
+                                    value="{!selectedEffectiveDate}" styleClass="notes-text-box"
+                                    rendered="{!BusinessAsUsual}">
+                                    <apex:selectOptions value="{!EffcetiveDates}" />
+                                </apex:selectList>
+                                <apex:inputText value="{!QuartelyDate}" disabled="true"
+                                    rendered="{!NOT(BusinessAsUsual)}" />
+                            </div>
+                            <br />
+                            <div>
+                                <span class="notes" style="width: 170px !important;">Reason
+                                    : </span>
+                                <apex:selectList size="1" multiselect="false"
+                                    value="{!selectedReason}" styleClass="notes-text-box">
+                                    <apex:selectOptions value="{!AssignmentReason}" />
+                                </apex:selectList>
+                            </div>
+                            <br /> <br />
+                            <div style="text-align: center">
+                                <apex:actionStatus id="go">
+                                    <apex:facet name="stop">
+                                        <apex:outputPanel >
+                                            <apex:commandButton value="Confirm"
+                                                style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                                action="{!confirmRequest}"
+                                                rerender="popupConfirmation, popupMessage,myMsg" status="go" />&nbsp; &nbsp;
+                                                <apex:commandButton value="Cancel"
+                                                style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                                action="{!cancelRequest}" rerender="popupConfirmation" />
+                                        </apex:outputPanel>
+                                    </apex:facet>
+                                    <apex:facet name="start">
+                                        <apex:outputPanel >
+                                            <apex:commandButton value="Processing..." disabled="true"
+                                                style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                                rerender="popupConfirmation, popupMessage" />
+                                &nbsp; &nbsp;
+                                <apex:commandButton value="Processing..." disabled="true"
+                                                style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                                rerender="popupConfirmation" />
+                                        </apex:outputPanel>
+                                    </apex:facet>
+                                </apex:actionStatus>
+
+                                <br /> <br />
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:outputPanel id="popupMessage" layout="block">
+                <apex:outputPanel styleClass="popupBg" layout="block"
+                    rendered="{!displayMsgPopup}" />
+                <apex:outputPanel styleClass="popup" layout="block"
+                    rendered="{!displayMsgPopup}">
+                    <div class="box-main-popup">
+                        <div class="box-top-popup">
+                            <div class="box-top-div1-popup">Account Assignment</div>
+                        </div>
+                        <div class="box-content-popup">
+                            <div style="text-align: center">Your request is submitted
+                                for approval, you can track the status in the request tab.</div>
+                            <br /> <br />
+                            <div class="popup-buttons-panel" style="text-align: center">
+                                <apex:commandButton value="Assign Ac"
+                                    action="{!goBackToAssignAc}"
+                                    style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                    rerender="popupMessage" rendered="{!showAssignAcButton}" />
+                                <apex:commandButton value="Close" action="{!closeMsgPopup}"
+                                    style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                    rerender="popupMessage" rendered="{!NOT(showAssignAcButton)}" />
+                                <apex:commandButton value="Cancel" action="{!cancelRequest}"
+                                    style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+                                    rerender="popupConfirmation" rendered="{!showAssignAcButton}" />
+                                <br /> <br />
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </div>
+        <!-----    Popup Ends Here    -------->
+    </apex:form>
+    <script>
+    var format = function(numStr, prefix){
+        var str = numStr, parts = false, output = [], i = 1, formatted = null;
+        if(str.indexOf(".") > 0) {
+            parts = str.split(".");
+            str = parts[0];
+        }
+        str = str.split("").reverse();
+        for(var j = 0, len = str.length; j < len; j++) {
+            if(str[j] != ",") {
+                output.push(str[j]);
+                if(i%3 == 0 && j < (len - 1)) {
+                    output.push(",");
+                }
+                i++;
+            }
+        }
+        formatted = output.reverse().join("");
+        return(prefix + formatted);
+    };
+
+    var $j = jQuery.noConflict();
+    var currency = function(){
+
+       $j('.currency:not(:contains("$"))').each(function(){
+            $j(this).text(format($j(this).text(), "$"));
+       });
+
+       numbr();
+    }
+    $j(document).ready(function(){
+        currency();
+
+    });
+
+    var numbr = function(){
+        $j('.number').each(function(){
+            $j(this).text(format($j(this).text(), ""));
+        });
+    };
+    </script>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

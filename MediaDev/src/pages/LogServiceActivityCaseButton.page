@@ -1,0 +1,73 @@
+<apex:page showHeader="false" sidebar="false" standardController="Case" title="Log Service Activity for #{!Case.Casenumber}">
+   <apex:includeScript value="/support/console/30.0/integration.js"/>
+   <script type="text/javascript">      
+       function setTabTitle() {
+           sforce.console.setTabTitle('Log Service Activity for #{!Case.Casenumber}');
+       }
+       var previousOnload = window.onload;        
+       window.onload = function() { 
+            if (previousOnload) { 
+                previousOnload();
+            }                
+            setTimeout('setTabTitle()', '500'); 
+       }
+    </script>
+<apex:stylesheet value="{!URLFOR($Resource.pageStyles, 'style.css')}"/>
+<div class="left-indent">
+<div class="page_header"><apex:image url="{!URLFOR($Resource.pageStyles, 'task_icon_large.png')}" /> Log Service Activity for #{!Case.Casenumber}: {!Case.subject}</div>
+<hr class="hr-task" align="left" width="75%"/>
+<div style="font-weight: bold; padding-bottom:5px; font-size:13px;">Log Activity with Contact: {!Case.contact.name}</div>
+<table class="table_reg" width="50%">
+<tbody>
+  <tr> 
+    <td class="cell_header"> <b>Dealer Service</b></td>  
+    <td class="cell_header"> <b>Credit and Collections</b></td>  
+  </tr>
+  <tr> 
+    <td class="cell_reg" nowrap="nowrap"> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}" target="_self">Blank Note</a><br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Security%20Verification%20-%20Call%20to%20Dealership&tsk6=Called%20to%20speak%20with%20{!case.contact.name}%20to%20verify%20the%20customer%20is%20able%20to%20make%20account%20changes." target="_self">Security Verification - Call to Dealership</a><br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Follow-Up%20with%20Customer&tsk6=Called%20to%20follow-up%20with%20{!case.contact.name}" target="_self">Follow-Up with Customer</a><br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Call%20Tracking%20Test&tsk6=Called%20to%20test%20the%20new%20call%20tracking%20number%20to%20ensure%20it%20is%20working%20properly." target="_self">Call Tracking Test</a><br />
+    </td>
+    <td class="cell_reg" nowrap="nowrap">
+      <b>No Contact:</b> <br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=No%20Contact%20-%20Left%20message&tsk6=Called%20to%20speak%20with%20{!case.contact.name}%20and%20left%20a%20voicemail." target="_self">Left message </a> <br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=No%20Contact%20-%20Mgmt/owner%20approval%20needed&tsk6=Called%20to%20speak%20with%20{!case.contact.name}." target="_self">Mgmt/owner approval needed </a> <br /> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=No%20Contact%20-%20Request%20to%20call%20back&tsk6=Called%20to%20speak%20with%20{!case.contact.name}%20and%20they%20requested%20that%20I%20call%20back." target="_self">Request to call back </a> <br /> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=No%20Contact%20-%20Wrong%20Number/Disconnected&tsk6=Called%20to%20speak%20with%20{!case.contact.name}." target="_self">Wrong Number/Disconnected </a> <br /> 
+      <b>Contact:</b> <br /> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Contact%20-%20NFS%20check/Credit%20Card%20Decline&tsk6=Called%20to%20speak%20with%20{!case.contact.name}." target="_self">NFS check/Credit Card Decline</a> <br /> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Contact%20-%20Other%20Coll.%20Attempt%20w.%20Succ.%20Contact&tsk6=Called%20to%20speak%20with%20{!case.contact.name}." target="_self">Other Coll. Attempt w. Succ. Contact</a> <br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Contact%20-%20Payment%20dispute&tsk6=Called%20to%20speak%20with%20{!case.contact.name}." target="_self">Payment dispute</a> <br />
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Contact%20-%20Payment%20promised&tsk6=Called%20to%20speak%20with%20{!case.contact.name}." target="_self">Payment promised</a> <br /> 
+    </td>   
+  </tr>
+</tbody>
+</table>
+<!-- 
+<br /><br />
+<div style="font-weight: bold; padding-bottom:5px; font-size:13px;">Log Activity with Internal Contact: </div>
+<table class="table_reg" width="50%">
+<tbody>
+  <tr> 
+    <td class="cell_header"> <b>Credit and Collections</b></td>  
+    <td class="cell_header"> <b>Dealer Service</b></td>  
+  </tr>
+  <tr> 
+    <td class="cell_reg" nowrap="nowrap"> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Spoke%20with%20{!case.contact.name}%20%20-%20%20Update%20Inventory%20%20-%20%20Hand%20off%20to%20Inventory%20queue&tsk6=Requestor:%20{!case.contact.name}%0dOld%20Inventory:%0dNew%20Inventory:%0dWhy?%0d" target="_self">Change Inventory</a><br />
+    </td> 
+    <td class="cell_reg" nowrap="nowrap"> 
+      <a href="/00T/e?followup=1&who_id={!Case.contact.Id}&what_id={!Case.Id}&retURL=/{!Case.Id}&tsk12=Completed&tsk3_mlktp=500&tsk3={!case.casenumber}&tsk2_mlktp=003&tsk2={!case.contact.name}&tsk5=Spoke%20with%20{!case.contact.name}%20%20-%20%20Update%20Inventory%20%20-%20%20Hand%20off%20to%20Inventory%20queue&tsk6=Requestor:%20{!case.contact.name}%0dOld%20Inventory:%0dNew%20Inventory:%0dWhy?%0d" target="_self">Change Inventory</a><br />
+    </td>  
+  </tr>
+</tbody>
+</table>
+-->
+<br />
+<apex:form >
+<apex:commandLink action="{!cancel}" value="Back to Case# {!case.casenumber}" id="cancelLogCall"/>
+</apex:form>
+</div>
+</apex:page>

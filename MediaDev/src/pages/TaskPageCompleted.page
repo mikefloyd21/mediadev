@@ -1,0 +1,76 @@
+<apex:page standardcontroller="Task">
+<apex:messages />
+    <apex:sectionheader title="{!$ObjectType.Task.label} Detail" subtitle="{!Task.Subject}"/>
+    <chatter:feedwithfollowers entityId="{!Task.Id}"/>
+        <apex:form >
+        <apex:pageblock mode="maindetail" title="You Cannot Edit or Delete Completed Tasks.">
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Return" action="{!Cancel}"/>
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2014) *************** -->
+                    <!-- <apex:commandbutton value="Edit" action="{!Edit}"/> -->
+                    <!-- <apex:commandbutton value="Delete" action="{!Delete}"/> -->
+                    <!-- <apex:commandbutton value="Include Offline" action="{!URLFOR($Action.Task.IncludeOffline,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Clone" action="{!URLFOR($Action.Task.Clone,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Convert" action="{!URLFOR($Action.Task.Convert,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Find Duplicates" action="{!URLFOR($Action.Task.FindDup,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Request Update" action="{!URLFOR($Action.Task.RequestUpdate,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Advanced Setup" action="{!URLFOR($Action.Task.AdvancedSetup,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Manage Members" action="{!URLFOR($Action.Task.ManageMembers,Task.id)}"/> -->
+                    <!-- <apex:commandbutton value="Close Case" action="{!URLFOR($Action.Task.CloseCase,Task.id)}"/> -->
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2014) *************** -->
+            </apex:pageblockbuttons>
+
+            <!-- **********   [Record Type : Master ]   **********  -->
+            <apex:outputpanel >
+                <apex:pageblocksection title="Task Information" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Task.OwnerId}"/>
+                    <apex:outputfield value="{!Task.WhatId}"/>
+                    <apex:outputfield value="{!Task.Type}"/>
+                    <apex:outputfield value="{!Task.WhoId}"/>
+                    <apex:outputfield value="{!Task.Subject}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Task.ActivityDate}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Task.Date_Completed__c}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description Information" showheader="false" collapsible="false" columns="1">
+                    <apex:outputfield value="{!Task.Description}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Additional Information" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Task.Status}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Task.Priority}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+        <!-- Call Result - hidden for now
+                    <apex:pageblocksection title="Other Information" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Task.CallDisposition}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+        -->
+                <apex:pageblocksection title="System Information" showheader="true" collapsible="true" columns="2">
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Task.CreatedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Task.CreatedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Task.LastModifiedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Task.LastModifiedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+    <!-- **********   [Related Lists for Record Type : Master ]   **********  -->
+    <apex:outputpanel >
+        <apex:relatedlist list="Attachments" title="Attachments"/>
+    </apex:outputpanel>
+
+</apex:page>

@@ -1,0 +1,173 @@
+<apex:page controller="MassAccountTeamReassignController" action="{!validateStep2}">
+  <style>
+  .validationError { color: red; font-weight: strong;}
+  </style>
+<apex:includeScript value="{!$Resource.massAccountTeamReassignUtilityJS}" />
+  <apex:sectionHeader title="Mass Account Team Reassign" subtitle="Step 2 of 2"/>
+  
+
+  <apex:form > 
+      <apex:pageBlock id="theBlock" title="Replace or Change Team Member" mode="edit">
+          <apex:pageBlockButtons location="top">            
+              <apex:commandButton action="{!step1}" id="prevBtn" value="Previous" immediate="true" style="{!IF(ShowResultMessages,'display:none;','')}"  />
+              <apex:commandButton id="cancelDoneBtn" action="{!cancel}" value="{!CancelDoneLabel}"   style="margin-left: 2em"/>              
+          </apex:pageBlockButtons> 
+                 
+          <apex:pageBlockSection id="theBlockSection" title="Specify the team member that you like to replace on each selected account and choose a replacement" columns="1">
+         
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Existing TeamMember</apex:outputLabel>
+              <apex:outputField value="{!ExistingTeamMember.UserId}" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem rendered="{!IsSearchUserRoleSelected}" >
+              <apex:outputLabel >Existing TeamMember Role</apex:outputLabel>
+              <apex:outputLabel value="{!accountTeamRole}" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Replacement TeamMember</apex:outputLabel>
+              <apex:inputField value="{!ReplacementTeamMember.UserId}" required="false"/>
+           </apex:pageBlockSectionItem>  
+           <apex:pageBlockSectionItem >
+              <apex:outputLabel >Replacement Team Role</apex:outputLabel>
+              <apex:selectList value="{!replaceAccountTeamRole}" multiselect="false" size="1" id="ddAccountRoleList"> 
+                    <apex:selectOptions value="{!accountTeamReplaceRoleList}"/>
+              </apex:selectList>
+           </apex:pageBlockSectionItem> 
+           
+           <apex:pageBlockSectionItem >
+           <apex:inputCheckbox value="{!ReassignActivites}"   label=""  />
+           <apex:outputLabel value="Reassign all open activities owned by the existing team member to the replacement team member"></apex:outputLabel>
+           </apex:pageBlockSectionItem>
+           <apex:pageBlockSectionItem >
+           <apex:inputCheckbox value="{!ReassignOpportunities}"   label="" />
+           <apex:outputLabel value="Reassign all open opportunities owned by the existing team member to the replacement team member"></apex:outputLabel>
+           </apex:pageBlockSectionItem>
+            
+             <apex:pageBlockSectionItem id="theBlockSectionItem">
+             <apex:inputHidden Id="lblRemainingcount"  value="{!RemainingAccountsSelected}"></apex:inputHidden>
+             <apex:commandButton id="reassignBtn" value="Reassign All" onclick="ReAssign()" rerender="cancelDoneBtn,prevBtn,selectedAccounts,lblRemainingcount" /> 
+              </apex:pageBlockSectionItem>
+          
+               <apex:pageBlockSectionItem >              
+             
+                <script>
+                function CallReAssignIfMoreExists(feildId)
+                {
+                //var id = "{!$Component.theBlock.theSection.theBlockSectionItem.lblRemainingcount}";
+             
+                feildId = 'j_id0:j_id4:theBlock:theBlockSection:theBlockSectionItem:lblRemainingcount';
+                //alert(document.getElementById(feildId).value);
+                if(document.getElementById(feildId).value !=0)
+                {
+                //alert('calling Again');
+                ReAssign();
+                }
+                }
+            </script>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+            <apex:outputLabel ></apex:outputLabel>
+            <apex:actionFunction name="ReAssign" action="{!ReassignAccountsSelected}" rerender="cancelDoneBtn,prevBtn,selectedAccounts,lblRemainingcount" status="reAssignStatus" oncomplete="CallReAssignIfMoreExists()"/>
+            
+            </apex:pageBlockSectionItem>
+           
+           <apex:pageBlockSectionItem >
+            <apex:outputLabel ></apex:outputLabel>
+         <apex:actionstatus id="reAssignStatus" > 
+            <apex:facet name="start"> 
+            <apex:outputPanel > 
+            <apex:outputLabel id="statusMessage" value="Processing...."></apex:outputLabel> 
+            <apex:image id="currImage" value="{!$Resource.loading16X16}" height="15" /> 
+            </apex:outputPanel> 
+            </apex:facet> 
+         </apex:actionstatus> 
+             </apex:pageBlockSectionItem>
+
+          </apex:pageBlockSection>
+          
+         
+          <apex:pagemessages />
+       
+       <apex:pageBlockSection id="selectedAccounts" columns="1"  > 
+         <apex:pageBlockSectionItem id="messagesSelctionItem" rendered="{!ShowMessages}">               
+         <apex:outputLabel >Errors</apex:outputLabel>
+         <apex:inputTextarea value="{!messages}" readonly="true" rows="5" cols="100" styleClass="validationError" />       
+         </apex:pageBlockSectionItem>
+         <apex:pageBlockSectionItem id="progressMsgSelctionItem" rendered="{!ShowResultMessages}">               
+         <apex:outputLabel >Results:</apex:outputLabel>
+         <apex:outputPanel >
+         <apex:image rendered="{!IF(RemainingAccountsSelected == 0, 'true','false')}"  value="{!IF(RowsFailed == 0,'/img/msg_icons/confirm16.png','/img/msg_icons/error16.png')}" style="vertical-align:middle" />  
+         <br/>
+         <apex:inputTextarea value="{!resultmessages}" readonly="true" rows="5" cols="100"  style="background-color: #ffc; border-width: 1px; border-style: solid; border-color: #c00; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px"/>       
+         </apex:outputPanel>
+         </apex:pageBlockSectionItem>
+         <br/>
+         <apex:pageBlockSectionItem rendered="{!IF(RemainingAccountsSelected > 0, 'true','false')}" >     
+             <apex:outputLabel value="Progress: "></apex:outputLabel>
+            <apex:outputLabel value="{!UnprocessedMessage}" style=" font-weight: bold;background-color: #ffc; border-width: 1px; border-style: solid; border-color: #c00; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px"></apex:outputLabel>
+         </apex:pageBlockSectionItem>  
+         <br/>   
+          <apex:pageBlockSectionItem rendered="{!ShowSelectedAccounts}">
+         <apex:outputLabel value="Total Number of rows"></apex:outputLabel>
+         <apex:outputLabel value="{!selectedAccounts.size}"></apex:outputLabel>
+         </apex:pageBlockSectionItem>
+                <apex:pageblockTable value="{!selectedAccounts}" var="rec"   rendered="{!ShowSelectedAccounts}" rowClasses="odd,even"   > 
+                    <apex:column >
+                            <apex:facet name="header">Account Name</apex:facet>
+                            <apex:outputLink value="{!rec.AccountLink}" target="_blank" id="theAcctLink">{!rec.AccountName}</apex:outputLink>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">ATC Status</apex:facet>
+                            <apex:outputText value="{!rec.ATCStatus}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC Region</apex:facet>
+                            <apex:outputText value="{!rec.Region}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC Master_Id</apex:facet>
+                            <apex:outputText value="{!rec.SVOCId}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">ATC Spend</apex:facet>
+                            <apex:outputText value="{!rec.ATCSpend}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC District</apex:facet>
+                            <apex:outputText value="{!rec.District}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">Billing State/ Province</apex:facet>
+                            <apex:outputText value="{!rec.BillingState}"/>
+                    </apex:column> 
+                    <apex:column >
+                            <apex:facet name="header">Role</apex:facet>
+                            <apex:outputText value="{!rec.TeamMemberRole }"/>
+                    </apex:column>     
+                    <apex:column >
+                            <apex:facet name="header">Account Team Member</apex:facet>
+                            <apex:outputLink value="{!rec.UserLink}" target="_blank" id="theUserLink">{!rec.UserName}</apex:outputLink>
+                    </apex:column> 
+                     <apex:column rendered="{!rec.isProcessed}" style="background-color: #ffc;" >
+                     <apex:image value="{!IF(rec.isSuccess,'/img/msg_icons/confirm16.png','/img/msg_icons/error16.png')}" style="vertical-align:middle" />                            
+                     </apex:column> 
+                    <apex:column rendered="{!rec.isProcessed}" style="background-color: #ffc;" >
+                    
+                            <apex:facet name="header">New Role</apex:facet>                            
+                            <apex:outputText value="{!rec.NewTeamMemberRole }" />
+                    </apex:column>     
+                    <apex:column rendered="{!rec.isProcessed}" style="background-color: #ffc;">
+                            <apex:facet name="header">New Account Team Member</apex:facet>
+                            <apex:outputLink value="{!rec.NewUserLink}"  target="_blank" id="theNewUserLink"  style="background-color: #ffc;" >{!rec.NewUserName}</apex:outputLink>
+                    </apex:column> 
+                    <apex:column rendered="{!rec.isProcessed}" style="{!IF(rec.isSuccess,'background-color: #ffc;','background-color: #d74c3b; color:white;')}">
+                            <apex:facet name="header">Result</apex:facet>
+                            <apex:outputText value="{!rec.ReassignResult }" escape="false" ></apex:outputText>
+                            <!--<apex:inputTextarea readonly="true" rows="5" cols="150" value="{!rec.ReassignResult }"></apex:inputTextarea>-->
+                    </apex:column>                                          
+            </apex:pageblockTable>
+        </apex:pageBlockSection>
+      </apex:pageBlock> 
+  </apex:form>
+
+</apex:page>

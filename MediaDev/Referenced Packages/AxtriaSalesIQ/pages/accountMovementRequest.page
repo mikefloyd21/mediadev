@@ -1,0 +1,514 @@
+<apex:page standardController="SalesIQ__Account_Movement_Request__c" extensions="SalesIQ.ApproveAccountCtlr" id="page"  sidebar="false" tabstyle="Approval__tab" >
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="https://code.jquery.com/jquery-1.10.2.js"/>
+    <apex:includeScript value="//code.jquery.com/ui/1.11.4/jquery-ui.js"/>
+    <apex:includeScript value="{!URLFOR($Resource.SalesIQ__tablesorter2, 'jquery.tablesorter.min.js')}"/>
+    <apex:stylesheet value="{!$Resource.SalesIQ__salesiq}"/>
+    <style type="text/css">
+        th{
+            padding:5px 5px !important;
+        }
+        .box-main{
+            width:100%;
+            margin:30px auto;
+        }
+        .box-content{
+            background-color:#f7f7f7;
+            padding:5px;
+            border:1px solid #cccccc;
+        }
+        table{
+        border-spacing:1px;
+
+        }
+        .box-top{
+            border-top:3px solid #00335B;
+            -moz-border-top:3px solid #00335B;
+            -webkit-border-top:3px solid #00335B;
+            border-top-left-radius:10px;
+            border-top-right-radius:10px;
+            -moz-border-top-left-radius:10px;
+            -moz-border-top-right-radius:10px;
+            -webkit-border-top-left-radius:10px;
+            -webkit-border-top-right-radius:10px;
+            background-color:#F8F8F8;
+            border-left:1px solid #cccccc;
+            border-right:1px solid #cccccc;
+            color:#000;
+            padding:12px 0 0 15px;
+            font-weight:600;
+            font-size:18px;
+            height:30px;
+        }
+        .tablecontent{
+            vertical-align:top;
+            height:400px;
+            background-color:#fff;
+            margin-left:250px;
+            border:1px solid #989898;
+            font-size:12px;
+            overflow-y:auto;
+        }
+        .box-top-div1{
+
+            font-weight:400;
+            font-size:13px;
+            float:left;
+            height:25px;
+            color:#666 !important;
+        }
+        .box-top-div2{
+            width:10%;
+            font-weight:600;
+            font-size:14px;
+            float:left;
+            height:25px;
+        }
+        .box-top-div3{
+            width:10%;
+            font-weight:600;
+            font-size:14px;
+            float:left;
+            height:25px;
+        }
+        .box-top-div4{
+            width:37%;
+            font-weight:600;
+            font-size:18px;
+            float:left;
+            height:25px;
+        }
+        .box-top-div5{
+
+            font-size:13px;
+            text-align:right;
+            float:right;
+            height:25px;
+            padding-right: 10px;
+        }
+        h1{
+            font-size:18px;
+            color:#666 !important;
+            }
+        .loading-icon {
+           background-image: url(/img/loading.gif);
+           width: 16px;
+           height: 16px;
+        }
+        a.alpha-link {
+           font-weight: normal;
+           font-size: 91%;
+           padding: 0 4px;
+           color: #015BA7 !important;
+        }
+        a.alpha-link+a.alpha-link {
+           border-left: 1px solid #CFCECE;
+        }
+         a.alpha-link:hover {
+           background-color: #e0f5fc !important;
+        }
+        a.alpha-select {
+           font-weight: bold;
+           text-decoration: none;
+           background-color: #C6E1FF;
+           color: #000000 !important;
+        }
+        .search-block {
+           text-align: center;
+        }
+         .search-block input {
+           margin: 0px 15px 0px 5px;
+        }
+        .search-block-button {
+           min-width: 110px;
+        }
+        .pagination{
+            width:750px;
+            text-align:center;
+            height:30px;
+            padding:7px 0px;
+            margin-left:25%;
+        }
+        .page-buttons{
+           font-size:12px !important;
+            font-weight:bold !important;
+            height:22px !important;
+            text-align:right;
+        }
+
+        /*  --------- for Blue Header (Amit)  --------- */
+        tr.headerRow th{
+            color:#fff !important;
+        }
+        th.headerSortUp {
+            background-image: url("{!URLFOR($Resource.SalesIQ__icons2, 'icons/asc.gif')}");
+            background-color: #277AA8 !important;
+        }
+        th.headerSortDown {
+            background-image: url("{!URLFOR($Resource.SalesIQ__icons2, 'icons/desc.gif')}");
+            background-color: #277AA8 !important;
+        }
+        th.header {
+            background-image: url("{!URLFOR($Resource.SalesIQ__icons2, 'icons/bg.gif')}");
+            background-color: #277AA8 !important;
+            cursor: pointer;
+            font-weight: bold;
+            background-repeat: no-repeat !important;;
+            background-position: center left !important;;
+            padding-left: 20px;
+            border-right: 1px solid #dad9c7;
+            margin-left: -1px;
+        }
+        .dataImpact{
+            width: 50%;
+            float: left;
+        }
+        .dataSection{
+            width:100%;
+        }
+        .popup{
+            top:0%;
+              z-index: 9999;
+          left: 50%;
+          position: absolute;
+          width: 700px;
+          margin-left: -350px;
+
+}
+        }
+    </style>
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j(document).ready(function () {
+            $j("[id$=blockTable]").tablesorter();
+        });
+
+        function showCal(val){
+            console.log(val);
+            $j(val.previousSibling).datepicker({
+                dateFormat: 'mm/dd/yy',
+                changeMonth: true,
+                changeYear: true
+            }).datepicker('show');
+        }
+
+        function appendSorting(){
+            $j("[id$=blockTable]").tablesorter();
+        }
+
+        function setselected(obj){
+            document.getElementById("page:TheForm:input1").value = obj;
+            alert('{!SelectedOneRequest}');
+        }
+    </script>
+    <apex:form id="TheForm">
+    <apex:pageMessages id="msgApprove"/>
+    <apex:inputhidden id="input1" value="{!SelectedOneRequest}"></apex:inputhidden>
+    <div class="box-main">
+        <div class="box-top">
+			<div class="box-top-div1">
+			<b>Request Type:</b> <c:ApprovalPicklistComponent value="Account Movement Requests"></c:ApprovalPicklistComponent>
+			</div>
+            <div class="box-top-div5" style="width:50% !important;">
+            <!-- Search Criteria               -->
+
+                <apex:pageBlock mode="maindetail">
+                    <div class="search-block" style="float:left;">
+                        <div style="display: inline-table">
+<!--                        <span>Name:</span> -->
+
+<!--                        <apex:inputText value="{!SearchName}" /> -->
+                        </div>
+<!--                    <apex:commandButton styleClass="search-block-button" value="Search" action="{!SearchRequest}" rerender="TablePanel" -->
+<!--                    status="TableUpdateStatus" /> -->
+                    </div>
+                    <div class="process-block">
+                        <apex:actionStatus id="ProcessButtonStatus">
+
+                            <apex:facet name="stop">
+                                <apex:outputPanel >
+                                <apex:commandButton styleClass="process-block-button" rendered="{!isHomeOfficeUser}" value="Download Report" action="{!downloadReport}"/>
+                                    <apex:commandButton styleClass="process-block-button" value="Approve" action="{!approveSelected}"
+                                        status="ProcessButtonStatus" rerender="TablePanel,msgApprove" />&nbsp;&nbsp;
+                                    <apex:commandButton styleClass="process-block-button" value="Reject" action="{!showRejectPopUp}"
+                                        status="ProcessButtonStatus" rerender="TablePanel,msgApprove, popupNotes" />&nbsp;&nbsp;
+                                    <apex:commandButton styleClass="process-block-button" value="Clear All" action="{!ClearAll}"
+                                        rerender="TheForm,TablePanel" />
+                                    </apex:outputPanel>
+                            </apex:facet>
+
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton styleClass="process-block-button" value="Processing..." disabled="true" />
+                                    <apex:commandButton styleClass="process-block-button" value="Processing..." disabled="true" />
+                                </apex:outputPanel>
+                            </apex:facet>
+
+
+                        </apex:actionStatus>
+                    </div>
+                </apex:pageBlock>
+                <!-- search results table      -->
+            </div>
+        </div>
+        <div class="box-content">
+            <apex:pageBlock id="TablePanel" mode="maindetail">
+                <div style="clear: both;"></div>
+                <apex:actionStatus id="TableUpdateStatus">
+                    <apex:inputHidden value="{!AlphaFilter}" id="hiddenField" />
+                    <!-- loading message -->
+                    <apex:facet name="start">
+                        <apex:outputPanel layout="block" styleClass="message infoM4">
+                            <apex:panelGrid columns="2" styleClass="messageTable" columnClasses="messageCell" style="padding:0px;margin:0px;">
+                                <apex:panelGroup ><img class="loading-icon" src="/s.gif" /></apex:panelGroup>
+                                <apex:panelGroup ><div class="messageText">Please wait...</div></apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </apex:facet>
+                    <!-- Account table -->
+                    <apex:facet name="stop">
+                        <apex:pageBlockTable value="{!Currentrequestlist}" var="a" id="blockTable">
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel id="SelectedCount">
+                                        <div style="text-align: center;">
+                                            <apex:outputText value="Select" />
+                                            <br />
+                                            <!--<apex:outputText value="{!AccountSelectedCount}" />-->
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <div style="text-align: center;">
+                                    <apex:inputCheckBox value="{!a.selected}" id="check-box" rendered="{! IF(a.ali.Approval_Status__c == 'Pending', true, IF((a.ali.Approval_Status__c != 'Approved' && a.ali.Approval_Status__c != 'Rejected' && a.ali.Approval_Status__c != 'Cancelled') && isAdminUser, true, false))}">
+                                        <apex:actionSupport event="onchange" rerender="SelectedCount" action="{!UpdateselectedRequests}" />
+                                    </apex:inputcheckbox>
+                                </div>
+                            </apex:column>
+                            <apex:column headerValue="Request">
+                                <a href='/apex/accountMovementRequestDetail?id={!a.req.Request__c}' target="_blank" >{!a.req.request__r.name}</a>
+<!--                                 <apex:commandlink action="{!goToRequest}" target="_blank">{!a.req.request__r.name} -->
+<!--                                     <apex:param name="RequestId" value="{!a.req.id}" assignTo="{!requestId}"/>   -->
+<!--                                 </apex:commandlink> -->
+                            </apex:column>
+<!--                             <apex:column value="{!a.req.Name}"></apex:column> -->
+
+                            <apex:column value="{!a.req.SalesIQ__Destination_Position__c}" headerValue="Destination Territory"></apex:column>
+                            <apex:column headerValue="Effective Start Date" value="{!a.req.SalesIQ__Effective_Start_Date__c}"></apex:column>
+                            <!--<apex:column value="{!a.req.Request__r.Request_Type__c}"></apex:column> -->
+                            <!--<apex:column value="{!a.ali.Approval_Status__c}"></apex:column> -->
+                            <apex:column headerValue="Created Date">
+                                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!a.req.CreatedDate}" /></apex:outputText>
+                            </apex:column>
+                            <apex:column value="{!a.req.request__r.SalesIQ__Approved_By__c}" headerValue="Approved/Rejected By"></apex:column>
+                            <apex:column >
+                                <apex:facet name="header">Approve/Reject</apex:facet>
+                                	<apex:outputPanel rendered="{!!IF(a.req.request__r.SalesIQ__Status__c =='Cancelled',true,false)}">
+	                                	<apex:commandLink styleClass="alpha-link" action="{!approveOneRequest}" rendered="{! AND(IF(a.ali.Approval_Status__c =='Pending', true, false), !isAdminUser)}" rerender="blockTable,TablePanel,TheForm,approved,msgApprove">
+	                                    <apex:param name="select2"  value="{!a.ali.Id}" assignTo="{!SelectedOneRequest}" />
+	                                        <apex:image url="{!$Resource.SalesIQ__approve}" width="20" height="20" />
+	                                    </apex:commandLink>
+	                                    <apex:commandLink styleClass="alpha-link" action="{!showModifyEffectiveDatePopUp}" rendered="{! IF(isAdminUser && a.req.request__r.Status__c == 'Pending', true, false)}" rerender="popupModifyDates">
+	                                        <apex:param name="select2"  value="{!a.ali.Id}" assignTo="{!SelectedOneRequest}" />
+	                                        <apex:image url="{!$Resource.SalesIQ__approve}" width="20" height="20" />
+	                                    </apex:commandLink>
+	                                    <apex:commandLink id="rejId" styleClass="alpha-link" action="{!rejectOneRequest}" rendered="{! IF(a.ali.Approval_Status__c == 'Pending', true, IF((a.ali.Approval_Status__c != 'Approved' && a.ali.Approval_Status__c != 'Rejected' && a.ali.Approval_Status__c != 'Cancelled') && isAdminUser, true, false))}" rerender="blockTable,TablePanel,TheForm,rejected,msgApprove">
+	                                        <apex:param value="{!a.ali.Id}" name="select1" assignTo="{!SelectedOneRequest}" />
+	                                        <apex:image url="{!$Resource.SalesIQ__reject}" width="20" height="20" />
+	                                    </apex:commandLink>
+	                                    <apex:image id="approved" url="{!$Resource.SalesIQ__approved}" width="20" height="20" rendered="{! IF(a.ali.Approval_Status__c =='Approved', true, false)}"/>
+	                                    <apex:image id="rejected" url="{!$Resource.SalesIQ__rejected}" width="20" height="20" rendered="{! IF(a.ali.Approval_Status__c =='Rejected', true, false)}"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(a.req.request__r.SalesIQ__Status__c =='Cancelled',true,false)}">
+			                           	{!a.req.request__r.SalesIQ__Status__c}
+			                        </apex:outputPanel>
+                                    <span style="display:none;">{!IF(a.req.request__r.SalesIQ__Status__c =='Pending', 0, 1)}</span>
+                            </apex:column>
+                            <apex:column >
+                                <apex:outputLink target="_blank"  value="/{!a.req.request__r.id}"> Approval Details</apex:outputLink>
+                            </apex:column>
+                            <apex:column >
+                                <apex:commandLink action="{!showImpactPopUp}" value="Impact" rerender="popupMessage" rendered="{! IF(a.ali.Approval_Status__c =='Completed', false, true)}">
+                                    <apex:param name="selectedReq" assignTo="{!selectedReq}" value="{!a.req.request__r.id}"/>
+                                </apex:commandLink>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlock>
+            <!--    ---------------- Bottom Pagination Start Here  --------------  -->
+            <div class="pagination" >
+                <span class="page-buttons" >
+                    <apex:panelGrid columns="4" id="buttonPanel">
+                        <apex:commandButton disabled="{!!hasPrevious}" value="Previous" action="{!previous}" rerender="TablePanel, buttonPanel,msgApprove" oncomplete="appendSorting();"/>
+                        <apex:commandButton disabled="{!!hasnext}" value="Next" action="{!next}" rerender="TablePanel, buttonPanel,msgApprove" oncomplete="appendSorting();"/>
+                    </apex:panelGrid>
+                </span>
+            </div>
+            <!--    ---------------- Bottom Pagination Ends Here  --------------  -->
+        </div>
+    </div>
+
+    <!-----    Popup Starts Here    -------->
+    <apex:outputPanel id="popupMessage">
+                <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!displayMsgPopup}"/>
+                <apex:outputPanel styleClass="popup" layout="block" rendered="{!displayMsgPopup}">
+                    <div class="box-main-popup">
+                        <div class="box-top-popup">
+                            <div class="box-top-div1-popup">Impact Analysis</div>
+                        </div>
+                        <div class="box-content-popup">
+                            <div id="movedAccountsSection" style="width:100%; height:100px; overflow-y:auto;">
+                                <table style="width:inherit; text-align:left;">
+                                    <tr>
+                                        <th>Account Name</th>
+                                        <th>Territory</th>
+                                        <th>Index</th>
+                                    </tr>
+                                    <apex:repeat value="{!movedAccounts}" var="a">
+                                    <tr>
+                                        <td>{!a.AccountName}</td>
+                                        <td>{!a.TerritoryName}</td>
+                                        <td>{!a.Index}</td>
+                                    </tr>
+                                    </apex:repeat>
+                                </table>
+                            </div>
+                            <div id="graphSection">
+                                <span>Impact Analysis</span>
+                                <!-----    Graph Starts Here    -------->
+                                <apex:chart data="{!impactChart}" width="90%" height="100%" id="impactChart">
+                                    <apex:axis type="Category" position="left" fields="xAxis" title=""/>
+                                    <apex:axis type="Numeric" position="bottom" fields="yAxis" title="" minimum="0"/>
+                                    <apex:barSeries orientation="horizontal" axis="bottom" xField="yAxis" yField="xAxis" colorSet="#8B2,#28B,#8B2,#28B" colorsProgressWithinSeries="true">
+                                        <apex:chartTips height="40" width="120"/>
+                                    </apex:barSeries>
+                                </apex:chart>
+                            </div>
+                            <div id="impactTable" style="width:100%;height:100px;">
+                                <div class="dataImpact">
+                                    <div class="headerSection"><b>Source</b></div>
+                                    <div class="dataSection">
+                                        <table style="width:inherit;">
+                                            <tr>
+                                                <th></th>
+                                                <th>Index</th>
+                                                <th># of Accounts</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Before</td>
+                                                <td>{!impactData[0].Index}</td>
+                                                <td>{!impactData[0].noOfAccounts}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>After</td>
+                                                <td>{!impactData[1].Index}</td>
+                                                <td>{!impactData[1].noOfAccounts}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="dataImpact">
+                                    <div class="headerSection"><b>Destination</b></div>
+                                    <div class="dataSection">
+                                        <table style="width:inherit;">
+                                            <tr>
+                                                <th></th>
+                                                <th>Index</th>
+                                                <th># of Accounts</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Before</td>
+                                                <td>{!impactData[2].Index}</td>
+                                                <td>{!impactData[2].noOfAccounts}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>After</td>
+                                                <td>{!impactData[3].Index}</td>
+                                                <td>{!impactData[3].noOfAccounts}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width:100%;">
+                                <div class="popup-buttons-panel" style="padding-left:40%">
+                                    <apex:commandButton value="Close" action="{!closeMsgPopup}" style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;" rerender="popupMessage" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:outputPanel id="popupNotes">
+                    <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!displayNotesPopup}"/>
+                    <apex:outputPanel styleClass="popup" style="width:600px;" layout="block" rendered="{!displayNotesPopup}">
+                        <div class="box-main-popup" style="margin-top:-2px;">
+                            <div class="box-top">
+                                <div class="box-top-div1">Provide Notes</div>
+                            </div>
+                            <div class="box-content-popup">
+                                <br/>
+                                <div class="notes">Notes :</div>
+                                <apex:inputTextarea id="newDesc" value="{!notes}" styleclass="notes-textbox"/>
+                                <br/><br/><br/><br/><br/>
+                                <div style="text-align:center" >
+                                    <apex:actionStatus id="ProcessButtonStatus">
+                                        <apex:facet name="stop">
+                                            <apex:outputPanel >
+                                                <apex:commandButton value="Reject"  action="{!rejectSelected}"  rerender="TablePanel,popupNotes,msgApprove" style="background:#36647D;color: #FFF; width:100px; height:25px; font-size:12px;" status="ProcessButtonStatus"/>&nbsp;&nbsp;
+                                                <apex:commandButton value="Cancel" style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;" action="{!hideNotesPopup}"  rerender="popupNotes"  status="ProcessButtonStatus"/>
+                                            </apex:outputPanel>
+                                        </apex:facet>
+                                        <apex:facet name="start">
+                                            <apex:outputPanel >
+                                                <apex:commandButton styleClass="process-block-button" value="Processing..." disabled="true" />
+                                                <apex:commandButton styleClass="process-block-button" value="Processing..." disabled="true" />
+                                            </apex:outputPanel>
+                                        </apex:facet>
+                            </apex:actionStatus>
+                                </div>
+                                <br/>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            <apex:outputPanel id="popupModifyDates">
+                    <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!effectiveDateChagePopUp}"/>
+                    <apex:outputPanel styleClass="popup" style="width:600px;" layout="block" rendered="{!effectiveDateChagePopUp}">
+                        <div class="box-main-popup" style="margin-top:-2px;">
+                            <div class="box-top">
+                                <div class="box-top-div1" style="width:40%">Modify Dates &amp; Approve</div>
+                            </div>
+                            <div class="box-content-popup">
+                                <br/>
+                                <apex:pageMessages id="popUpMsg"/>
+                                <apex:outputPanel id="startDatePnl" rendered="{!showStartDate}" layout="block">
+                                <div class="notes">Effective Start Date :</div>&nbsp;&nbsp;
+                                <apex:inputText id="startDate" value="{!effectiveStartDate}"  size="10" />
+                                    <apex:commandLink styleClass="alpha-link" onclick="showCal(this);" rerender="none" id="startDateClk">
+                                        <apex:image value="{!$Resource.SalesIQ__calIcon}" style="width:16px; height:16px;" id="startIcon"/>
+                                    </apex:commandLink>
+                                </apex:outputPanel>
+                                <br/>
+                                <apex:outputPanel rendered="{!showEndDate}" id="endDatePnl" layout="block">
+                                <div class="notes">Effective End Date :</div>&nbsp;&nbsp;
+                                <apex:inputText id="endDate" value="{!effectiveEndDate}"  size="10" />
+                                    <apex:commandLink styleClass="alpha-link" onclick="showCal(this);" rerender="none" id="endDateClk">
+                                        <apex:image value="{!$Resource.SalesIQ__calIcon}" style="width:16px; height:16px;" id="endIcon"/>
+                                    </apex:commandLink>
+                                </apex:outputPanel>
+                                <br/><br/><br/><br/><br/>
+                                <div style="text-align:center" >
+                                    <apex:commandButton value="Approve"  action="{!modifyEffectiveDateNUpdate}" rerender="popupModifyDates, blockTable,TablePanel,TheForm,approved,msgApprove" style="background:#36647D;color: #FFF; width:100px; height:25px; font-size:12px;" />&nbsp;&nbsp;
+                                    <apex:commandButton value="Cancel"  action="{!cancelEffectiveDateChange}"  rerender="popupModifyDates" style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"/>
+                                </div>
+                                <br/>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

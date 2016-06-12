@@ -1,0 +1,363 @@
+<apex:page controller="IS2LeadTraj.LeadTrajectoryController" showHeader="true" sidebar="false" standardStylesheets="false">
+  <apex:form >
+  <apex:includeScript value="{!URLFOR($Resource.IS2LeadTraj__lib, '/lib/js/jQuery1.7.2.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.IS2LeadTraj__lib, '/lib/js/jquery.tools.tooltip.min.js')}"/>
+  <apex:includeScript value="{!$Resource.IS2LeadTraj__goalSettingsDialogJS}"/>
+  <apex:includeScript value="{!$Resource.IS2LeadTraj__ISLeadTrajectoryPersistantHeaderJS}"/>
+  <apex:includeScript value="{!$Resource.IS2LeadTraj__ISLeadTrajectoryTableSelectionJS}"/>
+  <apex:stylesheet value="{!$Resource.IS2LeadTraj__ISLeadTrajectoryBaseCSS}"/>
+  <apex:stylesheet value="{!$Resource.IS2LeadTraj__ISLeadTrajectoryLinkCSS}"/>
+  <apex:stylesheet value="{!$Resource.IS2LeadTraj__ISGoalSettingsCSS}"/>
+  <apex:stylesheet value="{!$Resource.IS2LeadTraj__ISLeadTrajectoryHeaderCSS}"/>
+
+  <apex:variable var="chartOptions" value="
+        chart: {
+            borderColor:'',
+            height: 400,
+            renderTo: 'chart-container',
+            type: 'spline',
+            spacingLeft: -2,
+            spacingRight: 15,
+            zoomType:'xy'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: null
+        },
+        tooltip: {
+            formatter: function() {
+                var dayNum = Highcharts.dateFormat('%A %b %e, %Y', this.x);
+
+                if (this.series.name === 'Lead Goal') {
+	                return '<b>'+dayNum+'</b><br />' + 
+	                       'Lead Goal:<b>'+Math.round(this.y)+'</b><br />'
+                } else if (this.series.name.indexOf('Last Month') != -1 &&
+                           this.series.name.indexOf('Trajectory') != -1) {
+	                return '<b>'+dayNum+'</b><br />' + 
+	                       'Last Month\'s Trajectory:<b>'+Math.round(this.y)+'</b><br />'
+                } else if (this.series.name.indexOf('Last Quarter') != -1 &&
+                           this.series.name.indexOf('Trajectory') != -1) {
+	                return '<b>'+dayNum+'</b><br />' + 
+	                       'Last Quarter\'s Trajectory:<b>'+Math.round(this.y)+'</b><br />'
+                } else {
+                    var total_leads = 0;
+                    var index, i, j = null;
+                    var numSeries = this.series.chart.series.length;
+
+                    var startIndex;
+                    if (this.series.chart.series[0].name === 'Lead Goal' &&
+                        this.series.chart.series.length > 1){
+                        startIndex = 1;
+                    } else {
+                        startIndex = 0;
+                    }
+
+                    var endIndex;
+                    if (((this.series.chart.series[numSeries - 1].name.indexOf('Last Month') != -1) ||
+                         (this.series.chart.series[numSeries - 1].name.indexOf('Last Quarter') != -1)) &&
+                        this.series.chart.series[numSeries - 1].name.indexOf('Trajectory') != -1 &&
+                        this.series.chart.series.length > 1){
+                        endIndex = numSeries - 2;
+                    } else {
+                        endIndex = numSeries - 1;
+                    }
+
+                    for(i=startIndex; i<=endIndex; i++){
+                        if(index !== null && index !== undefined){
+                            total_leads += this.series.chart.series[i].data[index].y;
+                        }else{
+                            for(j=0; j<this.series.chart.series[i].data.length; j++){
+                                if(this.x === this.series.chart.series[i].data[j].x){
+                                    index = j;
+                                    total_leads += this.series.chart.series[i].data[index].y;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if ({!isGoalNullOrZero}) {
+	                    return '<b>'+dayNum+'</b><br />' + 
+	                            this.point.name+': <b>'+this.y+'</b><br /><br />' + 
+	                            'Total Leads to date:<b>'+total_leads+'</b>';
+                    } else {
+                        var goal = (total_leads / {!JSENCODE(TEXT(nonNullGoal))}) * 100;
+	                    goal = goal.toFixed(2);
+
+	                    return '<b>'+dayNum+'</b><br />' + 
+	                            this.point.name+': <b>'+this.y+'</b><br /><br />' + 
+	                            'Total Leads to date:<b>'+total_leads+'</b><br />' +
+	                            'Percent of overall goal met:<b>'+ goal +'%</b>';
+                    }
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Number of Leads'
+            },
+            labels: {
+                enabled: true
+            },
+            gridLineWidth: 1,
+            maxPadding: 0,
+            minPadding: 0,
+            endOnTick: false,
+            maxPadding: 0.05
+        },
+        xAxis: {
+            gridLineWidth: 0,
+            lineWidth: 0,
+            tickWidth: 0,
+            min: {!JSENCODE(TEXT(chartMin))},
+            max: {!JSENCODE(TEXT(chartMax))},
+            title: {
+              text: 'Day of Month'
+            },
+            labels: {
+                formatter: function() {
+                    return Highcharts.dateFormat('%e-%b', this.value);
+                }
+            },
+            plotLines: [{
+	            color: 'rgba(38,167,221,0.4)',
+	            value: {!JSENCODE(TEXT(todayDate))},
+	            width: 1,
+	            zIndex: 1,
+	                label: {
+	                    text: 'Today',
+	                    rotation: 0,
+	                    y: 20,
+	                    style: {
+	                        'font-size': '12px',
+	                         color: '#666'
+	                    }
+	               }
+	        }]
+	    },
+        legend: {
+            enabled: true,
+            align: 'left',
+            floating: true,
+            layout: 'vertical',
+            x: 80,
+            y: -310
+        },
+        plotOptions: {
+            series: {
+                fillOpacity: 0.25
+             },
+            area: {
+                fillOpacity: 0.3,
+                stacking: 'normal',
+                lineWidth: 1,
+                marker: {
+                    enabled: false,
+                    radius: 3,
+                    symbol:'circle',
+                    states: {
+                        hover: {
+		                    enabled: true,
+		                    radius: 3,
+		                    symbol:'circle',
+		                    color: 'c0c0c0'
+                        }
+                    }
+                }
+            },
+            line: {
+                lineWidth: 1,
+                marker: {
+                    enabled: false,
+                    radius: 3,
+                    symbol:'circle',
+                    states: {
+                        hover: {
+		                    enabled: true,
+		                    radius: 3,
+		                    symbol:'circle',
+		                    color: 'c0c0c0'
+                        }
+                    }
+                }
+            }
+        }
+    "/>
+
+  <style>
+      #goal_footer_logo {
+          background-image: url({!URLFOR($Resource.lib, '/lib/img/is_logo_light_sm.png')});
+          width: 148px;
+          height: 23px;
+          float: left;
+          margin: 10px 0 10px 0; }
+
+      .small_x_button {
+          background-image: url({!URLFOR($Resource.lib, '/lib/img/small_x.png')});
+          cursor: pointer;
+          height: 10px;
+          width: 10px;
+          float: right;
+          margin-top: -5px;
+          margin-right: -5px;
+      }
+
+  #open_lead_goal_button {
+      background: #f4f4f4;
+      border: 1px solid #e6e6e6;
+      display: inline-block;
+      background-image: url({!URLFOR($Resource.lib, '/lib/img/goal_button_icon.png')});
+      background-position: 10% center;
+      background-repeat: no-repeat;
+      -webkit-transition: all 0.3s ease;
+      -webkit-transition-property: background, border, color, text-shadow;
+      -moz-transition: all 0.3s ease;
+      -moz-transition-property: background, border, color, text-shadow;
+      transition: all 0.3s ease;
+      transition-property: background, border, color, text-shadow;
+      cursor: pointer;
+      color: #666;
+      float: right;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 8px 8px 7px 36px; }
+
+  #open_lead_goal_button:hover {
+      background: #eee;
+      background-image: url({!URLFOR($Resource.lib, '/lib/img/goal_button_icon.png')});
+      background-position: 10% center;
+      background-repeat: no-repeat;
+      border: 1px solid #aaa;
+      text-shadow: 0px 1px 0px #fff !important;
+  }
+
+  #governer_limit_message div {
+      background: #FDFBEC;
+      border: 1px solid #ffc23e;
+      display: inline-block;
+      background-image: url({!URLFOR($Resource.lib, '/lib/img/notify_orange_sm.png')});
+      background-position: 5% center;
+      background-repeat: no-repeat;
+      padding: 10px 10px 10px 40px;
+      font-size: 10px;
+      margin-right: 20px; }
+
+  </style>
+
+<script type="text/javascript">
+$j = jQuery.noConflict();
+var ISLeadSource = []; // store lead sources to save
+
+$j(document).ready(function() {
+    $j('.lead_source_submit').click(function(){
+        if($j(this).hasClass('active_lead_source_submit')) {
+	        $j('.ls_enabled_checkbox').each(function(i, v) {
+	          var ls = {};
+	          ls.LeadSource = $j(v).val();
+	          ls.IsEnabled = $j(v).prop('checked');
+	          ISLeadSource.push(ls);
+	        });
+	
+	        Visualforce.remoting.Manager.invokeAction(
+	          '{!$RemoteAction.LeadTrajectoryController.remoteSetLeadSourceList}',
+	          JSON.stringify(ISLeadSource),
+	          function(result, event) { window.location.reload(); }
+	        );
+	    }
+    });
+});
+</script>
+
+  
+  <div id="is2">
+    <c:ISLeadTrajectoryCTA />
+
+    <!-- ISLeadTrajectoryHeader -->
+    <div class="top_heading_info">
+      <h1 style="float: left;">{!HTMLENCODE(header.question)}</h1>
+      <div id="period_selector">
+          <h6>Date Range</h6>
+          <div class="period_selection_link {!IF((showQuarter),' ','active_period_selection_link')}">
+              <apex:commandButton action="{!showMonth}" value="This M"/>
+          </div>
+          <div class="period_selection_link {!IF((showQuarter),'active_period_selection_link',' ')}">
+              <apex:commandButton action="{!showQuarter}" value="This Q"/>
+          </div>
+      </div>
+      <div id="open_lead_goal_button">Set Lead Goal</div>
+      <div id="governer_limit_message">
+	      <apex:outputPanel rendered="{!limitReached}" layout="block">
+		      Report capped at 25,000 leads <br /> to abide by Salesforce.com limits
+		  </apex:outputPanel>
+      </div>
+      <div class="clear"></div>
+      <div style="float: left;">
+	      <span id="question_answer1"><apex:outputText value="{!HTMLENCODE(header.majorAnswer)}" escape="false" /></span>
+	      <span id="question_answer2"><apex:outputText value="{!HTMLENCODE(header.minorAnswer)}" escape="false" /></span>
+	  </div>
+    </div>
+
+    <c:ISLeadTrajectoryChart chartOptions="{!chartOptions}" 
+                             leadSeries="{!chart.leadSeriesStr}" 
+                             goalSeries="{!chart.goalSeriesStr}"
+                             prevMonthSeries="{!chart.prevMonthSeriesStr}"
+                             goalEnabled="{!goalEnabled}"/>
+	<c:ISLeadTrajectoryTable rows="{!table.tblRows}" 
+	                         colNames="{!table.colNames}" 
+	                         colCount="{!table.colCount}" />
+    <div id="more_info">
+      <a href="http://insightsquared.com/info/sales-forecasting-help/">Get help with this report&nbsp;&nbsp;&rsaquo;</a>
+    </div>
+	<c:ISLeadTrajectoryFooter />
+  </div>
+
+  <div class="gray_box"></div>
+
+  <div class="modal_background"></div>
+  <div id="goal_settings_container">
+    <div id="goal_settings_header">
+      <h1>Lead Generation Goal</h1>
+      <div class="small_x_button"></div>
+      <div class="clear"></div>
+    </div>
+    <div id="goal_settings_content">
+	  <span class="goal_settings_text">This Goal will be applied across all users.</span>
+	  <br />
+	  <div class="center">
+	    <div id="goal_input_container">
+	      <div style="text-align: right;margin-bottom: 10px;">
+	          <span class="goal_settings_label">This month</span>
+	          <apex:inputText value="{!monthGoal}" styleClass="monthGoalInput {!IF((showQuarter),' ','active_goal_input active_month_goal_input')}" />
+          </div>
+          <div style="text-align: right;">
+	          <span class="goal_settings_label">This quarter</span>
+	          <apex:inputText value="{!quarterGoal}" styleClass="quarterGoalInput {!IF((showQuarter),'active_goal_input active_goal_quarter_input',' ')}" />
+          </div>
+        </div>
+        <div class="error_container">Sorry, this has to be a positive whole number.</div>
+	  </div>
+	</div>
+    <div id="goal_settings_footer">
+      <div id="goal_footer_logo"></div>
+      <div id="set_goal_button">
+	    <apex:commandButton action="{!saveGoal}" styleClass="goal_submit_button" value="Set Goal"/>
+	  </div>
+      <input type="button" href="javascript:;" id="cancel_button" value="Cancel" />
+    </div>
+  </div>
+  
+  <!-- GOOGLE ANALYTICS -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41556131-3', 'force.com');
+  ga('send', 'pageview');
+  </script>
+
+  </apex:form>
+</apex:page>

@@ -1,0 +1,282 @@
+<apex:page standardcontroller="Action_Plan__c" extensions="APPDFExtension" renderAs="pdf" showHeader="false" applyHtmlTag="false" standardStylesheets="false">
+  <html>
+    <head>
+      <style type="text/css" media="print">
+        @page
+        {
+        size: letter;
+        @top-left-corner {
+        content: element(header);
+        }
+        
+        @bottom-left-corner {
+        content: element(footer);
+        }
+        margin-top:70px;
+        margin-bottom:60px;
+        }
+
+        #header{
+        position:running(header);
+        }
+
+        #footer{
+        position:running(footer);
+        }
+        body{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10pt;
+        }
+        thead>tr>th {
+        font-size: 12pt;
+        text-align:left;
+        border-collapse: collapse;
+        background : #c0c0c0;
+        }
+        .spacer {
+           padding-top: 10px;
+           padding-bottom: 10px;
+        }
+        
+      </style>
+    </head>
+    <body>
+      <div class="header" id="header">
+        <img src="{!URLFOR($Resource.CSHeader)}" />
+        <div class="spacer"/>
+      </div>
+
+      <div class="footer" id="footer">
+        <img src="{!URLFOR($Resource.CSFooter)}" />
+      </div>
+
+
+       <div class="spacer" id="content">
+        <table width="50%" >
+          <thead>
+            <tr>
+              <th>Dates</th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <table>
+                  <tr>
+                    <td>
+                      <b>Discussion Date:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{0,date,long}">
+                        <apex:param value="{!Action_Plan__c.Discussion_Date__c}"/>
+                      </apex:outputText>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Requested Follow-up Date:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{0,date,long}">
+                        <apex:param value="{!Action_Plan__c.Requested_Follow_up_Date__c}"/>
+                      </apex:outputText>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="spacer"/>
+        <table width="100%" >
+          <thead>
+            <tr>
+              <th>Dealership Information</th>
+              <th>Cox Media Information</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="50%">
+                <table>
+                  <tr>
+                    <td>
+                      <b>{!IF(ISNULL(Action_Plan__c.Account__c), 'Lead ', '')}Name:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Action_Plan_Name2__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Number:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Name}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>ID(s):</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Additional_Dealer_IDs__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Attendee:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Consultation_Attendee__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Attendee Title:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Consultation_Attendee_Title__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Contact Phone:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Contact_Phone__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Contact Email:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Contact_Email__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Contact Information:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.Contact_Info__c}"/>
+                    </td>
+                  </tr>
+                </table>
+                
+              </td>
+              <td width="50%">
+                <table>
+                  <tr>
+                    <td>
+                      <b>Consultant:</b>
+                    </td>
+                    <td>
+                      <apex:outputText value="{!Action_Plan__c.ATC_Consultant__c}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">
+                      <b>Trade Show Consultants:</b>
+                    </td>
+                    <td>    
+                      <table border="0" >
+                        <apex:repeat var="c" value="{!consultantsForDisplay}">
+                          <tr>
+                            <td>{!c}</td>
+                          </tr>
+                        </apex:repeat> 
+                      </table>
+
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>  
+        </table>
+        
+        <div class="spacer"/>
+        <table width="100%" >
+          <thead>
+            <tr>
+              <th>Reports Reviewed</th>
+              <th>Requested Info</th>
+              <!--<th>Areas of Focus</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="33%" valign="top">
+                <table>
+                  <apex:repeat var="c" value="{!reportsReviewedItems}">
+                    <tr>
+                      <td>{!c}</td>
+                    </tr>
+                  </apex:repeat>
+                </table>        
+              </td>
+              <td width="33%" valign="top">
+                <table>
+                  <apex:repeat var="c" value="{!requestedInfoItems}">
+                    <tr>
+                      <td>{!c}</td>
+                    </tr>
+                  </apex:repeat> 
+                </table>
+              </td>
+              <!--<td width="33%" valign="top">
+                <table>
+                  <apex:repeat var="c" value="{!areasOfFocus}">
+                    <tr>
+                      <td>{!c}</td>
+                    </tr>
+                  </apex:repeat> 
+                </table>
+              </td>-->
+            </tr>
+          </tbody>  
+        </table>  
+        
+        <div class="spacer"/>
+        <table width="100%" >
+          <thead>
+            <tr>
+              <th>Dealership Goals</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <apex:outputText value="{!Action_Plan__c.Dealership_Goals__c}"/>
+              </td>
+            </tr>
+          </tbody>  
+        </table>  
+        
+        <div class="spacer"/>
+        <table width="100%" >
+          <thead>
+            <tr>
+              <th>Notes &amp; Recommendations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <apex:outputText value="{!Action_Plan__c.Notes_Recommendations__c}"/>
+              </td>
+            </tr>
+          </tbody>  
+        </table>  
+        
+        
+      </div>
+
+   </body>
+  </html>
+</apex:page>

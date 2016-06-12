@@ -1,0 +1,9 @@
+<apex:page standardController="Account" showHeader="true" sidebar="true">
+<!-- ApexPages.currentPage().getParameters().get('id'); -->
+  <h1>Account {!account.name} cannot be deleted</h1><p />
+  You do not have permission to delete Accounts.<br />
+
+  Please submit a Service Now request if this account needs to be deleted.<p />
+  <a class="btn" style="text-decoration:none; padding:3px 2px 3px 3px;" href="https://atgdealer.my.salesforce.com/{!id}">Return to {!account.name}</a>
+
+</apex:page>

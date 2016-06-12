@@ -1,0 +1,12 @@
+<apex:page standardController="Account" extensions="AccountTeamRLCon" >
+<apex:form >
+ <apex:pageMessages />
+<apex:pageblock id="CustomList">
+   <apex:pageBlockTable value="{!atm}" var="a" rendered="{!NOT(ISNULL(atm))}">
+        <apex:column headerValue="Team Member" title="{!a.User.Name} - {!a.TeamMemberRole}"> <apex:outputLink value="/{!a.User.Id}" target="_blank">{!a.User.Name}</apex:outputLink> </apex:column>
+        <apex:column value="{!a.TeamMemberRole}"/>     
+   </apex:pageBlockTable>
+   <apex:outputLabel value="No records to display" rendered="{!(ISNULL(atm))}"/>
+ </apex:pageblock>
+</apex:form>
+</apex:page>

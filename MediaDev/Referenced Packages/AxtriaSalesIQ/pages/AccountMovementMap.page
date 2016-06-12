@@ -1,0 +1,1935 @@
+<apex:page controller="SalesIQ.AccountMovementMapCtlr" sidebar="false" id="page" tabstyle="Account_Movement__tab">
+    <apex:stylesheet value="{!URLFOR($Resource.SalesIQ__Navigation, '/New_icons/WidgetStyles.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SalesIQ__jstree, '/jstree/dist/themes/default/style.min.css')}"/>
+<!--     <apex:stylesheet value="{!URLFOR($Resource.jstree, '/jstree/libs/jqueryui.min.js')}"/> -->
+<!--     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>  -->
+<!--     <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.js"></script> -->
+    <script src="{!URLFOR($Resource.jstree, '/jstree/dist/jstree.min.js')}"></script>
+    <script src="{!URLFOR($Resource.jscolor, '/jscolor/jscolor.js')}"></script>
+
+    <script src="{!URLFOR($Resource.jsalert, '/sweetalert/dist/sweetalert-dev.js')}"></script>
+    <apex:stylesheet value="{!URLFOR($Resource.SalesIQ__jsalert, '/sweetalert/dist/sweetalert.css')}"/>
+
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+    <!----------------------------------------Intergration Script code ------ -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples on iOS devices-->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://js.arcgis.com/3.12/dijit/themes/claro/claro.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/3.12/esri/css/esri.css" />
+    <script>
+      var dojoConfig = {
+        paths: {
+          extras: "{!URLFOR($Resource.ClusterLayer,
+                  'extras/ClusterLayer')}"
+
+           }
+      };
+    </script>
+
+    <style>
+
+    .tree1{
+        width:265px;
+        overflow-y:hidden;
+    }
+    #tree{
+        height: 468px;
+        overflow-y: auto;
+    }
+
+    @charset "UTF-8";
+/* CSS Document */
+
+.notes{
+    height:25px;
+    font-weight:bold;
+    text-align:right;
+    font-size:12px;
+    width:105px !important;
+    float:left;
+    position:relative;
+}
+
+.notes-text-box{
+    float:left;
+    border:1px solid #333;
+    width:180px !important;
+    height:22px;
+    padding-left: 5px;
+}
+
+#legend {
+    background-color: #ffffff;
+  border-radius: 7px;
+  height: 106px;
+  left: 118px;
+  opacity: 0.75;
+  position: absolute;
+  right: 1px;
+  top: 350px;
+  width: 181px;
+  z-index: 3;
+}
+
+#school {
+float: left;
+margin-left: 3px;
+margin-top: 3px;
+max-width: 160px;
+}
+
+.circle1 {
+    border-radius: 50%;
+    display: inline-block;
+
+}
+
+#circle3 {
+    height: 14px;
+    position: relative;
+    width: 14px;
+}
+
+.square1 {
+    width: 12px !important;
+    height: 12px !important;
+
+}
+
+
+.diamond1 {
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-bottom-color: black;
+    position: relative;
+    top: -8px;
+}
+.diamond1:after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: black;
+}
+
+.triangle1 {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 14px solid black;
+}
+.container{
+    overflow:auto;
+    height:250px;
+}
+
+.box-main{
+    width:100%;
+    margin:30px auto;
+}
+
+.box-main-popup{
+    width:100%;
+    margin:-2px auto;
+}
+
+.box-popup{
+    width:99%;
+    margin:0px auto;
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.box-content{
+    background-color:#f7f7f7;
+    padding:5px;
+    border:1px solid #cccccc;
+}
+
+.box-content-popup{
+    background-color:#fff;
+    padding:5px;
+    border:1px solid #000;
+}
+
+.box-top{
+    border-top:3px solid #00335B;
+    -moz-border-top:3px solid #00335B;
+    -webkit-border-top:3px solid #00335B;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    -moz-border-top-left-radius:10px;
+    -moz-border-top-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    background-color:#F8F8F8;
+    border-left:1px solid #cccccc;
+    border-right:1px solid #cccccc;
+    color:#000;
+    padding:12px 0 0 15px;
+    font-weight:600;
+    font-size:18px;
+    height:30px;
+}
+
+.box-top-popup{
+    border-top:3px solid #00335B;
+    -moz-border-top:3px solid #00335B;
+    -webkit-border-top:3px solid #00335B;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    -moz-border-top-left-radius:10px;
+    -moz-border-top-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    background-color:#F8F8F8;
+    border-left:1px solid #000;
+    border-right:1px solid #000;
+    color:#000;
+    padding:12px 0 0 15px;
+    font-weight:600;
+    font-size:18px;
+    height:30px;
+}
+
+.tablecontent{
+    vertical-align:top;
+    height:400px;
+    background-color:#fff;
+    margin-left:250px;
+    border:1px solid #989898;
+    font-size:12px;
+    overflow-y:auto;
+}
+
+#map{
+    vertical-align:top;
+    height:500px;
+    background-color:#fff;
+    margin-left:250px;
+    border:1px solid #989898;
+    font-size:12px;
+    overflow-y:auto;
+}
+
+.box-top-div1{
+    font-weight:500;
+    font-size:12px;
+    float:left;
+    height:25px;
+    color:#666 !important;
+}
+
+.box-top-div1-popup{
+    font-weight:600;
+    float:left;
+    height:25px;
+    color:#666 !important;
+}
+
+.box-top-div2{
+    font-weight:400;
+    font-size:12px;
+    float:left;
+    height:25px;
+}
+
+.box-top-div3{
+    font-weight:400;
+    font-size:12px;
+    float:left;
+    height:25px;
+}
+
+.box-top-div4{
+    font-weight:400;
+    font-size:12px;
+    float:left;
+    height:25px;
+    text-align:right;
+}
+
+.box-top-div5{
+    font-size:12px;
+    float:right;
+    height:25px;
+    text-align:right;
+    margin-right:3px;
+}
+
+.searchbutton1{
+    width:80px;
+    height:23px;
+    font-size:11px !important;
+    margin-left:-80px !important;
+    border:1px solid #3fa9f5 !important;
+    background-color:#55a4da !important;
+    z-index:1;
+}
+
+.searchtxt1{
+    border: 1px solid #3fa9f5;
+    border-radius: 5px;
+    height: 21px;
+    margin-left: 100px;
+    padding-top: 0px;
+    width: 235px;
+}
+
+.button{
+   padding:1px 10px !important;
+   border:1px solid #3fa9f5 !important;
+   font-size:11px !important;
+   font-weight:bold !important;
+   height:22px !important;
+   text-align:right;
+}
+
+.tree{
+    width:230px;
+    vertical-align:top;
+    float:left;
+    height:500px;
+    background-color:#fff;
+    border:1px solid #989898;
+    overflow-y:auto;
+}
+
+.clear{
+    clear:both;
+}
+
+th{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:11.5px !important;
+    line-height:20px;
+}
+
+.table_header_tree{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:12px !important;
+    font-weight:bold;
+    line-height:30px !important;
+    padding-left:12px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table_header_main{
+    color:#404041 !important;
+    background-color:#d1d2d4 !important;
+    font-size:16px !important;
+    text-align:center;
+    line-height:30px !important;
+}
+
+td{
+    line-height:20px ;
+}
+
+.even {
+    background-color: White !important;
+}
+
+.odd {
+    background-color: #e6f5fc !important;
+}
+
+.number{
+    text-align: left;
+}
+
+.text{
+    text-align:center;
+}
+
+.table{
+    border:1px solid ;
+    line-height:25px !important;
+}
+
+.table-side-header{
+    margin-left:20px;
+    text-align:left;
+    font-weight:bold;
+}
+
+.pure-table{
+    border-collapse:collapse;
+    border-spacing:0;
+    empty-cells:show;
+    border:1px solid #cbcbcb;
+}
+
+.pure-table caption{
+    color:#000;
+    font:italic 85%/1 arial,sans-serif;
+    padding:1em 0;
+    text-align:center;
+}
+
+.pure-table td,.pure-table th{
+    border-left:1px solid #cbcbcb;
+    border-width:0 0 0 1px;
+    font-size:inherit;
+    line-height:20px;
+    margin:0;
+    overflow:visible;
+    padding:.25em .50em
+}
+
+.pure-table td:first-child,.pure-table th:first-child{
+    border-left-width:0;
+}
+
+.pure-table thead{
+    background:#e0e0e0;
+    color:#000;
+    text-align:left;
+    vertical-align:bottom;
+}
+
+.pure-table td{
+    background-color:transparent;
+}
+
+.pure-table-odd td{
+    background-color:#e6f5fc;
+}
+
+.pure-table-striped tr:nth-child(2n-1) td{
+    background-color:#f2f2f2;
+}
+
+.pure-table-bordered td{
+    border-bottom:1px solid #cbcbcb;
+}
+
+.pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td{
+    border-bottom-width:0;
+}
+
+.pure-table-horizontal td,.pure-table-horizontal th{
+    border-width:0 0 1px;
+    border-bottom:1px solid #cbcbcb;
+}
+
+.pure-table-horizontal tbody>tr:last-child td{
+    border-bottom-width:0;
+}
+
+span.dynatree-node a{
+        font-size :9pt!important ;
+}
+
+.wrapper1 .tooltip {
+    color: black;
+    display: block;
+    left: 92px;
+    margin-bottom: 15px;
+    opacity: 0;
+    padding: 20px;
+    pointer-events: none;
+    position: absolute;
+    -webkit-transform: translateY(10px);
+    -moz-transform: translateY(10px);
+    -ms-transform: translateY(10px);
+    -o-transform: translateY(10px);
+    transform: translateY(10px);
+    -webkit-transition: all .25s ease-out;
+    -moz-transition: all .25s ease-out;
+    -ms-transition: all .25s ease-out;
+    -o-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+    -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.link{
+    text-decoration:underline;
+    color:#0b71be !important;
+    font-weight:normal !important;
+    padding-right:10px;
+}
+
+.datavalue{
+    height:300px;
+    overflow:auto;
+}
+
+.Popup3{
+    white-space: nowrap;
+    z-index: 0;
+    left: 50%;
+    top:20%;
+    margin-top:-142px;
+    position: absolute;
+    width: 700px;
+    margin-left: -350px;
+}
+
+.popup_top_info{
+    background-color: #e3e3e3;
+    border-bottom: 1px solid #000;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 18px;
+    height: 34px;
+    margin-right: 0;
+    margin-top: 0;
+    padding: 10px 316px 9px 5px;
+}
+
+.popuptaleheader {
+    background: none repeat scroll 0 0 #3f99f5;
+    border: 1px solid #000;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.popup_message{
+    font-size: 14px;
+    line-height: 20px;
+    padding-left: 3%;
+    text-align: left;
+    white-space: normal;
+}
+
+.popup-td{
+    width:90px;
+    font-weight:bold;
+    color:#5c5d5d;
+    text-align:right;
+    padding-right:10px;
+    height:28px;
+}
+
+.popup-textbox{
+    width:100px;
+    border:1px solid #999;
+    height:18px;
+}
+
+.popup-button{
+    color: white !important;
+    margin:5px 5px !important;
+    padding:3px 10px !important;
+    background: #36647D !important;
+}
+
+.popupBackground{
+    background-color:black;
+    opacity: 0.20;
+    filter: alpha(opacity = 20);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#navToolbar{
+    top:18px !important;
+    right:16px !important;
+    opacity:1 !important;
+}
+
+.checkbox{
+    border:1px solid #999;
+    margin-right:10px;
+}
+
+.custPopup{
+    background-color: white;
+    border-width: 2px;
+    border-style: solid;
+    z-index: 9999;
+    left: 50%;
+    padding:10px;
+    position: absolute;
+    /* These are the 3 css properties you will need to change so the popup
+    displays in the center of the screen. First set the width. Then set
+    margin-left to negative half of what the width is. You can add
+    the height property for a fixed size pop up if you want.*/
+    width: 500px;
+    margin-left: -250px;
+    top:100px;
+}
+
+.popupBackground{
+    background-color:black;
+    opacity: 0.20;
+    filter: alpha(opacity = 20);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9998;
+}
+
+#color{
+    width: 20%;
+}
+
+.popup{
+    z-index: 9999;
+    left: 50%;
+    position: absolute;
+    width: 500px;
+    margin-left: -250px;
+    top:10%;
+}
+
+.popupBg{
+    background-color:black;
+    opacity: 0.20;
+    filter: alpha(opacity = 70);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9998;
+}
+
+.circle{
+    height: 15px !important;
+    width: 15px !important;
+    border-radius: 50%;
+    display: inline-block;
+    margin-top:5px !important;
+    //opacity: 0.75;
+}
+
+.square{
+    height: 15px !important;
+    width: 15px !important;
+    //border-radius: 50%;
+    display: inline-block;
+    margin-top:5px !important;
+    //opacity: 0.75;
+}
+
+th.tablesorter-header{
+    cursor: pointer;
+    font-weight: bold;
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding-left: 20px;
+    border-right: 1px solid #dad9c7;
+    margin-left: -1px;
+}
+
+th.tablesorter-headerDesc{
+    background-color: #3399FF;
+}
+
+th.tablesorter-headerAsc {
+    background-color: #3399FF;
+}
+
+#main-div{
+    width:100%;
+    height:100%;
+}
+
+.container{
+    overflow:auto;
+    height:250px;
+}
+
+.content-div{
+    width:100%;
+    height:50%;
+}
+
+.impact-div{
+    width:50%;
+    height:100%;
+    float:left;
+}
+
+.impacts{
+    width:100%;
+    height:50%;
+}
+
+.impact-table-header{
+    width:100%;
+    height:25px;
+    font-size:1.2em;
+    font-weight:bold;
+    font-family:arial;
+    color:#FFFFFF;
+    background-color:#1797C0;
+}
+
+.page-block-table{
+    overflow:scroll;
+}
+
+
+
+    </style>
+
+    <!------- ---------------------------------jstree starts here -------->
+    <script>
+        function loadClickedAccount(value){
+            //alert('loadClickedAccount');
+            var py = $j("[id$='slPyp']").val();
+                var dt = $j("[id$='slDty']").val();
+                console.log(dt);
+                console.log(py);
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AccountMovementMapCtlr.getMapData}',value, dt, py, function(result, event){
+                        console.log('== getMapData : Result ===');
+                        console.log(result);
+                        if(result != null){
+                            //alert('in if');
+                            getExtentvalues(result.extents);
+                            getAccounts(result.posAccountsData);
+                            receivedaccountsdata=result.posAccountsData;
+                            refreshlistview(value);
+                        }
+                        ter= result.territories
+                        nodevalue= value;
+                        //getTerritories(result.territories, value);
+                        window.createClusters();
+                });
+        }
+        var $j = jQuery.noConflict();
+        $j(function(){
+            $j("#posPbTableNew").tablesorter();
+        });
+
+       window.callLoadAccounts = function(){
+            loadAccounts($j('#tree').jstree('get_selected')[0]);
+        }
+
+        window.clearFilterAndLoadAccounts = function(){
+            var py = $j("[id$='slPyp']").val('None');
+            var dt = $j("[id$='slDty']").val('None');
+            var ss = $j("[id$='slStr']").val('');
+            callLoadAccounts();
+        }
+
+        window.loadAccounts= function(value){
+                var py = $j("[id$='slPyp']").val();
+                var dt = $j("[id$='slDty']").val();
+                var ss = $j("[id$='slStr']").val();
+                console.log(dt);
+                console.log(py);
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AccountMovementMapCtlr.getMapData}',value, dt, py, ss,function(result, event){
+                        console.log('== getMapData : Result ===');
+                        console.log(result);
+                        if(result != null){
+                            getExtentvalues(result.extents);
+                            getAccounts(result.posAccountsData);
+                            receivedaccountsdata=result.posAccountsData;
+                            refreshlistview(value);
+                        }
+                        ter= result.territories
+                        nodevalue= value;
+                        //getTerritories(result.territories, value);
+                        window.createClusters();
+                });
+         }
+
+        var appendSorting = function(){
+            console.log($j("#posPbTableNew"));
+            $j("#posPbTableNew").tablesorter({
+                sortInitialOrder: "asc",
+                sortList: [[0,0]]
+            });
+            $j('.currency').each(function(){
+                $j(this).text(format($j(this).text(), "$"));
+            });
+            $j('.number').each(function(){
+                $j(this).text(format($j(this).text(), ""));
+            });
+        }
+
+        $j(function(){
+            console.log("js tree started");
+
+            jsString = {!JsonString}[1];
+            console.log(jsString);
+            //jsString.icon ='http://jstree.com/tree-icon.png';
+
+            $j('#tree').jstree({
+                "core" : {
+                    "theme" : {
+                        "variant" : "small"
+                    },
+                    "data" : jsString,
+                    "animation" : 800
+                },
+                "checkbox" : {
+                    "keep_selected_style" : false,
+                    'check_callback' : true
+                },
+
+                "types" : {
+                               "default" : {
+                                  "icon" : ''
+                                 }
+                 },
+                "plugins" : ["no-checkbox","types"]
+            });
+          /* $j('#tree').each(function(){
+                var id   = $j(this).attr('id');
+               var text = $j(this).children('a').text();
+               console.log(text + ",");
+            });*/
+            //$j('#tree').jstree('select_node', '00Eo0000000dW4VEAU');
+            $j('#tree').jstree('select_node', '{!roleId}');
+            //console.log($j('#tree').jstree('get_selected'));
+            loadAccounts($j('#tree').jstree('get_selected')[0]);
+            //loadClickedAccount($j('#tree').jstree('get_selected')[0]);
+
+            window.changeColorValue = function(){
+                console.log(current_icon);
+                console.log("New Color value");
+                var new_color = (document.getElementById("color").value);
+                r= parseInt((new_color).substring(0,2),16);
+                g= parseInt((new_color).substring(2,4),16);
+                b= parseInt((new_color).substring(4,6),16);
+                updateColorChanges(current_icon,r,g,b);
+                $j('#tree').jstree('select_node', current_icon);
+                loadAccounts(current_icon);
+                //loadClickedAccount(current_icon);
+                $j("#tree").jstree(true).deselect_all();
+                $j('#tree').jstree(true).refresh();
+
+            }
+
+
+
+            var clickedNode = '';
+            $j('#tree').bind("select_node.jstree", function(e, data){
+                console.log("data.node.text" +data.node.id);
+                console.log(data.node);
+                map.removeAllLayers();
+                map.addLayer(basemap);
+                map.addLayer(Querylayer);
+                //map.addLayer(layer);
+                map.reorderLayer(layer,2);
+                concatAccount='';
+                loadAccounts(data.node.id);
+                //loadClickedAccount(data.node.id);
+                clickedNode = data.node.id;
+                console.log('---Node Id----');
+                console.log(clickedNode);
+            });
+        });
+
+
+    </script>
+    <!------- --------------------------------jstree ends here ------ -->
+
+    <!------- ---------------------------------Arc GIS related Script code ------ -->
+    <script src="https://js.arcgis.com/3.12/"></script>
+    <script>
+        //-----------------------------------    diclaration   ----------------------------
+        var map;
+        var wgs;
+        var layerdefs =[];
+        var visibleLayerIds = [0,1];
+        var x_min;
+        var x_max;
+        var y_min;
+        var y_max;
+        var graphic;
+        var layerURL;
+        var layerOptions;
+        var layer;
+        var extent1;
+        var imageParameters;
+        var clusterLayer;
+        var queryTask, query;
+        var jsString = {};
+        var inputInfo = {};
+        var receivedaccountsdata= new Array;
+        var accounts = new Array;
+        var cluster_accounts = new Array;
+        //var independent_account = new Array;
+        var terr= new Array;
+        var count =0;
+        var currenvalue;
+        var basemap;
+        var basemapURL;
+        var style;
+        var Querylayer;
+        var concatAccount ='';
+        var current_icon;
+        var current_District;
+        var initColor = "#ce641d";
+        var colorPicker;
+        var symbol_0;
+        var billabe_index;
+        var renderer;
+        var symbolshape,symbolsize, symboltransparency,outlinetransparency;
+        var acco1 = {};
+        var ter;
+        var nodevalue;
+        var terrcolor;
+        var icon_path;
+
+        function getExtentvalues(results){
+
+                    x_min = parseFloat(results.xmin);
+                    y_min = parseFloat(results.ymin);
+                    x_max = parseFloat(results.xmax);
+                    y_max = parseFloat(results.ymax);
+                    //console.log("Inside Extents values");
+                    //console.log(extent1);
+
+        }
+
+        function getAccounts(acc){
+            receivedaccountsdata = acc;
+            console.log("receivedaccountsdata");
+            console.log(receivedaccountsdata);
+            var ccount=0;
+            for(var i=0; i<receivedaccountsdata.length; i++){
+
+                if(receivedaccountsdata[i].isLocked == true){
+                    console.log(receivedaccountsdata[i]);
+                    ccount++;
+                }
+            }
+            if(ccount==0){
+                console.log("No Account available");
+            }
+        }
+
+        require(["esri/map",
+                "esri/request",
+                "esri/layers/FeatureLayer",
+                "esri/layers/ArcGISTiledMapServiceLayer",
+                "esri/dijit/Legend",
+                "dojo/_base/array",
+                "dojo/parser",
+                "dijit/layout/BorderContainer",
+                "dijit/layout/ContentPane",
+                "dijit/layout/AccordionContainer",
+                "esri/symbols/SimpleLineSymbol",
+                "esri/symbols/SimpleFillSymbol",
+                "esri/symbols/SimpleMarkerSymbol",
+                "esri/symbols/PictureMarkerSymbol",
+                "esri/symbols/TextSymbol",
+                "esri/renderers/SimpleRenderer",
+                "esri/layers/LabelLayer",
+                "dojo/_base/Color",
+                "esri/geometry/Extent",
+                "esri/graphic",
+                "esri/geometry/Point",
+                "esri/geometry/webMercatorUtils",
+                "extras",
+                "esri/lang",
+                "dojo/number",
+                "dojo/dom-style",
+                "dijit/TooltipDialog",
+                "dijit/popup",
+                "esri/toolbars/navigation",
+                "esri/SpatialReference",
+                "dijit/form/Button",
+                "dijit/Toolbar",
+                "esri/toolbars/draw",
+                "dojo/dom",
+                "esri/symbols/CartographicLineSymbol",
+                "dojo/on",
+                "esri/tasks/query",
+                "esri/tasks/QueryTask",
+                "esri/renderers/ClassBreaksRenderer",
+                "esri/layers/GraphicsLayer",
+                "esri/layers/ArcGISDynamicMapServiceLayer",
+                "esri/layers/ImageParameters",
+                "esri/dijit/HomeButton",
+                "dojox/layout/ScrollPane",
+                "dojo/dom-attr",
+                "dijit/registry",
+                "esri/dijit/PopupTemplate",
+                "dojo/domReady!"
+                ], function(
+                Map,
+                esriRequest,
+                FeatureLayer,
+                ArcGISTiledMapServiceLayer,
+                Legend,
+                arrayUtils,
+                parser,
+                BorderContainer,
+                ContentPane,
+                AccordionContainer,
+                SimpleLineSymbol,
+                SimpleFillSymbol,
+                SimpleMarkerSymbol,
+                PictureMarkerSymbol,
+                TextSymbol,
+                SimpleRenderer,
+                LabelLayer,
+                Color,
+                Extent,
+                Graphic,
+                Point,
+                webMercatorUtils,
+                ClusterLayer,
+                esriLang,
+                number,
+                domStyle,
+                TooltipDialog,
+                dijitPopup,
+                Navigation,
+                SpatialReference,
+                Button,
+                Toolbar,
+                Draw,
+                dom,
+                CartographicLineSymbol,
+                on ,
+                Query,
+                QueryTask,
+                ClassBreaksRenderer,
+                GraphicsLayer,
+                ArcGISDynamicMapServiceLayer,
+                ImageParameters,
+                HomeButton,
+                ScrollPane,
+                attr,
+                registry,
+                PopupTemplate
+            ){
+                parser.parse();
+                var loading = dojo.byId("page:form_id:loadingImg");  //loading image. id
+                //-------------------------------  Extents Calculation ----------------
+                x_min = -97.291105806;
+                x_max = -70.402078194;
+                y_max = 44.2509326;
+                y_min = 23.6208594;
+                extent1 = new esri.geometry.Extent({ "xmin": parseFloat(x_min), "ymin": parseFloat(y_min), "xmax": parseFloat(x_max), "ymax": parseFloat(y_max) },new esri.SpatialReference({wkid:4326}));
+
+                var result1= new Array;
+                var result2= new Array;
+                var r;
+                var g;
+                var b;
+
+                //-----------------------------------    Map Code    ------------------------
+                map = new Map("map", {
+                    basemap: "national-geographic",
+                    //center: [-93.5, 41.431],
+                    //zoom: 5
+                    spatialReference: [4326],
+                    extent: extent1
+                });
+                basemapURL = "https://server.arcgisonline.com/arcgis/rest/services/NatGeo_World_Map/MapServer";
+                basemap = new esri.layers.ArcGISTiledMapServiceLayer(basemapURL);
+                //map.addLayer(basemap);
+
+                imageParameters = new ImageParameters();
+                imageParameters.layerIds = [0];
+                imageParameters.layerOption = ImageParameters.LAYER_OPTION_SHOW;
+
+                map.on("load", Map_load_activate);
+                map.on("update-start", showLoading);
+                map.on("update-end", hideLoading);
+
+                //----------------------------------------- Graphics Layer ----------------------------------------
+                accountsLayer = new GraphicsLayer({});
+
+                //Featurelayer selection symbol
+                var highlightSymbol;
+
+                //----------------------------------Adding ArcGIS Dynamic Layer --------------------------------------------
+                layerURL = "https://uat.align-max.com/arcgis/rest/services/State/MapServer";
+                layerOptions = {
+                    "id": "LayerURL",
+                    "opacity": 0.4,
+                    "showAttribution": false,
+                    //"imageParameters": imageParameters
+                };
+
+                layer = new ArcGISDynamicMapServiceLayer(layerURL, layerOptions);
+                // visibleLayerIds = [0];
+                //layer.maxScale = 0;
+                // layer.minScale = 0;
+                //map.addLayer(layer);
+                layer.setVisibleLayers(visibleLayerIds);
+                //document.getElementById("state").checked = true;
+                //document.getElementById("highway").checked = true;
+                function Map_load_activate(evt){
+                    //map.hideZoomSlider();
+                    initToolbar();
+                    //graphic_event_activate();
+                    //CreateTree();
+                };
+
+                function graphic_event_activate(){
+                    //console.log("In_graphic_activate");
+                    //map.graphics.enableMouseEvents();
+                    //graphic_mouse_out = map.graphics.on("mouse-out", closeDialog);
+                    //graphic_click =  map.graphics.on("click", executeIdentifyTask);
+                };
+
+                function graphic_event_deactivate(){
+                    try{
+                        //console.log("In_graphic_deactivate");
+                        if (typeof(graphic_mouse_out) != 'undefined' && graphic_mouse_out != null){
+                            graphic_mouse_out.remove();
+                        }
+                        if (typeof(graphic_click) != 'undefined' && graphic_click != null){
+                            graphic_click.remove();
+                        }
+                    } catch(err){console.log("err di_graphic_events : " + err)};
+                };
+
+                function showLoading() {
+                    console.log("ShowLoding")
+                    esri.show(loading);
+                    //map.disableMapNavigation();
+
+                   /* dojo.forEach(accountsLayer.graphics,function(graphic){
+                        console.log(graphic);
+
+                        if(graphic.attributes.LockStatus== true)
+                        {
+                           symbol_0 = graphic.symbol;
+                           symboltransparency=2;
+                           outlinetransparency=1;
+                           graphic.setSymbol(symbol_0);
+
+                        }
+
+
+                   });*/
+                   //map.addLayer(accountsLayer);
+                   //accountsLayer.refresh();
+                    map.hideZoomSlider();
+                }
+
+                function hideLoading(error) {
+                    console.log("HideLoding")
+                    //dojo.stopEvent(error);
+                    esri.hide(loading);
+                    //map.enableMapNavigation();
+                    map.showZoomSlider();
+                }
+
+                //----------------------------------   Home button ---------------------------------------
+                var homebut = new HomeButton({
+                    map: map,
+                    extent: extent1, // (optional) Use this exent instead of map extent. default: map extent
+                    visible: true
+                }, "homebut");
+                homebut.startup();
+
+                //-----------------------------------Navigation Toolbor ----------------------------
+                try{
+                    navToolbar = new Navigation(map);
+                    //console.log("registry : " + registry.toSource())
+                    registry.byId("zoomprev").set("disabled", true);
+                    registry.byId("zoomnext").set("disabled", true);
+                    registry.byId("zoomprev").set("class", "prevOff");
+                    registry.byId("zoomnext").set("class", "nextOff");
+
+                    on(registry.byId("zoomprev"), "click", function () {
+                        tb.deactivate();
+                        navToolbar.zoomToPrevExtent();
+                    });
+
+                    on(registry.byId("zoomnext"), "click", function () {
+                        tb.deactivate();
+                        navToolbar.zoomToNextExtent();
+                    });
+
+                    on(registry.byId("pan"), "click",  function(){
+                        tb.deactivate();
+                        registry.byId("pan").set("disabled", true);
+                        registry.byId("pan").set("class","panOff");
+                        map.setMapCursor("url({!URLFOR($Resource.pan)}),pointer");
+                        //map.setMapCursor("pointer")
+                        navToolbar.activate(esri.toolbars.Navigation.PAN);
+                        map.enableDoubleClickZoom();
+                        map.enableScrollWheelZoom();
+                        if (map.infoWindow.isShowing) { map.infoWindow.hide(); }
+
+                        if(registry.byId("zoomout").get("disabled")){
+                            registry.byId("zoomout").set("disabled", false);
+                            registry.byId("zoomout").set("class","zoomoutOn");
+                        }
+
+                        if(registry.byId("select_multi").get("disabled")){
+                            registry.byId("select_multi").set("disabled", false);
+                            registry.byId("select_multi").set("class","selectmultiOn");
+                        }
+
+                        if(registry.byId("zoomin").get("disabled")){
+                            registry.byId("zoomin").set("disabled", false);
+                            registry.byId("zoomin").set("class","zoominOn");
+                        }
+                    });
+
+                    on(registry.byId("zoomin"), "click", function (){
+                        tb.deactivate();
+                        registry.byId("zoomin").set("disabled", true);
+                        registry.byId("zoomin").set("class","zoominOff");
+                        map.setMapCursor("url({!URLFOR($Resource.zoom_in_cur)}),pointer")
+                        navToolbar.activate(esri.toolbars.Navigation.ZOOM_IN);
+                        if(registry.byId("pan").get("disabled")){
+                            registry.byId("pan").set("disabled", false);
+                            registry.byId("pan").set("class","panOn");
+                        }
+
+                        if(registry.byId("zoomout").get("disabled")){
+                            registry.byId("zoomout").set("disabled", false);
+                            registry.byId("zoomout").set("class","zoomoutOn");
+                        }
+
+                        if(registry.byId("select_multi").get("disabled")){
+                            registry.byId("select_multi").set("disabled", false);
+                            registry.byId("select_multi").set("class","selectmultiOn");
+                        }
+                    });
+
+                    on(registry.byId("zoomout"), "click", function (){
+                        tb.deactivate();
+                        registry.byId("zoomout").set("disabled", true);
+                        registry.byId("zoomout").set("class","zoomoutOff");
+                        map.setMapCursor("url({!URLFOR($Resource.zoom_out_cur)}),pointer")
+                        navToolbar.activate(navToolbar.activate(esri.toolbars.Navigation.ZOOM_OUT));
+                        if(registry.byId("pan").get("disabled")){
+                            registry.byId("pan").set("disabled",false);
+                            registry.byId("pan").set("class","panOn");
+                        }
+
+                        if(registry.byId("zoomin").get("disabled")){
+                            registry.byId("zoomin").set("disabled", false);
+                            registry.byId("zoomin").set("class","zoominOn");
+                        }
+
+                        if(registry.byId("select_multi").get("disabled")){
+                            registry.byId("select_multi").set("disabled", false);
+                            registry.byId("select_multi").set("class","selectmultiOn");
+                        }
+                    });
+
+                    map.on("extent-change", function (evt) {
+                        //alert("extent-change")
+                        registry.byId("zoomprev").set("disabled", navToolbar.isFirstExtent());
+                        registry.byId("zoomnext").set("disabled", navToolbar.isLastExtent());
+                        if(registry.byId("zoomprev").get("disabled")) {
+                            registry.byId("zoomprev").set("class", "prevOff");
+                        }else{ registry.byId("zoomprev").set("class", "prevOn"); }
+                        if(registry.byId("zoomnext").get("disabled")) {
+                            registry.byId("zoomnext").set("class", "nextOff");
+                        }else{ registry.byId("zoomnext").set("class", "nextOn"); }
+                        if (map.infoWindow.isShowing) { map.infoWindow.hide(); }
+                    });
+                }catch(err){
+                    console.log("err_nav : " + err)
+                }
+
+                // map.on("click", cleanUp);
+                function cleanUp() {
+                    navToolbar.deactivate();
+                    map.setMapCursor("pointer")
+                    closeDialog();
+                    clusterLayer.clearSingles();
+                }
+
+                //close the info window when the map is clicked
+             /*   window.Esc_IE = function(e){
+                    if (e.keyCode === 27) {
+                        try{
+                            cleanUp();
+                            activate_zip_events()
+                            graphic_event_activate();
+                        }catch(err){console.log("ESC_err : " + err)};
+                    }
+                };
+
+                map.on("key-down", function(e) {
+                    if(e.keyCode === 27) {
+                        try{
+                            cleanUp();
+                            activate_zip_events()
+                            graphic_event_activate();
+                        }catch(err){console.log("ESC_err : " + err)};
+                    }
+                });*/
+
+                // lineSymbol used for freehand polyline, polyline and line.
+                var lineSymbol = new CartographicLineSymbol(
+                    CartographicLineSymbol.STYLE_SOLID,
+                    new Color([255,0,0]), 5,
+                    CartographicLineSymbol.CAP_ROUND,
+                    CartographicLineSymbol.JOIN_MITER, 5
+                );
+
+                function initToolbar(){
+                    try{
+                        tb = new Draw(map);
+                        tb.on("draw-end", addGraphic);
+                        on(dom.byId("select_multi"), "click", function(evt) {
+                            registry.byId("select_multi").set("disabled", true);
+                            registry.byId("select_multi").set("class","selectmultiOff");
+                            console.log ("In_init");
+                            map.setMapCursor("pointer")
+                            console.log("Select multi Accounts");
+                            //graphic_event_deactivate();
+                            //deactivate_zip_events();
+                            navToolbar.deactivate();
+                            map.disableMapNavigation();
+                            tb.activate(esri.toolbars.Draw.FREEHAND_POLYGON);
+                        });
+
+                        on(dom.byId("clear_sel"), "click", Clearselection);
+                    }catch(err){"Init_err : " + err};
+                }
+                function Clearselection(){
+                    //searchlayer.clearSelection()
+                    clearSelectedAccounts();
+                    tb.deactivate();
+                    navToolbar.deactivate();
+
+                    map.setMapCursor("pointer");
+                    dojo.forEach(accountsLayer.graphics,function(graphic){
+
+                           var symbol = graphic.symbol;
+                           symbol.outline.width = 1;
+                           symbol.outline.color.r =0;
+                           symbol.outline.color.g =0;
+                           symbol.outline.color.b =0;
+                           symbol.outline.color.a =0.5;
+                           graphic.setSymbol(symbol);
+
+                   });
+                    if(registry.byId("pan").get("disabled")){
+                        registry.byId("pan").set("disabled",false);
+                        registry.byId("pan").set("class","panOn");
+                    }
+
+                    if(registry.byId("zoomin").get("disabled")){
+                        registry.byId("zoomin").set("disabled", false);
+                        registry.byId("zoomin").set("class","zoominOn");
+                    }
+
+                    if(registry.byId("zoomout").get("disabled")){
+                        registry.byId("zoomout").set("disabled", false);
+                        registry.byId("zoomout").set("class","zoomoutOn");
+                    }
+
+                    if(registry.byId("select_multi").get("disabled")){
+                        registry.byId("select_multi").set("disabled", false);
+                        registry.byId("select_multi").set("class","selectmultiOn");
+                    }
+                    navToolbar.activate(esri.toolbars.Navigation.PAN);
+                    map.enableDoubleClickZoom();
+                    map.enableScrollWheelZoom();
+                }
+
+                function addGraphic(evt) {
+                    try{
+                        //deactivate the toolbar and clear existing graphics
+                        console.log("Inside Add graphic");
+
+                      var acc_ids ='';
+                      dojo.forEach(accountsLayer.graphics,function(graphic){
+                      if (evt.geometry.contains(graphic.geometry)) {
+                      //console.log(graphic.attributes.LockStatus);
+                      if(graphic.attributes.LockStatus!=true)
+                      {
+                       highlightSymbol= graphic.symbol;
+                       highlightSymbol.outline.color.r= 0;
+                       highlightSymbol.outline.color.g= 255;
+                       highlightSymbol.outline.color.b= 255;
+                       highlightSymbol.outline.color.a= 1;
+                       highlightSymbol.outline.width= 3;
+                        graphic.setSymbol(highlightSymbol);
+
+                        acc_ids += graphic.attributes.SFDC_ID + ",";
+                      }
+                      }
+
+
+                    });
+
+                     acc_ids = acc_ids.substr(0, acc_ids.length -1)
+                      console.log("acc_ids");
+                      console.log(acc_ids);
+                      updateWrapperOnSelection(acc_ids);
+                    }catch(err){console.log("Add_graphic : " + err)}
+                }
+
+
+
+               createClusters= function(){
+                    var r=null;
+                    var g=null;
+                    var b=null;
+                    extent1 = new esri.geometry.Extent({ "xmin": parseFloat(x_min), "ymin": parseFloat(y_min), "xmax": parseFloat(x_max), "ymax": parseFloat(y_max) },new esri.SpatialReference({wkid:4326}));
+                    map.setExtent(extent1, true);
+                    accountsLayer.clear();
+                    count=0;
+                    showLoading();
+                    for(var s=0; s<ter.length ; s++){
+                        accounts =[];
+                        r= ter[s].rVal;
+                        g= ter[s].gVal;
+                        b= ter[s].bVal;
+                        terrcolor = ter[s].TerrId.split(" ",3);
+                        console.log('-->');
+                        console.log(terrcolor[2]);
+                         style = document.createElement('style');
+                         style.type = 'text/css';
+                         style.innerHTML = '._' + terrcolor[2] + '{background: rgb(' + r + ',' +  g + ',' + b + ') !important;}';
+                         document.getElementsByTagName('head')[0].appendChild(style);
+                        for(k=0; k<receivedaccountsdata.length; k++){
+
+                             if(receivedaccountsdata[k].terId== ter[s].TerrId)
+                             {
+
+                                accounts.push(receivedaccountsdata[k]);
+
+                             }
+
+
+                            concatAccount += "'" + receivedaccountsdata[k].accId + "',";
+                        }
+
+                        addAccountFeatureSetToMap(accounts,ter[s].TerrId,r,g,b);
+                        count++;
+                        currentnode = nodevalue;
+                    }
+
+                    concatAccount = concatAccount.substr(0, concatAccount.length -1);
+                    $j('#tree').jstree('open_node', nodevalue);
+                    hideLoading();
+                }
+
+                 window.addAccountFeatureSetToMap = function(accountsdata,ter1,r,g,b) {
+                       console.log("Accounts");
+                       console.log(accountsdata);
+
+                       wgs = new SpatialReference({
+                                "wkid": 4326
+                            });
+
+
+                    inputInfo.data = arrayUtils.map(accountsdata,function(feature){
+
+                                console.log(feature);
+                                var latlng = new  Point(parseFloat(feature.longitude), parseFloat(feature.latitude), wgs);
+                                var webMercator = webMercatorUtils.geographicToWebMercator(latlng);
+                                attributes = {
+                                    "Name": feature.accountName,
+                                    "SFDC_ID": feature.accId,
+                                    "LockStatus":feature.isLocked,
+                                    "ProspectStatus":feature.isProspect,
+                                    "Account_id": feature.atcDealerId,
+                                    "Dealer_Type": feature.dealerType,
+                                    "Territory_ID": feature.svocDistrict,
+                                    "Territory_name": ter1,
+                                    "Billable": feature.billable,
+                                    "Index":feature.alignmentIndex,
+                                    "indexBucket": feature.indexBucket
+                                };
+                                return {
+                                    "x": webMercator.x,
+                                    "y": webMercator.y,
+                                    "latlng" : latlng,
+                                    "attributes": attributes
+                                };
+                            });
+
+                    //popupTemplate to work with attributes specific to this dataset
+                               var popupTemplate = PopupTemplate({
+                                "title": "Account Information",
+                                "fieldInfos": [{
+                                    "fieldName": "Name",
+                                    "label": "Name",
+                                    visible: true
+                                }, {
+                                    "fieldName": "Account_id",
+                                    "label": "Account Id",
+                                    visible: true
+                                }, {
+                                    "fieldName": "Dealer_Type",
+                                    "label": "Dealer Type",
+                                    visible: true
+                                },{
+                                    "fieldName": "Territory_name",
+                                    "label": "Territory Name",
+                                    visible: true
+                                }, {
+                                    "fieldName": "Billable",
+                                    "label": "Billable",
+                                    visible: true,
+                                    "format": {
+                                        "places": 0,
+                                        "digitSeparator": true
+                                    }
+                                },{
+                                    "fieldName": "Index",
+                                    "label": "Index",
+                                    visible: true
+                                }]
+                            });
+
+
+
+                    // map.addLayer(accountsLayer);
+                     dojo.forEach(inputInfo.data, function(feature){
+                      //console.log("Features");
+                      //console.log(feature);
+
+                     var rVal, gVal,bVal;
+                     if(feature.attributes.Dealer_Type == "Franchise" && feature.attributes.ProspectStatus == "Paying")
+                        symbolshape= "SQUARE";
+
+                     else if(feature.attributes.Dealer_Type == "Franchise" && feature.attributes.ProspectStatus == "Prospect")
+                     {   symbolshape= "DIAMOND";
+
+                     }
+                     else if(feature.attributes.Dealer_Type == "Independent"&& feature.attributes.ProspectStatus == "Paying")
+                        symbolshape = "CIRCLE";
+
+                     else if(feature.attributes.Dealer_Type == "Independent"&& feature.attributes.ProspectStatus == "Prospect")
+                     {   symbolshape = "PATH";
+
+                     }
+
+                    if(feature.attributes.indexBucket == "Bucket 4")
+                    {      symbolsize =16;
+                           outlinetransparancy=1;
+                    }
+                    else if(feature.attributes.indexBucket == "Bucket 1")
+                          symbolsize =10;
+
+                     else if(feature.attributes.indexBucket == "Bucket 2")
+                          symbolsize =12;
+
+                     else if(feature.attributes.indexBucket == "Bucket 3")
+                          symbolsize =14;
+                     else
+                          symbolsize =8;
+
+                    if(feature.attributes.LockStatus == true)
+                     {
+
+                          rVal=0;
+                          gVal=0;
+                          bVal=0;
+                          symboltransparency = 0.5;
+                          outlinetransparency = 1;
+
+                     }
+                     else if(feature.attributes.LockStatus == false)
+                     {    rVal=r;
+                          gVal=g;
+                          bVal=b;
+                          symboltransparency = 1;
+                          outlinetransparency = 1;
+                     }
+
+                      if(symbolshape == "SQUARE")
+                       {
+                       symbol_0 = new SimpleMarkerSymbol(
+                                SimpleMarkerSymbol.STYLE_SQUARE,
+                                symbolsize,
+                                new SimpleLineSymbol(
+                                    SimpleLineSymbol.STYLE_SOLID,
+                                    new Color([0, 0, 0, outlinetransparency]),
+                                    0.5
+                                ), new Color([rVal, gVal, bVal, symboltransparency]));
+                       }
+
+                       if(symbolshape == "CIRCLE")
+                       {
+                       symbol_0 = new SimpleMarkerSymbol(
+                                SimpleMarkerSymbol.STYLE_CIRCLE,
+                                symbolsize,
+                                new SimpleLineSymbol(
+                                    SimpleLineSymbol.STYLE_SOLID,
+                                    new Color([0, 0, 0, outlinetransparency]),
+                                    0.5
+                                ), new Color([rVal, gVal, bVal, symboltransparency]));
+                       }
+
+                       if(symbolshape == "DIAMOND")
+                       {
+                       symbol_0 = new SimpleMarkerSymbol(
+                                SimpleMarkerSymbol.STYLE_DIAMOND,
+                                symbolsize,
+                                new SimpleLineSymbol(
+                                    SimpleLineSymbol.STYLE_SOLID,
+                                    new Color([0, 0, 0, outlinetransparency]),
+                                    0.5
+                                ), new Color([rVal, gVal, bVal, symboltransparency]));
+                       }
+
+                       if(symbolshape == "PATH")
+                       {
+
+                       icon_path = "M23.963,20.834L17.5,9.64c-0.825-1.429-2.175-1.429-3,0L8.037,20.834c-0.825,1.429-0.15,2.598,1.5,2.598h12.926C24.113,23.432,24.788,22.263,23.963,20.834z";
+                       symbol_0 = new SimpleMarkerSymbol(
+                                SimpleMarkerSymbol.STYLE_PATH,
+                                symbolsize,
+                                new SimpleLineSymbol(
+                                    SimpleLineSymbol.STYLE_SOLID,
+                                    new Color([0, 0, 0, outlinetransparency]),
+                                    0.5
+                                ), new Color([rVal, gVal, bVal, symboltransparency]));
+                       symbol_0.setPath(icon_path);
+                       }
+
+                     accountsLayer.add(new esri.Graphic(feature.latlng, symbol_0, feature.attributes, popupTemplate));
+
+
+
+                    });
+                    map.addLayer(accountsLayer);
+
+                  }
+
+
+
+                window.accountsSelection = function(val,tg){
+                    console.log("Checked Account");
+                    tg.previousSibling.innerHTML = 2;
+                    if(tg.checked){
+                        tg.previousSibling.innerHTML = 0;
+                    }else if(!tg.checked){
+                        tg.previousSibling.innerHTML = 1;
+                    }
+                    dojo.forEach(accountsLayer.graphics,function(graphic){
+                        if(graphic.attributes.SFDC_ID == val){
+                            //console.log(graphic);
+                            if(tg.checked == true && graphic.attributes.LockStatus!=true){
+                                console.log(val);
+                                highlightSymbol= graphic.symbol;
+                                highlightSymbol.outline.color.r= 0;
+                                highlightSymbol.outline.color.g= 255;
+                                highlightSymbol.outline.color.b= 255;
+                                highlightSymbol.outline.color.a= 1;
+                                highlightSymbol.outline.width= 3;
+                                graphic.setSymbol(highlightSymbol);
+                            }
+
+                            if(tg.checked == false){
+                                highlightSymbol= graphic.symbol;
+                                highlightSymbol.outline.width = 1;
+                                highlightSymbol.outline.color.r =0;
+                                highlightSymbol.outline.color.g =0;
+                                highlightSymbol.outline.color.b =0;
+                                highlightSymbol.outline.color.a =0.5;
+                                graphic.setSymbol(highlightSymbol);
+                                return;
+                            }
+                            return;
+                        }
+                    });
+                    $(tg).parents("table").trigger("update");
+                   //accountsLayer.refresh();
+                }
+
+                window.deactivateLasso = function(){
+                   console.log("Deactivated");
+                  // tb.deactivate();
+                }
+            });
+
+            function testResult(){
+                console.log('In test Result');
+            };
+    </script>
+
+    <!------- ---------------------------------Arc GIS related Script code Ends here ------ -->
+    <apex:form id="form_id" >
+        <apex:actionStatus id="myStatus" >
+            <apex:facet name="start" >
+                <div >
+                    <div class="popupBackground" ></div>
+                    <div class="PopupPanel" style="z-index:2000">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <!--          Main Table with Map and Territory Start Here    -->
+        <div class="box-main" style="margin-top:1px;">
+            <apex:outputText value="No more request allowed in this quarter" rendered="{!NOT(isSubmissionAllowed)}" style="color:blue; font-size:15px; font-weight:bold;"/>
+            <div class="box-content">
+                <!--         Tree Start From Here    -->
+                <div class="tree" >
+                        <div class="table_header_tree">Territory Organization</div>
+                        <div id="tree" >
+                       </div>
+
+                </div>
+                <!--         Tree Ends From Here    -->
+                <!--          Map Start From Here    -->
+                <div id="map" dojotype="dijit.layout.ContentPane" region="center" onkeydown="Esc_IE(event)">
+                    <apex:image id="loadingImg" url="{!$Resource.SalesIQ__loading}" style="position:absolute; right:412px; top:256px; z-index:100;" />
+                    <div id="navToolbar" style="top:18px !important;" dojoType="dijit.Toolbar">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <span  title="Default Extent" id="homebut"  ></span>
+                                    <button data-dojo-type="dijit/form/Button" title="Pan" id="pan" type="button" />
+                                    <button dojoType="dijit/form/Button" title="Zoom In" id="zoomin" type="button"/>
+                                    <button dojoType="dijit/form/Button" title="Zoom Out" id="zoomout" type="button" />
+                                    <button data-dojo-type="dijit/form/Button" title="Previous View" id="zoomprev" type="button" />
+                                    <button data-dojo-type="dijit/form/Button" title="Next View" id="zoomnext" type="button" />
+                                    <button  data-dojo-type="dijit/form/Button" title="Select Multiple Accounts" id="select_multi" type="button" />
+                                    <button data-dojo-type="dijit/form/Button" title="Clear Selection" id="clear_sel" type="button" />
+                                </td>
+                            </tr>
+                        </table>
+
+
+                     <div id="legend">
+                   <div id="school">
+                  <table  border="0" >
+                       <tr>
+                         <td><div id= "circle3" class="circle1"  style="background: rgb(0,0,0);"></div></td>
+                         <td><span style="vertical-align: top;"><b>Paying Independent </b></span></td>
+                       </tr>
+                       <tr>
+                         <td><div class="square1"  style="background: rgb(0,0,0);"></div></td>
+                         <td><span style="vertical-align: top;"><b>Paying Franchise </b></span></td>
+                       </tr>
+
+                        <tr>
+                         <td><div class="diamond1"></div></td>
+                         <td><span style="vertical-align: top;"><b>Prospect Franchise </b></span></td>
+                       </tr>
+
+                       <tr>
+                         <td><div class="triangle1"></div></td>
+                         <td><span style="vertical-align: top;"><b>Prospect Independent </b></span></td>
+                       </tr>
+
+                     </table>
+                     </div>
+                      </div>
+                    </div>
+                </div>
+                <!--         Map Ends Here    -->
+            </div>
+            <!--          Main Table with Map and Territory Ends Here    -->
+
+            <!--          Content Starts Here    -->
+            <apex:pageBlock mode="maindetail" id="pageBlk">
+                <div class="box-main">
+                    <div class="box-top">
+                  <div class="box-top-div1" style="width:30%">
+                        <apex:outputPanel id="buttonPnl">
+                        <apex:commandButton value="Previous" action="{!goPreviousPage}" disabled="{!buttonDisalbePrev}" rerender="tableContainer, buttonPnl" oncomplete="appendSorting();" status="myStatus"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;showing : {!start + 1} - {!stop} of {!total}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:commandButton value="Next" action="{!goNextPage}"  disabled="{!buttonDisalbeNext}" rerender="tableContainer, buttonPnl" oncomplete="appendSorting();" status="myStatus"/>
+                        </apex:outputPanel>
+                  </div>
+                    <div class="box-top-div2" style="padding-right:5px;">
+                        <apex:inputText value="{!searchString}" id="slStr" />
+                        <apex:commandButton onclick="callLoadAccounts();" rerender="tableContainer, buttonPnl" value="Search" status="myStatus"/>
+                        <apex:commandButton onclick="clearFilterAndLoadAccounts();" rerender="tableContainer, buttonPnl" value="Clear" status="myStatus"/>
+                    </div>
+                     <div class="box-top-div3" style="padding-right:5px;">
+                    Dealer Type :
+                    <apex:selectList size="1" id="slDty" multiselect="false" value="{!dealerType}" label="Dealer Type :" >
+                        <apex:selectOptions value="{!dealerTypes}" />
+                        <apex:actionSupport event="onchange" rerender="" onsubmit="callLoadAccounts();" status="myStatus"/>
+                    </apex:selectList>
+                </div>
+                <div class="box-top-div4" >
+                    Paying/Prospect :
+                    <apex:selectList size="1" id="slPyp" multiselect="false" value="{!payingProp}" label="Paying/Prospect :" >
+                        <apex:selectOptions value="{!payingProps}" />
+                        <apex:actionSupport event="onchange" rerender="" onsubmit="callLoadAccounts();" status="myStatus"/>
+                    </apex:selectList>
+                </div>
+                    <div class="box-top-div5">
+                        <apex:commandButton action="{!analyseImpact}" value="Move Accounts" rendered="{!AND(buttonRender == true, isSubmissionAllowed == true)}"  status="myStatus"/>
+                        <apex:commandButton action="{!showPopup}" value="Move Accounts"  rerender="pageMessage, popup" rendered="{!AND(buttonRender == false, isSubmissionAllowed == true)}" status="myStatus"/>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <apex:pageMessages id="pageMessage" />
+                    <apex:outputPanel layout="block" styleClass="container" id="tableContainer">
+                        <table id="posPbTableNew" width="100%" class="tablesorter">
+                            <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Account Name</th>
+                                <th>Dealer Id</th>
+                                <th>Dealer Type</th>
+                                <th>Territory</th>
+                                <th>Billable</th>
+                                <th>Opportunity</th>
+                                <th>Alignment Index</th>
+                                <th>Paying/Prospect</th>
+                                <th>SVOC Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <apex:repeat value="{!positionAccountLimited}" var="posNew">
+                                <tr>
+                                    <td>
+                                        <span style="display:none;">{!IF(posNew.isSelected, 0, 1)}</span>
+                                        <apex:inputCheckbox value="{!posNew.isSelected}"  onChange="accountsSelection('{!posNew.accId}',this)" rendered="{!NOT(posNew.isLocked)}"/>
+                                    </td>
+                                    <td><a href="/{!posNew.accId}" target="_blank" >{!posNew.AccountName}</a></td>
+                                    <td>{!posNew.atcDealerId}</td>
+                                    <td>{!posNew.dealerType}</td>
+                                    <td>{!posNew.terId}</td>
+                                    <td><span class="currency">{!posNew.billable}</span></td>
+                                    <td><span class="currency">{!posNew.potential}</span></td>
+                                    <td><span class="number">{!posNew.alignmentIndex}</span></td>
+                                    <td>{!posNew.isProspect}</td>
+                                    <td>{!posNew.AccountStatus}</td>
+                                </tr>
+                            </apex:repeat>
+                            </tbody>
+                        </table>
+<!--                         <apex:pageBlockTable value="{!listWrapperAccounts}" var="posNew" width="100%" id="posPbTableNew" styleClass="tablesorter"> -->
+<!--                             <apex:column headerValue="Action"> -->
+<!--                                 <span style="display:none;">{!IF(posNew.isSelected, 1, IF(posNew.isLocked, 2, 0))}</span> -->
+<!--                                 <apex:inputCheckbox value="{!posNew.isSelected}"  onChange="accountsSelection('{!posNew.accId}',this)" rendered="{!NOT(posNew.isLocked)}"/> -->
+<!--                             </apex:column> -->
+<!--                             apex:column headerValue="ID" value="{!posNew.accId}"></apex:column -->
+<!--                             <apex:column headerValue="Account Name"> -->
+<!--                                 <a href="/{!posNew.accId}" target="_blank" >{!posNew.AccountName}</a> -->
+<!--                             </apex:column> -->
+<!--                             <apex:column headerValue="Dealer Id" value="{!posNew.atcDealerId}"></apex:column> -->
+<!--                             <apex:column headerValue="Dealer Type" value="{!posNew.dealerType}"></apex:column> -->
+<!--                             <apex:column headerValue="Territory" value="{!posNew.territoryName}"></apex:column>  -->
+<!--                             <apex:column headerValue="Billable"> -->
+<!--                                 <span class="currency">{!posNew.billable}</span> -->
+<!--                             </apex:column> -->
+<!--                             <apex:column headerValue="Opportunity"> -->
+<!--                                 <span class="currency">{!posNew.potential}</span> -->
+<!--                             </apex:column> -->
+<!--                             <apex:column headerValue="Assignment Index" value="{!posNew.alignmentIndex}"></apex:column> -->
+<!--                             <apex:column headerValue="Paying/Prospect" value="{!posNew.isProspect}"></apex:column> -->
+<!--                             <apex:column headerValue="SVOC Status" value="{!posNew.AccountStatus}"></apex:column> -->
+<!--                         </apex:pageBlockTable> -->
+                    </apex:outputPanel>
+                   </div>
+                    </div>
+                    </apex:pageBlock>
+
+            <div id="pop-up-box">
+                <apex:outputPanel id="popup">
+                    <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!displayPopUp}"/>
+                    <apex:outputPanel styleClass="popup" layout="block" rendered="{!displayPopUp}">
+                        <div class="box-main-popup">
+                        <div class="box-top-popup">
+                            <div class="box-top-div1-popup">Select Destination Territory</div> </div>
+                            <div class="box-content-popup">
+                                <apex:pageMessages id="popUpMessage" />
+                                <table width="100%" border="0" cellspacing="10" cellpadding="0">
+                                    <tr>
+                                        <td class="notes">Districts :</td>
+                                        <td>
+                                            <apex:selectList size="1" multiselect="false" value="{!selectDist}" label="Districts :" styleClass="notes-text-box">
+                                                <apex:selectOptions value="{!districts}" />
+                                                <apex:actionSupport event="onchange" rerender="territoriesList" status="loadingImage"/>
+                                            </apex:selectList>
+                                            <apex:actionStatus id="loadingImage">
+                                                <apex:facet name="start" >
+                                                    <img src="/img/loading.gif" style="padding-left: 6px; padding-top: 4px;"/>
+                                                </apex:facet>
+                                            </apex:actionStatus>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="notes">Territories :</td>
+                                        <td>
+                                            <apex:selectList size="1" multiselect="false" value="{!selectTerr}" id="territoriesList" label="Territories :" styleClass="notes-text-box">
+                                                <apex:selectOptions value="{!TerritoriesForDistrict}" />
+                                                <apex:actionSupport event="onchange" rerender="selBtn" status="tImage" action="{!activateBtn}"/>
+                                            </apex:selectList>
+                                            <apex:actionStatus id="tImage">
+                                                <apex:facet name="start" >
+                                                    <img src="/img/loading.gif" style="padding-left: 6px; padding-top: 4px;"/>
+                                                </apex:facet>
+                                            </apex:actionStatus>
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan="2">&nbsp;</td></tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align:center">
+                                            <apex:commandButton value="Select" action="{!analyseSelectedData}" style="background:#36647D;color: #FFF; width:100px; height:25px; font-size:12px;" id="selBtn" disabled="{!telSel}"/>
+                                            <apex:commandButton value="Close" action="{!closePopup}" rerender="popup" style="background:#36647D;color: #FFF; width:100px; height:25px; font-size:12px; margin-left:6px;" status="myStatus"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+            </apex:outputPanel>
+        </div>
+            <!--          Content Ends Here    -->
+            <apex:actionfunction rerender="pageBlk" name="refreshlistview" action="{!getPositionAccountsOnMapSelect}" oncomplete="appendSorting();" status="myStatus">
+                <apex:param name="accountsData" assignTo="{!accountsDataFromMap}" value="clickedNode"/>
+            </apex:actionfunction>
+            <apex:actionfunction rerender="pageBlk" name="updateWrapperOnSelection" action="{!updateWrapperOnSelect}" status="myStatus" oncomplete="appendSorting();">
+                <apex:param name="accountIds" assignTo="{!selectedAccountIds}" value="clickedNode"/>
+            </apex:actionfunction>
+            <apex:actionfunction rerender="pageBlk" name="clearSelectedAccounts" action="{!clearAllAccounts}" status="myStatus" oncomplete="appendSorting();"></apex:actionfunction>
+        </div>
+    </apex:form>
+    <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+    <script>
+    var format = function(numStr, prefix){
+        var str = numStr, parts = false, output = [], i = 1, formatted = null;
+        if(str.indexOf(".") > 0) {
+            parts = str.split(".");
+            str = parts[0];
+        }
+        str = str.split("").reverse();
+        for(var j = 0, len = str.length; j < len; j++) {
+            if(str[j] != ",") {
+                output.push(str[j]);
+                if(i%3 == 0 && j < (len - 1)) {
+                    output.push(",");
+                }
+                i++;
+            }
+        }
+        formatted = output.reverse().join("");
+        return(prefix + formatted);
+    };
+    </script>
+</apex:page>

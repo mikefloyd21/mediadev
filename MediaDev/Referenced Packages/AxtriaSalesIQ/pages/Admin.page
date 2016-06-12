@@ -1,0 +1,835 @@
+<apex:page sidebar="false" controller="SalesIQ.AdminCtlr" id="page" >
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" />
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" />
+    <!-- jQuery -->
+
+    <!-- required plugins -->
+    <script src="{!$Resource.date}"></script>
+    <!--[if IE]><script type="text/javascript" src="scripts/jquery.bgiframe.js"></script><![endif]-->
+
+    <!-- jquery.datePicker.js -->
+    <script src="{!$Resource.datePicker}"></script>
+
+    
+
+    <script type="text/javascript" >
+        $j = jQuery.noConflict();
+        $j(document).ready(function(){
+                            
+            if('{!$CurrentPage.parameters.tabid}'!=''){
+                //alert('{!$CurrentPage.parameters.tabid}');
+            }
+
+            $j('ul.tabs li').click(function(){
+                var tab_id = $j(this).attr('data-tab');
+                $j('ul.tabs li').removeClass('current');
+                $j('.tab-content').removeClass('current');
+                $j(this).addClass('current');
+                $j("#"+tab_id).addClass('current');
+                //if(tab_id=="tab-1")
+                //callpage();
+            });
+
+            $j("[id$='appstart']").value = $j("[id$='substart']").value;
+                plotcal();
+            });
+
+        function copytoAppdate(subdate){
+            document.getElementById("page:form1:pb1:appstart").value=subdate;
+            //alert(document.getElementById("page:form1:pb1:quarStartDate").value) ;
+            //refreshpnlApp();
+        }
+
+        function checkinCurrentQuarter(sel,obj){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.AdminCtlr.checkdateinQuarter}', sel, '{!selectedQuater}', function(result, event){
+                    if (event.status) {
+                        if(result == false){
+                            alert('Date Doesn\'t fall in Selected Quarter .');
+                            obj.value = '';
+                        }else{
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.AdminCtlr.checkdateinYear}', sel, '{!selYear}', function(result, event){
+                                    if (event.status){
+                                        if(result == false){
+                                            alert('Date Doesn\'t fall in Selected year .');
+                                            obj.value = '';
+                                        }else{}
+                                            //do whatever rendering of the list you want
+                                    }else if (event.type === 'exception') {
+                                        //handle errors
+                                        // alert(event.message);
+                                    } else {
+                                        //handle unknown responses
+                                    }
+                                },{escape: true}
+                            );
+                        }
+                    //do whatever rendering of the list you want
+                    } else if (event.type === 'exception') {
+                        //handle errors
+                        // alert(event.message);
+                    } else {
+                        //handle unknown responses
+                    }
+                },{escape: true}
+            ); 
+        }
+    </script>
+    <style>
+    
+    
+
+table.jCalendar {
+    border: 1px solid #000;
+    background: #aaa;
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+table.jCalendar th {
+    background: #333;
+    color: #fff;
+    font-weight: bold;
+    padding: 3px 5px;
+}
+
+table.jCalendar td {
+    background: #ccc;
+    color: #000;
+    padding: 6px 9px;
+    text-align: center;
+}
+table.jCalendar td.other-month {
+    background: #ddd;
+    color: #aaa;
+}
+table.jCalendar td.today {
+    background: #666;
+    color: #fff;
+}
+table.jCalendar td.selected {
+    background: #f66;
+    color: #fff;
+}
+table.jCalendar td.selected.dp-hover {
+    background: #f33;
+    color: #fff;
+}
+table.jCalendar td.dp-hover,
+table.jCalendar tr.activeWeekHover td {
+    background: #fff;
+    color: #000;
+}
+table.jCalendar tr.selectedWeek td {
+    background: #f66;
+    color: #fff;
+}
+table.jCalendar td.disabled, table.jCalendar td.disabled.dp-hover {
+    background: #bbb;
+    color: #888;
+}
+table.jCalendar td.unselectable,
+table.jCalendar td.unselectable:hover,
+table.jCalendar td.unselectable.dp-hover {
+    background: #bbb;
+    color: #888;
+}
+
+/* For the popup */
+
+/* NOTE - you will probably want to style a.dp-choose-date - see how I did it in demo.css */
+
+div.dp-popup {
+    position: relative;
+   
+    font-size: 10px;
+    font-family: arial, sans-serif;
+    padding: 2px;
+    
+    line-height: 1.2em;
+}
+div#dp-popup {
+    position: absolute;
+    z-index: 199;
+}
+div.dp-popup h2 {
+    font-size: 12px;
+    text-align: center;
+    margin: 2px 0;
+      padding: 0px ;
+}
+a#dp-close {
+    font-size: 11px;
+    padding: 4px 0;
+    text-align: center;
+    display: block;
+}
+a#dp-close:hover {
+    text-decoration: underline;
+}
+div.dp-popup a {
+    color: #000;
+    text-decoration: none;
+    padding: 3px 2px 0;
+}
+div.dp-popup div.dp-nav-prev {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    width: 100px;
+}
+div.dp-popup div.dp-nav-prev a {
+    float: left;
+}
+/* Opera needs the rules to be this specific otherwise it doesnt change the cursor back to pointer after you have disabled and re-enabled a link */
+div.dp-popup div.dp-nav-prev a, div.dp-popup div.dp-nav-next a {
+    cursor: pointer;
+}
+div.dp-popup div.dp-nav-prev a.disabled, div.dp-popup div.dp-nav-next a.disabled {
+    cursor: default;
+}
+div.dp-popup div.dp-nav-next {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    width: 100px;
+}
+div.dp-popup div.dp-nav-next a {
+    float: right;
+}
+div.dp-popup a.disabled {
+    cursor: default;
+    color: #aaa;
+}
+div.dp-popup td {
+    cursor: pointer;
+}
+div.dp-popup td.disabled {
+    cursor: default;
+}
+    
+    
+    
+    
+        .box-main{
+            width:100%;
+            margin:30px auto;
+        }
+        .box-content{
+            background-color:#f7f7f7;
+            padding:5px;
+            border:1px solid #cccccc;
+        }
+        .box-top{
+            border-top:3px solid #00335B;
+            -moz-border-top:3px solid #00335B;
+    -webkit-border-top:3px solid #00335B;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    -moz-border-top-left-radius:10px;
+    -moz-border-top-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    background-color:#F8F8F8;
+    border-left:1px solid #cccccc;
+    border-right:1px solid #cccccc;
+    color:#000;
+    padding:12px 0 0 15px;
+    height:30px;
+} 
+.tablecontent{
+    vertical-align:top;
+    height:400px;
+    background-color:#fff;
+    margin-left:250px;
+    border:1px solid #989898;
+    font-size:12px;
+    overflow-y:auto;
+
+}
+ul li, ol li {
+    margin-right: 9px;
+     margin-left: 0px !important;
+    padding-left: 0;
+}
+
+.box-top-div1{
+    width:25%;
+    font-weight:600;
+    font-size:18px;
+    float:left;
+    height:25px;
+    color:#666 !important;
+    
+}
+.dp-nav-prev,.dp-nav-next{
+
+    display :none ;
+}
+.box-top-div2{
+    width:10%;
+    font-weight:600;
+    font-size:14px;
+    float:left;
+    height:25px;
+    
+}
+.box-top-div3{
+    
+    float:left;
+    font-size:12px;
+    height:25px;
+    margin-left:56%;
+    margin-top:-30px;
+  
+}
+.box-top-div4{
+  margin-left:80%;
+    margin-top:-30px;
+    font-size:12px;
+    float:left;
+    height:25px;
+    
+}
+.box-top-div5{
+    width:16%;
+    font-size:13px;
+    text-align:right;
+    float:right;
+    height:25px;
+    padding-right: 10px;
+}
+.searchbutton1{
+    width:80px;
+    height:23px;
+    font-size:11px !important;
+    margin-left:-80px !important;
+    border:1px solid #3fa9f5 !important;
+    background-color:#55a4da !important;
+    z-index:1;
+}
+.searchtxt1{
+    border: 1px solid #3fa9f5;
+    border-radius: 5px;
+    height: 21px;
+    margin-left: 100px;
+    padding-top: 0px;
+    width: 235px;
+}
+.button{
+   padding:1px 10px !important;
+   border:1px solid #3fa9f5 !important;
+   font-size:11px !important;
+   font-weight:bold !important;
+   height:22px !important;
+   text-align:right;
+    }
+    
+.notes{
+    height:25px;
+    font-weight:bold;
+    text-align:right;
+    width:200px;
+}
+.notes-text-box{
+    float:left;
+    border:1px solid #333;
+    width:200px !important;
+    height:22px;
+    height:22px;
+    float:left;
+    position:relative;
+    padding-left: 5px;
+}
+.notes-text-box1{
+    float:left;
+    border:1px solid #333;
+    width:209px !important;
+    height:25px;
+    padding-left: 5px;
+}
+.notes1{
+   border:1px solid #487c9a;
+    text-align:left;
+    width:120px;    
+}
+.notes-textbox{
+    float:left;
+    border:1px solid #333;
+    width:400px;
+    height:50px;
+    padding-left:5px;
+    position:relative;
+    margin-left:20px;
+    margin-bottom:20px;
+    
+}
+.popup_top_info{
+            background-color: #e3e3e3;
+            border-bottom: 1px solid #000;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 18px;
+            margin-right: 0;
+            margin-top: 0;
+        padding: 10px 567px 9px 5px !important;
+        }
+        
+
+        body{
+            margin-top: 100px;
+            font-family: 'Trebuchet MS', serif;
+            line-height: 1.6;
+        }
+        .container{
+            width: 100%;
+            margin: 0 auto;
+        }
+
+.popupBackground{
+        background-color:black; 
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+
+        ul.tabs{
+            margin: 0px;
+            padding: 0px;
+            list-style: none;
+        }
+        ul.tabs li{
+            background: #f1f1f2;
+            color: #222;
+            font-weight:600;
+            font-size:13px;
+            display: inline-block;
+            padding: 4px 15px;
+            cursor: pointer;
+            border:1px solid #487c9a;
+            border-bottom:0px;
+            border-top-left-radius:3px;
+            border-top-right-radius:3px;
+        }
+
+        ul.tabs li.current{
+            background: #fff;
+            color: #487da6;
+            font-weight:600;
+            font-size:13px;
+            border:1px solid #487c9a;
+            border-bottom:0px;
+            border-top-left-radius:3px;
+            border-top-right-radius:3px;
+            z-index:99999999;
+            position:relative;
+        }
+
+        .tab-content{
+            display: none;
+            background: #fff;
+            padding: 15px;
+            border:1px solid #487c9a;
+            border-bottom-left-radius:3px;
+            border-bottom-right-radius:3px;
+            border-top-right-radius:3px;
+        }
+
+        .tab-content.current{
+            display: inherit;
+        }
+            .heading1{
+            background-color:#e8f4fc;
+            height:30px;
+            color:#3F3F3F;
+            font-weight:600;
+            font-size:14px;
+            padding-left:20px;
+        }
+
+    </style>
+    <apex:outputpanel id="scr"></apex:outputpanel>
+    <apex:form id="form1">
+        <apex:pageblock id="pb1" mode="maindetail" >
+            <div class="box-main">
+            <apex:pagemessages id="msg"/>
+                <div class="">
+                    
+                    
+                    <ul class="tabs">
+                        <li class="tab-link current" data-tab="tab-1">Business-as-Usual Window</li>
+<!--                         <li class="tab-link" data-tab="tab-2">Scenario Building Window</li> -->
+                        <li class="tab-link" data-tab="tab-3">Quarterly Alignment Window</li>
+                    </ul>
+                    <!--- Tab  1 Section ------------------------------------>
+                        <div class="box-top-div3" > Select Quarter : 
+                            <apex:selectList value="{!selectedQuater}"      multiselect="false" size="1" styleClass="notes1">
+                                <apex:selectOptions value="{!Quarters}"/>
+                                <apex:actionSupport event="onchange" action="{!setQuarterDate}" oncomplete="plotcal();"/>
+                            </apex:selectList>
+                        </div>
+                    <div class="box-top-div4">  Select Year : 
+                        <apex:selectList value="{!selYear}"       multiselect="false" size="1" styleClass="notes1">
+                            <apex:selectOptions value="{!Years}"/>
+                            <apex:actionSupport event="onchange" action="{!setQuarterDate}" oncomplete="plotcal();"/>
+                        </apex:selectList>
+                    </div>
+                    <div id="tab-1" class="tab-content current">
+                        <apex:outputpanel id="calPnl" >
+                            <apex:selectRadio value="{!selectedQopt}">
+                                <apex:actionSupport event="onchange"  action="{!updateQstatus}" />
+                                <apex:selectOptions value="{!Qoptions}"/>
+                            </apex:selectRadio>
+                            <apex:outputpanel id="qua1" rendered="{!selectedQopt =='Choose from Calendar'}" >
+                                <script>
+                                    function plotcal(){
+                var today = new Date();
+                //Date.format = 'mm/dd/yyyy';
+                today.setHours(0);
+                today.setMinutes(0);
+                today.setSeconds(0);
+                var m3saveddates ='{!m3Dates}';
+                var m2saveddates ='{!m2Dates}';
+                var m1saveddates ='{!m1Dates}';
+                var datePickm3 = $j('.date-m3').datePicker({selectMultiple:true});
+                var datePickm2 = $j('.date-m2').datePicker({selectMultiple:true});
+                var datePickm1 = $j('.date-m1').datePicker({selectMultiple:true});
+                var m3saveddatesArray = m3saveddates.split(",");
+                var m2saveddatesArray = m2saveddates.split(",");
+                var m1saveddatesArray =m1saveddates.split(",");
+                var arrayLength = m3saveddatesArray.length;
+
+                // calender m1
+                $j('.date-m1').datePicker({
+                    createButton:false,
+                    displayClose:false,
+                    closeOnSelect:true,
+                    selectMultiple:true,
+                    inline:true,
+                    startDate:'{!m1StartDate}',
+                    endDate:'{!m1EndDate}'
+                }).bind('click', function(){
+                    var selectedDate = $j('.date-m1').datepicker('getDate');
+                    if (Date.parse(today) < Date.parse(selectedDate)){
+                        $j(this).dpDisplay();
+                        this.blur();
+                        return false;
+                    }
+                }).bind('dateSelected', function(e, selectedDate, $jtd, state){
+                    $j("#error-msg").text('');
+                    var today = new Date();
+                    today.setHours(0);
+                    today.setMinutes(0);
+                    today.setSeconds(0);
+                    var sd = formatDate(Date.parse(selectedDate) );
+                    if (Date.parse(today) < Date.parse(selectedDate)){
+                        //console.log("inside ");
+                        if(state){
+                            if($j.inArray( sd, m1saveddatesArray ) <= -1){
+                                insertselected(selectedDate );
+                            }
+                        }else{
+                            deleteselected(selectedDate );
+                        }
+                    }else{
+                        if ($j.inArray( sd, m1saveddatesArray ) <= -1 ){
+                            $jtd.removeClass("selected");
+                            if(Date.parse('{!submissionEndDate}') < Date.parse(selectedDate)){
+                                $j("#error-msg").text('Selected date is greater than Submission End Date.');
+                            }else{
+                                $j("#error-msg").text('Select a date greater than Today.');
+                            }
+                        }else{
+                            $jtd.addClass("selected");
+                        }
+                    }
+                })
+
+                $j.each(m1saveddatesArray, function(i, e){
+                    datePickm1.dpSetSelected(e);
+                }),
+                // calender control m2
+                console.log('updated');
+                $j('.date-m2').datePicker({
+                    createButton:false,
+                    displayClose:false,
+                    closeOnSelect:true,
+                    selectMultiple:true,
+                    inline:true,
+                    startDate:'{!m2StartDate}',
+                    endDate:'{!m2EndDate}'
+                }).bind('click', function(){
+                    var selectedDate1 = $j('.date-m2').datepicker('getDate');
+                    if(Date.parse(today) < Date.parse(selectedDate1)){
+                        $j(this).dpDisplay();
+                        this.blur();
+                            return false;
+                    }
+                }).bind('dateSelected', function(e, selectedDate, $jtd, state){
+                    console.log("m2disabled "+{!m2disabled});
+                    $j("#error-msg").text('');
+                    var sd1 = formatDate(Date.parse(selectedDate) );
+                    if (Date.parse(today) < Date.parse(selectedDate) && {!m2disabled}==false  ){
+                    //console.log("inside ");
+                        if(state){
+                            if( $j.inArray( sd1, m2saveddatesArray ) <= -1){
+                                insertselected(selectedDate );
+                            }
+                        }else{
+                            deleteselected(selectedDate );
+                        }
+                    }else{
+                        //console.log(sd1);
+                        if ( $j.inArray( sd1, m2saveddatesArray ) <= -1 || {!m2disabled}==true  ){
+                            console.log("yes");
+                            $jtd.removeClass("selected");
+                            if(Date.parse('{!submissionEndDate}') < Date.parse(selectedDate)){
+                                $j("#error-msg").text('Selected date is greater than Submission End Date.');
+                            }else{
+                                $j("#error-msg").text('Select a date greater than Today.');
+                            }
+                        }else{
+                            $jtd.addClass("selected");
+                            var classes = $j("td").attr('class').split(" ");
+                            //console.log(classes);
+                        }
+                    }
+                }) 
+
+                $j.each(m2saveddatesArray, function(i, e){
+                    datePickm2.dpSetSelected(e);
+                }),
+
+                // calender m3
+                $j('.date-m3').datePicker({
+                    createButton:false,
+                    displayClose:false,
+                    closeOnSelect:true,
+                    selectMultiple:true,
+                    inline:true,
+                    startDate:'{!m3StartDate}',
+                    endDate:'{!m3EndDate}'
+                }).dpSetDisabled(
+                    false
+                ).bind('click', function(){
+                    var selectedDate2 = $j('.date-m3').datepicker('getDate');
+                    console.log({!m3disabled});
+                    if(Date.parse(today) < Date.parse(selectedDate2)){
+                        $j(this).dpDisplay();
+                        this.blur();
+                        return false;
+                    }
+                }).bind('dateSelected', function(e, selectedDate, $jtd, state){
+                    console.log("=="+{!m3disabled});
+                    $j("#error-msg").text('');
+                    var sd1 = formatDate(Date.parse(selectedDate) );
+                    if(Date.parse(today) < Date.parse(selectedDate) && {!m3disabled}==false){
+                        console.log("inside 2 ");
+                        if(state){
+                            if($j.inArray( sd1, m3saveddatesArray ) <= -1)
+                                insertselected(selectedDate);
+                        }else{
+                            deleteselected(selectedDate );
+                        }
+                    }else{
+                        //console.log(sd1);
+                        if ($j.inArray( sd1, m3saveddatesArray ) <= -1 ||{!m3disabled}==true  ){
+                            //console.log("yes");
+                            $jtd.removeClass("selected");
+                            if(Date.parse('{!submissionEndDate}') < Date.parse(selectedDate)){
+                                $j("#error-msg").text('Selected date is greater than Submission End Date.');
+                            }else{
+                                $j("#error-msg").text('Select a date greater than Today.');
+                            }
+                        }else if({!m3disabled}==false){
+                            $jtd.addClass("selected");
+                            var classes = $j("td").attr('class').split(" ");
+                            //console.log(classes);
+                        }
+                    }
+                })
+
+                $j.each(m3saveddatesArray, function(i, e){
+                    if({!m3disabled}==false)
+                        datePickm3.dpSetSelected(e);
+                })
+
+                datePickm3.dpSetDisabled(false);
+                datePickm3.find('.ui-datepicker-prev').remove();
+                $j('.dp-choose-date').each(function( index ) {
+                  console.log('choose date');
+                  $j(this).css('display', 'none');
+                });
+            }
+                                </script>
+                                <!--- April Calender ------------------------------------>
+                                <table width="60%" border="0" cellspacing="10" cellpadding="0">
+                                    <tr>
+                                        <td colspan="3" ><span id="error-msg" style="color:red"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">&nbsp;  </td>  
+                                    </tr>
+                                    <tr>
+                                        <td><div class="date-m1"> First Month</div></td>
+                                        <td><div class="date-m2">Second Month</div></td>
+                                        <td><div class="date-m3">Third Moth</div> </td>
+                                    </tr> 
+                                </table>
+                            </apex:outputpanel>
+                        </apex:outputpanel>
+                    </div>
+
+                    <!--- Tab  2 Section ------------------------------------>
+<!--                     <div id="tab-2" class="tab-content"> -->
+<!--                         <table width="60%" border="0" cellspacing="10" cellpadding="0"> -->
+<!--                             <tr> -->
+<!--                                 <td class="notes">Start Date :</td> -->
+<!--                                 <td> -->
+<!--                                     <apex:inputField value="{!scnDate.Start_Date__c}" onchange="checkinCurrentQuarter(this.value,this);" styleClass="notes-text-box" /> -->
+<!--                                 </td> -->
+<!--                             </tr> -->
+<!--                             <tr> -->
+<!--                                 <td>&nbsp;</td> -->
+<!--                                 <td>&nbsp;</td> -->
+<!--                             </tr> -->
+<!--                             <tr> -->
+<!--                                 <td class="notes">End Date :</td> -->
+<!--                                 <td> -->
+<!--                                     <apex:inputField value="{!scnDate.End_date__c}"  onchange="checkinCurrentQuarter(this.value,this);" styleClass="notes-text-box"  /> -->
+<!--                                 </td> -->
+<!--                             </tr> -->
+<!--                             <tr> -->
+<!--                                 <td>&nbsp;</td> -->
+<!--                                 <td>&nbsp;</td> -->
+<!--                             </tr> -->
+<!--                             <tr> -->
+<!--                                 <td colspan="2" style="text-align:center"> -->
+<!--                                     <apex:commandbutton action="{!ChecknSaveScnEndDate}" value="Save" style="height:25px" reRender="msg" /> -->
+<!--                                 </td> -->
+<!--                             </tr> -->
+<!--                         </table> -->
+<!--                     </div> -->
+
+                    <!--- Tab  3 Section ------------------------------------>
+                    <div id="tab-3" class="tab-content">
+
+                    <!--- Submission Date Section ------------------------------------>
+                        <table width="100%" border="0" cellspacing="10" cellpadding="0">
+                            <tr>
+                                <td colspan="2" class="heading1">Submission Date</td>
+                            </tr>
+                            <tr>
+                                <td class="notes">Start Date :</td>
+                                <td>
+                                    <apex:inputField value="{!quarProcess.SalesIQ__Submission_Start_Date__c}"  id="substart"  onchange="checkinCurrentQuarter(this.value,this); copytoAppdate(this.value); " styleClass="notes-text-box"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="notes">End Date :</td>
+                                <td>
+                                    <apex:inputField value="{!quarProcess.SalesIQ__Submission_End_Date__c}"  onchange="checkinCurrentQuarter(this.value,this);" styleClass="notes-text-box"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="heading1">Approval Date</td>
+                            </tr>
+                            <tr>
+                                <td class="notes">Start Date :</td>
+                                <td>
+                                    <apex:outputPanel id="pnlApp"> 
+                                        <apex:inputtext id="appstart" value="{!approvalStartDate}" disabled="true" styleClass="notes-text-box" />
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="notes">End Date :</td>
+                                <td> 
+                                    <apex:inputField value="{!quarProcess.SalesIQ__Approval_End_Date__c}"  onchange="checkinCurrentQuarter(this.value,this);" styleClass="notes-text-box" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="heading1">Effective Date</td>
+                            </tr>
+                            <tr>
+                                <td class="notes">Effective  :</td>
+                                <td>
+                                    <apex:inputtext value="{!effectiveDate}" id="effctiveDate" disabled="true" styleClass="notes-text-box" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td >&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <apex:commandbutton value="Save" action="{!saveQuarterDate}" reRender="msg, qua1" oncomplete="plotcal();" />
+                    </div>
+                    <!-- container -->
+                    <br/><br/>
+                </div>
+            </div> 
+            <apex:actionfunction name="callpage" />
+            <apex:actionfunction name="callqDates" action="{!setQuarterDate}"/>
+            <apex:inputhidden id="seldate" value="{!selectedDate}" />
+            <apex:inputhidden id="date1" value="{!date1tocompare}" />
+            <apex:inputhidden id="date2" value="{!date2tocompare}" />
+        </apex:pageblock>
+        <script type="text/javascript" >
+            function insertselected(selectedDate){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AdminCtlr.insertDate}', selectedDate, function(result, event){
+                        if (event.status) {
+                            //do whatever rendering of the list you want
+                        } else if (event.type === 'exception') {
+                            //handle errors
+                            // alert(event.message);
+                        }else{
+                            //handle unknown responses
+                        }
+                    }, {escape: true}
+                ); 
+            }
+    
+            function deleteselected(selectedDate){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AdminCtlr.deleteDate}', selectedDate, function(result, event) {
+                        if (event.status){
+                            //do whatever rendering of the list you want
+                        } else if (event.type === 'exception') {
+                            //handle errors
+                            // alert(event.message);
+                        } else {
+                            //handle unknown responses
+                        }
+                    }, {escape: true}
+                ); 
+            }
+
+            function noFollowingMonday(thisDate) {
+                // Monday = 1
+                // Only Mondays - that are after today - and is the first monday after today
+                return [false, "", "Unavailable"];
+                //}
+                //return [true, "", "Choose"];
+            }
+
+            function formatDate(date) {
+                var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+                if (month.length < 2) month =  month;
+                if (day.length < 2) day =  day;
+                return [ day, month, year].join('/');
+            }
+        </script>
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

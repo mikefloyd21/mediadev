@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BU Roll Up</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>This package allows Cases, Contacts, and Opportunities to be rolled up to a customer records in the Cox Automotive Enterprise instance of Salesforce.</description>
+    <namespacePrefix>caibur</namespacePrefix>
+    <types>
+        <members>Account.Cox_Auto_Id__c</members>
+        <members>Account.Cox_Auto_Major_Account__c</members>
+        <members>Account.Customer_CA_Id__c</members>
+        <members>Account.Dealer_Group_CA_Id__c</members>
+        <members>Account.Owner_Name__c</members>
+        <members>Case.Case_Number__c</members>
+        <members>Case.Contact_Name__c</members>
+        <members>Case.Cox_Auto_Id__c</members>
+        <members>Case.Cox_Auto_Major_Account__c</members>
+        <members>Case.Customer_CA_Id__c</members>
+        <members>Case.Dealer_Group_CA_Id__c</members>
+        <members>Case.Owner_Name__c</members>
+        <members>Contact.Cox_Auto_Id__c</members>
+        <members>Contact.Cox_Auto_Major_Account__c</members>
+        <members>Contact.Customer_CA_Id__c</members>
+        <members>Contact.Dealer_Group_CA_Id__c</members>
+        <members>Contact.Owner_Name__c</members>
+        <members>Opportunity.Cox_Auto_Id__c</members>
+        <members>Opportunity.Cox_Auto_Major_Account__c</members>
+        <members>Opportunity.Customer_CA_Id__c</members>
+        <members>Opportunity.Dealer_Group_CA_Id__c</members>
+        <members>Opportunity.Owner_Name__c</members>
+        <name>CustomField</name>
+    </types>
+    <version>36.0</version>
+</Package>

@@ -1,0 +1,193 @@
+<apex:page standardcontroller="Case">
+<apex:messages />
+    <apex:sectionheader title="{!$ObjectType.Case.label} Edit" subtitle="{!IF(ISNULL(Case.CaseNumber), 'New Case',Case.CaseNumber)}"/>
+    <apex:form >
+        <apex:pageblock mode="edit" title="{!$ObjectType.Case.label} Edit">
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Save" action="{!Save}"/>
+                <apex:commandbutton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockbuttons>
+
+            <!-- **********   [Record Type : ATC DMD ]   **********  -->
+            <apex:outputpanel rendered="{!CASESAFEID(Case.RecordTypeId)='012E00000005wqDIAQ'}">
+                <apex:pageblocksection title="Case Information" showheader="true" columns="2">
+                    <apex:outputfield value="{!Case.CaseNumber}"/>
+                    <apex:inputfield value="{!Case.OwnerId}"/>
+                    <apex:inputfield value="{!Case.ParentId}" required="false"/>
+                    <apex:inputfield value="{!Case.Follow_Up_Date__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Priority}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Status}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Additional Information" showheader="false" columns="2">
+                    <apex:inputfield value="{!Case.ATC_Case_Reason__c}" required="true"/>
+                    <apex:inputfield value="{!Case.Origin}" required="true"/>
+                    <apex:inputfield value="{!Case.ATC_Sub_Reason__c}" required="true"/>
+                    <apex:inputfield value="{!Case.ATC_Product_Category__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.ATC_Root_Cause_Temp__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Make__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Contact Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.ContactId}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.AccountId}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.ATC_Contact__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description Information" showheader="true" columns="1">
+                    <apex:inputfield value="{!Case.Subject}" required="true"/>
+                    <apex:inputfield value="{!Case.Description}" required="true"/>
+                    <apex:inputfield value="{!Case.Approval_Detail_1__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="DMD Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.ATC_Co_op__c}" required="true"/>
+                    <apex:inputfield value="{!Case.ATC_Reject_Details__c}" required="false"/>
+                    <apex:inputfield value="{!Case.ATC_Rework_Approval_Status__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.ATC_Reject_Reason__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Contact Info from Email or Web Form" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.SuppliedName}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedCompany}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedEmail}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedPhone}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.Case_Original_Owner__c}" required="false"/>
+                    <apex:outputfield value="{!Case.RecordTypeId}"/>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+
+            <!-- **********   [Record Type : ATC Dealer Service ]   **********  -->
+            <apex:outputpanel rendered="{!OR(ISNULL(Case.RecordTypeId),CASESAFEID(Case.RecordTypeId)='012E00000005wqEIAQ')}">
+                <apex:pageblocksection title="Case Information" showheader="true" columns="2">
+                    <apex:outputfield value="{!Case.CaseNumber}"/>
+                    <apex:outputfield value="{!Case.OwnerId}"/>
+                    <apex:inputfield value="{!Case.ParentId}" required="false"/>
+                    <apex:inputfield value="{!Case.Follow_Up_Date__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Priority}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Status}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Additional Information" showheader="false" columns="2">
+                    <apex:inputfield value="{!Case.ATC_Case_Reason__c}" required="true"/>
+                    <apex:inputfield value="{!Case.Origin}" required="true"/>
+                    <apex:inputfield value="{!Case.ATC_Sub_Reason__c}" required="true"/>
+                    <apex:inputfield value="{!Case.ATC_Product_Category__c}" required="false"/>
+                    <apex:inputfield value="{!Case.ATC_Root_Cause_Temp__c}" required="false"/>
+                    <apex:inputfield value="{!Case.Make__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Contact Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.ContactId}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.AccountId}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.ATC_Contact__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description Information" showheader="true" columns="1">
+                    <apex:inputfield value="{!Case.Subject}" required="true"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description" showheader="false" columns="1">
+                    <apex:inputfield value="{!Case.Description}" required="true"/>
+                    <apex:inputfield value="{!Case.Approval_Detail_1__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Contact Info from Email or Web Form" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.SuppliedName}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedCompany}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedEmail}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedPhone}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.Case_Original_Owner__c}" required="false"/>
+                    <apex:outputfield value="{!Case.RecordTypeId}"/>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+
+            <!-- **********   [Record Type : ATG Service Core ]   **********  -->
+            <apex:outputpanel rendered="{!CASESAFEID(Case.RecordTypeId)='012E00000005p2DIAQ'}">
+                <apex:pageblocksection title="Case Information" showheader="true" columns="2">
+                    <apex:outputfield value="{!Case.OwnerId}"/>
+                    <apex:inputfield value="{!Case.Origin}" required="true"/>
+                    <apex:outputfield value="{!Case.CaseNumber}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Status}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Priority}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Additional Information" showheader="false" columns="2">
+                    <apex:inputfield value="{!Case.Type}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.ATC_Subtype__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description Information" showheader="true" columns="1">
+                    <apex:inputfield value="{!Case.Subject}" required="true"/>
+                    <apex:inputfield value="{!Case.Description}" required="true"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Contact Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.ContactId}" required="false"/>
+                    <apex:inputfield value="{!Case.AccountId}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Web Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.SuppliedEmail}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedCompany}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedName}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedPhone}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="true" columns="2">
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Case.RecordTypeId}"/>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+
+            <!-- **********   [Record Type : Master ]   **********  -->
+            <apex:outputpanel rendered="{!CASESAFEID(Case.RecordTypeId)='012000000000000AAA'}">
+                <apex:pageblocksection title="Case Information" showheader="true" columns="2">
+                    <apex:outputfield value="{!Case.OwnerId}"/>
+                    <apex:inputfield value="{!Case.Origin}" required="true"/>
+                    <apex:outputfield value="{!Case.CaseNumber}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Status}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.Priority}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Additional Information" showheader="false" columns="2">
+                    <apex:inputfield value="{!Case.Type}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!Case.ATC_Subtype__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description Information" showheader="true" columns="1">
+                    <apex:inputfield value="{!Case.Subject}" required="true"/>
+                    <apex:inputfield value="{!Case.Description}" required="true"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Contact Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.ContactId}" required="false"/>
+                    <apex:inputfield value="{!Case.AccountId}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Web Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!Case.SuppliedEmail}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedCompany}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedName}" required="false"/>
+                    <apex:inputfield value="{!Case.SuppliedPhone}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="true" columns="2">
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Case.RecordTypeId}"/>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+    <center><br/>
+        <i style="font-size:10px;color:#aaa;">Generated By LAYOUT PAGE <a href="http://www.clerisoft.com" target="_blank">[http://www.clerisoft.com]</a> (2008-2014) : Fri Jun 13 2014 13:24:40 GMT-0400 (Eastern Daylight Time)</i>
+    </center><br/>
+</apex:page>

@@ -1,0 +1,546 @@
+<apex:page standardController="Case" extensions="CustomerOpsController" readOnly="true">
+    <apex:sectionHeader title="{!$ObjectType.Case.label + '#'} {!Case.CaseNumber}" subtitle="Order Details"/>
+    
+    <apex:outputPanel layout="block" rendered="{!NOT(isInternalError)}">
+    <apex:pageBlock title="General Information" mode="maindetail">
+        <apex:pageMessages id="pgMessages"/>
+        
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false">
+                <apex:outputField value="{!var.orderItemObj.Order.AccountId}"/>
+                <apex:outputField value="{!var.orderItemObj.PricebookEntry.Product2.ProductCode}"/>
+                <apex:outputField value="{!var.orderItemObj.UnitPrice}"/>
+                <apex:outputField value="{!var.orderItemObj.Quantity}"/>
+                <apex:outputField value="{!var.orderItemObj.ListPrice}"/> 
+                <apex:outputField value="{!var.orderItemObj.Configured__c}"/>
+            </apex:pageBlockSection>
+        </apex:repeat>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Package Configuration" mode="maindetail">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Cust_Ops_Package_Configuration_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap[LOWER('Cust_Ops_Package_Configuration_Fields')+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>
+                      
+            
+            <apex:outputPanel id="carMakePanelId" layout="block" rendered="{!OR(var.prodConfigObj.New_Car_Make_Fields_GM_Package__c, 
+                                       var.prodConfigObj.Used_Car_Make_GM_Package__c, var.prodConfigObj.Used_Car_Make_Quantity_GM_Package__c)}">
+                <apex:variable var="fldGrpTypIndex" value="{!0}"/>
+                <apex:repeat value="{!var.pkgConfigLst2}" var="pkgConfigWrpObjItr"> 
+                    <apex:variable var="fldGrpTypIndex" value="{!fldGrpTypIndex + 1}"/>
+                    <apex:pageBlockSection title="" columns="2" collapsible="false">
+                                        
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.New_Car_Make_Fields_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['New_Car_Make__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.New_Car_Make__c}"/>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.New_Car_Make_Fields_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['New_Car_Make_Quantity__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.New_Car_Make_Quantity__c}"/>
+                        </apex:pageBlockSectionItem>   
+                        
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.New_Car_Make_Fields_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['New_Co_op_Contact_Email__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.New_Co_op_Contact_Email__c}"/>
+                        </apex:pageBlockSectionItem> 
+                                                                         
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.Used_Car_Make_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Used_Car_Make__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Used_Car_Make__c}"/>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.Used_Car_Make_Quantity_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Used_Car_Make_Quantity__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Used_Car_Make_Quantity__c}"/>
+                        </apex:pageBlockSectionItem>  
+                        
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.Used_Car_Make_Quantity_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Used_Co_op_Contact_Email__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Used_Co_op_Contact_Email__c}"/>
+                        </apex:pageBlockSectionItem>  
+                        
+                        <apex:pageBlockSectionItem rendered="{!var.prodConfigObj.Front_Line_Pro_Model_Fields_GM_Package__c}">
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Front_Line_Pro_Model__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Front_Line_Pro_Model__c}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>                       
+                    </apex:repeat>
+            </apex:outputPanel> 
+            
+
+            <apex:outputPanel id="panelId" layout="block" rendered="{!var.prodConfigObj.Tier_Governor_Fields_Premium_Package__c}">
+                <apex:variable var="fldGrpTypIndex" value="{!0}"/>
+                <apex:repeat value="{!var.pkgConfigLst}" var="pkgConfigWrpObjItr"> 
+                    <apex:variable var="fldGrpTypIndex" value="{!fldGrpTypIndex + 1}"/>
+                    <apex:pageBlockSection title="" columns="2" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Type__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Type__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Value__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Value__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Advertised_Make__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Advertised_Make__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Vehicle_Quantity__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Vehicle_Quantity__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Vehicle_Monthly_Rate__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Vehicle_Monthly_Rate__c}"/>
+                        </apex:pageBlockSectionItem>  
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Co_op_Level_of_Service__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Co_op_Level_of_Service__c}"/>
+                        </apex:pageBlockSectionItem> 
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['DBA_Name__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.DBA_Name__c}"/>
+                        </apex:pageBlockSectionItem> 
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['OEM_Id__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.OEM_Id__c}"/>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Co_op_Contact_Email__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Co_op_Contact_Email__c}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:repeat>
+            </apex:outputPanel>                       
+        </apex:repeat>
+    </apex:pageBlock>
+
+    <apex:pageBlock title="Rate and Terms" mode="maindetail" rendered="{!mainSectionMap['rate_and_terms_fields']}">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['rate_and_terms_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Rate_and_Terms_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['rate_and_terms_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>
+        </apex:repeat>
+    </apex:pageBlock>
+
+    
+    <apex:pageBlock title="Billing Info" mode="maindetail" rendered="{!mainSectionMap['billing_info_fields']}">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['billing_info_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Billing_Info_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['billing_info_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlock>
+
+    <apex:pageBlock title="Co-op Configuration" mode="maindetail"  rendered="{!mainSectionMap['cust_ops_co_op_configuration']}">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" 
+                                             rendered="{!OR(var.fieldPositionMap['cust_ops_co_op_configuration'], var.prodConfigObj.Tier_Governor_Fields_Premium_Package__c)}">
+                <apex:variable var="fldGrpTypIndex" value="{!0}"/>
+                <apex:repeat value="{!var.pkgConfigLst}" var="pkgConfigWrpObjItr"> 
+                    <apex:variable var="fldGrpTypIndex" value="{!fldGrpTypIndex + 1}"/>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Tier_Governor_Co_op_Level_of_Service__c'].Label} {!fldGrpTypIndex}"/>
+                        <apex:outputField value="{!pkgConfigWrpObjItr.Tier_Governor_Co_op_Level_of_Service__c}"/>
+                    </apex:pageBlockSectionItem>  
+                </apex:repeat>
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Cust_Ops_Co_op_Configuration}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['cust_ops_co_op_configuration'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlock>  
+    
+    <apex:pageBlock title="Inventory Configuration" mode="maindetail" rendered="{!mainSectionMap['inventory_configuration_fields']}">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['inventory_configuration_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Inventory_Configuration_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['inventory_configuration_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Other" mode="maindetail" rendered="{!mainSectionMap['cust_ops_other_fields']}">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['cust_ops_other_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Cust_Ops_Other_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['cust_ops_other_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Feature Configuration" mode="maindetail" rendered="{!mainSectionMap['feature_configuration']}"> 
+    <apex:repeat value="{!prodConfigWrpLst}" var="var">          
+        <apex:pageBlockSection title="Alpha" rendered="{!mainSectionMap['alpha_fields']}" columns="1">  
+               
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['alpha_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Alpha_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['alpha_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>  
+                               
+    </apex:pageBlockSection>
+    
+    <apex:outputPanel id="kbbPanelId" layout="block" rendered="{!var.prodConfigObj.KBB_Lead_Driver_Fields__c}">            
+                <apex:variable var="fldGrpTypIndex" value="{!0}"/>
+                <apex:repeat value="{!var.pkgConfigLst2}" var="pkgConfigWrpObjItr"> 
+                    <apex:variable var="fldGrpTypIndex" value="{!fldGrpTypIndex + 1}"/>
+                    <apex:pageBlockSection title="" columns="2" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Make_KBB_Lead_Driver__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Make_KBB_Lead_Driver__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Dealer_Website_URL__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Dealer_Website_URL__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['Text_Email_Address__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.Text_Email_Address__c}"/>
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$ObjectType.Package_Configuration__c.Fields['XML_Email_Address__c'].Label} {!fldGrpTypIndex}"/>
+                            <apex:outputField value="{!pkgConfigWrpObjItr.XML_Email_Address__c}"/>
+                        </apex:pageBlockSectionItem>                        
+                    </apex:pageBlockSection>
+                </apex:repeat>                        
+            </apex:outputPanel> 
+            </apex:repeat>             
+     
+    
+    <apex:pageBlockSection title="Call Tracking New" rendered="{!mainSectionMap['call_tracking_new_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['call_tracking_new_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Call_Tracking_New_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['call_tracking_new_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Call Tracking Used" rendered="{!mainSectionMap['call_tracking_used_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['call_tracking_used_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Call_Tracking_Used_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['call_tracking_used_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Chat" rendered="{!mainSectionMap['chat_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['chat_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Chat_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['chat_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Dealer Ratings" rendered="{!mainSectionMap['dealer_ratings_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['dealer_ratings_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Dealer_Ratings_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['dealer_ratings_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Dealer Ratings (KBB packages)" rendered="{!mainSectionMap['dealer_ratings_kbb_packages_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['dealer_ratings_kbb_packages_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Dealer_Ratings_KBB_Packages_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['dealer_ratings_kbb_packages_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="FastAds" rendered="{!mainSectionMap['fastads_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['fastads_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.FastAds_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['fastads_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="KBB Call Tracking New" rendered="{!mainSectionMap['kbb_call_tracking_new_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_call_tracking_new_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Call_Tracking_New_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_call_tracking_new_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="KBB Call Tracking Used" rendered="{!mainSectionMap['kbb_call_tracking_used_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_call_tracking_used_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Call_Tracking_Used_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_call_tracking_used_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="KBB Inline Display Ad New" rendered="{!mainSectionMap['kbb_inline_display_ad_new']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_inline_display_ad_new']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Inline_Display_Ad_New}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_inline_display_ad_new'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="KBB Inline Display Ad Used" rendered="{!mainSectionMap['kbb_inline_display_ad_used']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_inline_display_ad_used']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Inline_Display_Ad_Used}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_inline_display_ad_used'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    
+    <apex:pageBlockSection title="KBB Showcase Call Tracking" rendered="{!mainSectionMap['kbb_showcase_call_tracking_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_showcase_call_tracking_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Showcase_Call_Tracking_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_showcase_call_tracking_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="KBB Showcase" rendered="{!mainSectionMap['kbb_showcase_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_showcase_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Showcase_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_showcase_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="KBB Lead Driver" rendered="{!mainSectionMap['kbb_lead_driver_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['kbb_lead_driver_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.KBB_Lead_Driver_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['kbb_lead_driver_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Leaderboard New" rendered="{!mainSectionMap['leaderboard_new_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['leaderboard_new_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Leaderboard_New_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['leaderboard_new_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Leaderboard Used" rendered="{!mainSectionMap['leaderboard_used_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['leaderboard_used_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Leaderboard_Used_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['leaderboard_used_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="OEM Specials" rendered="{!mainSectionMap['oem_specials_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['oem_specials_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.OEM_Specials_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['oem_specials_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Secure Credit App" rendered="{!mainSectionMap['secure_credit_app']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['secure_credit_app']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Secure_Credit_App}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['secure_credit_app'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Sitelink New" rendered="{!mainSectionMap['sitelink_new_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['sitelink_new_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Sitelink_New_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['sitelink_new_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Sitelink Used" rendered="{!mainSectionMap['sitelink_used_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['sitelink_used_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Sitelink_Used_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['sitelink_used_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Skyscrapers" rendered="{!mainSectionMap['skyscrapers_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['skyscrapers_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Skyscrapers_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['skyscrapers_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Social Connections" rendered="{!mainSectionMap['social_connections_fields']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['social_connections_fields']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Social_Connections_Fields}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['social_connections_fields'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Tier Governor" rendered="{!mainSectionMap['tier_governor']}" columns="1">
+        <apex:repeat value="{!prodConfigWrpLst}" var="var">
+            <apex:pageBlockSection title="{!var.orderItemObj.PricebookEntry.Product2.Name}" collapsible="false" rendered="{!var.fieldPositionMap['tier_governor']}">
+                <apex:repeat value="{!$ObjectType.Product_Configuration__c.FieldSets.Tier_Governor}" var="field"> 
+                    <apex:pageBlockSectionItem rendered="{!var.fieldPositionMap['tier_governor'+field]}">
+                        <apex:outputLabel value="{!$ObjectType.OrderItem.Fields[field].Label}" rendered="{!var.prodConfigObj[field]}"/>
+                        <apex:outputField value="{!var.orderItemObj[field]}" rendered="{!var.prodConfigObj[field]}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>                  
+        </apex:repeat>
+    </apex:pageBlockSection>
+    
+    
+
+ </apex:pageBlock>
+</apex:outputPanel>
+<apex:outputLabel value="{!customErrorMsg}" rendered="{!isInternalError}"/>
+</apex:page>

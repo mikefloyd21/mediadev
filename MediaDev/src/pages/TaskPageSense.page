@@ -1,0 +1,3 @@
+<apex:page standardController="Task" extensions="dispatcherTaskEditController" 
+    action="{!nullValue(redir.url, urlFor($Action.Task.Edit, Task.id, null, true))}">
+</apex:page>

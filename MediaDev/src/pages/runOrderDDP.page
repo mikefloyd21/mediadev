@@ -1,0 +1,3 @@
+<apex:page docType="html-5.0" standardcontroller="Order" sidebar="false" standardStylesheets="false" showHeader="false">
+    <Loop:runDDP />
+</apex:page>

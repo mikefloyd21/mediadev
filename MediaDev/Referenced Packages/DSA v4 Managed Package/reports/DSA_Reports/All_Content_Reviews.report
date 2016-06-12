@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>ContentReview__c.ContentTitle__c</field>
+    </columns>
+    <columns>
+        <field>ContentReview__c.ContactId__c</field>
+    </columns>
+    <columns>
+        <field>ContentReview__c.Rating__c</field>
+    </columns>
+    <columns>
+        <field>ContentReview__c.TimeViewed__c</field>
+    </columns>
+    <format>Tabular</format>
+    <name>All Content Reviews</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$ContentReview__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

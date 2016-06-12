@@ -1,0 +1,10 @@
+<apex:page controller="SalesIQ.Account_Movement_Request_Report_Ctrl" sidebar="false" contentType="application/vnd.ms-excel#SalesForceExport.xls" cache="true">
+<apex:pageBlock >
+        <apex:pageBlockTable value="{!movedAccounts}" var="wa">
+            <apex:column headerValue="Account Name" value="{!wa.accountName}"/>
+            <apex:column headerValue="Source Territory" value="{!wa.sourceTerritoryName}"/>
+            <apex:column headerValue="Destination Territory" value="{!wa.destTerritoryName}"/>
+            <apex:column headerValue="Effective Date" value="{!wa.effectiveDate}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

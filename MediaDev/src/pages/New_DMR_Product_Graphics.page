@@ -1,0 +1,37 @@
+<apex:page standardcontroller="Case" extensions="UpdateNewDMRProductsGraphicsController">
+<!--  Story B-15771 
+Acceptance Criteria 2:Given I have selected "Update Product Graphics" or the "New Product Graphics" button on the case page
+When I click the button to submit my case Then I am required to enter text in the description field
+Acceptance Criteria 3:Given I have selected "Update Product Graphics" button on the case page and completed all required fields
+When I select the button to submit the case and the DMR is on an account that is in a Major Accounts region(35,43,44)
+Then The case owner is changed to the DMD Major Reworks queue And the case status is "New"
+Acceptance Criteria 4:Given I have selected "Update Product Graphics" button on the case page and completed all required fields
+When I select the Submit Button and there is already a DMR case not in a closed status on the account
+Then I receive an error message that only one Update Product Graphics DMR can be open at once. and the case status, owner, or anything else is triggered.
+Acceptance Criteria 5:Given I have selected "Update Product Graphics" button on the account page
+and completed all required fields
+When I select the Submit Button and the DMR is on an account that is not in a Major Accounts region(35,43,44)
+Then The case is assigned to the DMD Rework queue and the case status is "New"
+Acceptance Criteria 6:
+Given I have selected "New Product Graphics" button on the account page and completed all required fields
+When I select the button to submit the case Then The case status is updated to closed status and I am able to access it from the account from the related list
+-->
+<apex:pageMessages />
+<apex:form >
+        <apex:pageblock mode="edit" title="{!$ObjectType.Case.label} Submit">
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Submit" action="{!New_Submit_DMR}"/>
+                <apex:commandbutton value="Close" action="{!Cancel_SubmitDMR}"/>
+            </apex:pageblockbuttons>
+
+            <apex:pageblocksection title="Additional Information"  columns="2">
+                    <apex:inputField value="{!Case.Description}"/>      
+                    <apex:inputHidden value="{!Case.AccountId}" />  
+                    <apex:inputHidden value="{!Case.Casenumber}" />  
+                        
+            </apex:pageblocksection> 
+        </apex:pageBlock>
+            
+           
+</apex:form>    
+</apex:page>

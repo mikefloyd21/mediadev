@@ -1,0 +1,10 @@
+Dear {!Receiving_User.Name},
+<br/><br/><br/>
+
+"{!ApprovalLineItem__c.Request_Type__r.Request_Type__c}" request has been "{!ApprovalLineItem__c.Approval_Status__c}" by "{!User.Name}" .<br/><br/>
+Please follow the link "https://c.na17.visual.force.com/apex/Request" to see details.
+
+<br/><br/><br/>
+Thank You!
+<br/>
+{!User.Name}

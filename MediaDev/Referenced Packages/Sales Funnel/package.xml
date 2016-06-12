@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sales Funnel</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>Have you ever actually calculated what your probabilities to close are? Are you basing your forecasts on real probabilities?
+
+This free app from InsightSquared calculates your stage-by-stage conversion rates. Improve the accuracy of your forecast today.</description>
+    <namespacePrefix>is2SalesFunnel</namespacePrefix>
+    <types>
+        <members>ISChart</members>
+        <members>ISController</members>
+        <members>ISException</members>
+        <members>ISFilter</members>
+        <members>ISFooter</members>
+        <members>ISHeader</members>
+        <members>ISOpportunityStage</members>
+        <members>ISRow</members>
+        <members>ISTable</members>
+        <members>SalesFunnelController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CTA</members>
+        <members>ISChart</members>
+        <members>ISConfigureStageList</members>
+        <members>ISFilter</members>
+        <members>ISFooter</members>
+        <members>ISHeader</members>
+        <members>ISPivots</members>
+        <members>ISTable</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>Sales_Funnel</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>Sales_Funnel</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>ISConfiguration__c.Value__c</members>
+        <members>ISConfiguration__c.Valuetext__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>ISConfiguration__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Sales_Funnel</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>is2_docs</members>
+        <members>is2_docs/fav_icon.ico</members>
+        <members>is2_docs/is_logo_300x100.png</members>
+        <name>Document</name>
+    </types>
+    <types>
+        <members>ISConfiguration__c-ISConfiguration Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>baseCSS</members>
+        <members>chartCSS</members>
+        <members>ctaCSS</members>
+        <members>dragGripperPNG</members>
+        <members>footerCSS</members>
+        <members>headerCSS</members>
+        <members>lib</members>
+        <members>pivotsCSS</members>
+        <members>stageListCSS</members>
+        <members>static_resources</members>
+        <members>tableCSS</members>
+        <name>StaticResource</name>
+    </types>
+    <version>36.0</version>
+</Package>

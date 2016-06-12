@@ -1,0 +1,77 @@
+<apex:page standardcontroller="Event">
+<apex:messages />
+    <apex:sectionheader title="{!$ObjectType.Event.label} Detail" subtitle="{!Event.Subject}"/>
+    <chatter:feedwithfollowers entityId="{!Event.Id}"/>
+    <apex:form >
+        <apex:pageblock mode="maindetail" title="You Cannot Edit or Delete Completed Events.">
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Return" action="{!Cancel}"/>
+                <!--<apex:commandbutton value="Edit" action="{!Edit}"/>-->
+                <!--<apex:commandbutton value="Delete" action="{!Delete}"/>-->
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2014) *************** -->
+                    <!-- <apex:commandbutton value="Include Offline" action="{!URLFOR($Action.Event.IncludeOffline,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Clone" action="{!URLFOR($Action.Event.Clone,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Convert" action="{!URLFOR($Action.Event.Convert,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Find Duplicates" action="{!URLFOR($Action.Event.FindDup,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Request Update" action="{!URLFOR($Action.Event.RequestUpdate,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Advanced Setup" action="{!URLFOR($Action.Event.AdvancedSetup,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Manage Members" action="{!URLFOR($Action.Event.ManageMembers,Event.id)}"/> -->
+                    <!-- <apex:commandbutton value="Close Case" action="{!URLFOR($Action.Event.CloseCase,Event.id)}"/> -->
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2014) *************** -->
+            </apex:pageblockbuttons>
+
+            <!-- **********   [Record Type : Master ]   **********  -->
+            <apex:outputpanel >
+                <apex:pageblocksection title="Calendar Details" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Event.OwnerId}"/>
+                    <apex:outputfield value="{!Event.IsPrivate}"/>
+                    <apex:outputfield value="{!Event.Type}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.Subject}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.IsAllDayEvent}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.StartDateTime}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.EndDateTime}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.Meeting_Status__c}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.WhatId}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.WhoId}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Other Information" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Event.Location}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Event.ShowAs}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Description Information" showheader="true" collapsible="true" columns="1">
+                    <apex:outputfield value="{!Event.Description}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="true" collapsible="true" columns="2">
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Event.CreatedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Event.CreatedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Event.LastModifiedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Event.LastModifiedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+
+    <!-- **********   [Related Lists for Record Type : Master ]   **********  -->
+    <apex:outputpanel >
+    </apex:outputpanel>
+</apex:page>

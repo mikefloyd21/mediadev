@@ -1,0 +1,23 @@
+<apex:page standardController="Order" extensions="OrderProductRLController" standardStylesheets="true">
+    <apex:form >
+        <apex:pageBlock rendered="{!isInternalError}">
+            <apex:pageBlockSection >  
+            <apex:outputLabel value="{!$Label.Internal_Error_Message}" rendered="{!isInternalError}"/>
+             <apex:pageMessages rendered="{!isInternalError}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+         
+        <apex:pageBlock rendered="{!Not(isInternalError)}">
+            <apex:pageBlockTable value="{!odrItmLst}" var="odrItmVar" >
+                <apex:column headerValue="Edit" title="_self">
+                    <apex:commandLink value="Edit" action="{!redirectToOrderProduct}">
+                        <apex:param value="{!odrItmVar.Id}" name="OdrProdId"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Order Product" value="{!odrItmVar.PricebookEntry.Product2.Name}"/>
+            </apex:pageBlockTable>
+            <apex:pageMessages /> 
+        </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

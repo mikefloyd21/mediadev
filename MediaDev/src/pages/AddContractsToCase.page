@@ -1,0 +1,40 @@
+<apex:page controller="AddContractsToCase_Cntrl">
+<script>
+     function CloseCaseSubmit(){   
+           self.close();
+     }
+</script>
+
+    <apex:form id="frm">
+    <apex:pageMessages />    
+        <apex:pageblock mode="edit" title="Add Contracts To {!$ObjectType.Case.label}" >
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Attach"  action="{!AddContracts}"   />
+                <apex:commandbutton value="Cancel" onclick="CloseCaseSubmit()"/>
+            </apex:pageblockbuttons>
+            <apex:pageblocksection title="Contracts" columns="1">
+                 <apex:outputPanel rendered="{!WrapperContractList.size == 0 }"> <center><b>There are no records.</b></center></apex:outputPanel>
+            <apex:pageBlockTable value="{!WrapperContractList}" var="wc" rendered="{!WrapperContractList != null && WrapperContractList.size > 0  }">
+                <apex:column headerValue="Select"><apex:inputCheckbox value="{!wc.check}"/></apex:column>
+                <apex:column value="{!wc.Contr.ContractNumber}"/>
+                <apex:column value="{!wc.Contr.ATC_Package_Name__c}"/>
+                <apex:column value="{!wc.Contr.Make__c}"/>
+                <apex:column value="{!wc.Contr.DMA__c}"/>
+                <apex:column value="{!wc.Contr.Co_Op__c}"/>
+                <apex:column value="{!wc.Contr.StartDate}"/>
+            </apex:pageBlockTable>
+           <!-- <table border="1">
+                <tr>
+                    <th> <apex:inputCheckbox value="{!SelectAll }"/></th>
+                </tr>
+                    <apex:repeat value="{!WrapperContractList}" var="wc">
+                        <apex:outputField value="{!wc.Contr.ContractNumber}"/>
+                    </apex:repeat>
+                <tr>
+                </tr>
+            </table>-->
+            </apex:pageblocksection>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

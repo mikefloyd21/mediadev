@@ -1,0 +1,1301 @@
+<apex:page controller="SalesIQ.ACRosterCtlr" sidebar="false" id="mainpage"
+	tabstyle="roster__tab">
+
+
+	<style>
+h1 {
+	color: #3A3A3A;
+	font-family: "PT Sans Caption", sans-serif;
+	font-size: 18px;
+	font-weight: 400;
+	padding: 20px 0;
+	text-align: center;
+}
+
+.checkout-wrap {
+	color: #444;
+	font-family: "PT Sans Caption", sans-serif;
+	margin: 40px auto;
+	max-width: 1200px;
+	position: relative;
+}
+
+ul.checkout-bar {
+	margin: 0 20px;
+}
+
+ul.checkout-bar li {
+	color: #ccc;
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	padding: 14px 20px 14px 80px;
+	position: relative;
+}
+
+ul.checkout-bar li::before {
+	background: none repeat scroll 0 0 #ddd;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2) inset;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+	height: 35px;
+	left: 20px;
+	line-height: 37px;
+	position: absolute;
+	text-align: center;
+	text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+	top: 4px;
+	width: 35px;
+	z-index: 999;
+}
+
+ul.checkout-bar li.active {
+	color: #8bc53f;
+	font-weight: bold;
+}
+
+ul.checkout-bar li.active::before {
+	background: none repeat scroll 0 0 #8bc53f;
+	z-index: 99999;
+}
+
+ul.checkout-bar li.visited {
+	background: none repeat scroll 0 0 #ececec;
+	color: #333;
+	z-index: 99999;
+}
+
+ul.checkout-bar li.visited::before {
+	background: none repeat scroll 0 0 #57aed1;
+	z-index: 99999;
+}
+
+ul.checkout-bar li:nth-child(1)::before {
+	content: "1";
+}
+
+ul.checkout-bar li:nth-child(2)::before {
+	content: "2";
+}
+
+ul.checkout-bar li:nth-child(3)::before {
+	content: "3";
+}
+
+ul.checkout-bar li:nth-child(4)::before {
+	content: "4";
+}
+
+ul.checkout-bar li:nth-child(5)::before {
+	content: "5";
+}
+
+ul.checkout-bar li:nth-child(6)::before {
+	content: "6";
+}
+
+ul.checkout-bar a {
+	color: #57aed1;
+	font-size: 16px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+@media all and (min-width: 800px) {
+	.checkout-bar li.active::after {
+		height: 15px;
+		left: 50%;
+		position: absolute;
+		top: -50px;
+		width: 100%;
+		z-index: 0;
+	}
+	.checkout-wrap {
+		margin: 20px auto;
+	}
+	ul.checkout-bar {
+		height: 15px;
+		margin: 0 auto;
+		width: 600px;
+	}
+	ul.checkout-bar::before {
+		background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.2)
+			25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%,
+			rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+		border-radius: 15px;
+		height: 15px;
+		left: 0;
+		position: absolute;
+		width: 10%;
+	}
+	ul.checkout-bar li {
+		display: inline-block;
+		margin: 50px 0 0;
+		padding: 0;
+		text-align: center;
+		width: 19%;
+	}
+	ul.checkout-bar li::before {
+		height: 45px;
+		left: 25%;
+		line-height: 45px;
+		position: absolute;
+		top: -65px;
+		width: 45px;
+		z-index: 99;
+	}
+	ul.checkout-bar li.visited {
+		background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+	}
+	ul.checkout-bar li.visited::after {
+		background-color: #57aed1;
+		background-size: 35px 35px;
+		box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2) inset;
+		content: "";
+		height: 15px;
+		left: 50%;
+		position: absolute;
+		top: -50px;
+		width: 100%;
+		z-index: 99;
+	}
+}
+
+.dateFormat {
+	visibility: hidden;
+}
+
+.popupBackground {
+	background-color: black;
+	height: 100%;
+	left: 0;
+	opacity: 0.2;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 0;
+}
+
+.Popup3 {
+	background-color: white;
+	border: 1px solid #000;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+	font-size: 12px;
+	font-weight: bold;
+	height: 270px;
+	left: 50%;
+	margin-left: -250px;
+	position: absolute;
+	text-align: center;
+	top: 35%;
+	white-space: nowrap;
+	width: 520px;
+	z-index: 0;
+}
+
+.Popup_open_id {
+	background-color: white;
+	border-style: solid;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-width: 3px 1px 1px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+	font-size: 14px;
+	font-weight: bold;
+	height: 415px;
+	left: 50%;
+	margin-left: -250px;
+	position: absolute;
+	top: 20%;
+	white-space: nowrap;
+	width: 600px;
+	z-index: 0;
+}
+
+div#tips a {
+	border-bottom: 2px solid green;
+	color: #ff0000;
+	text-decoration: none;
+}
+
+div#tips a:hover {
+	background: none repeat scroll 0 0 #ffffcc;
+	color: #666666;
+	text-decoration: none;
+}
+
+div#tips a span {
+	display: none;
+}
+
+div#tips a:hover span {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: none repeat scroll 0 0 #f8f8f8;
+	border-color: #236fbd #cccccc #cccccc;
+	border-image: none;
+	border-radius: 5px;
+	border-right: 1px solid #cccccc;
+	border-style: solid;
+	border-width: 2px 1px 1px;
+	color: #736f6e;
+	display: block;
+	margin-top: -20px;
+	padding: 5px;
+	position: absolute;
+	right: 10px;
+	text-align: center;
+	text-decoration: none;
+	width: 150px;
+	z-index: 100;
+}
+
+div#tips p {
+	position: relative;
+}
+
+label {
+	display: inline-block;
+	width: 5em;
+}
+
+a:hover {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+	text-decoration: none;
+}
+
+a.tooltip span {
+	display: none;
+	margin-left: -60px;
+	padding: 2px 3px;
+	text-align: left;
+	width: 150px;
+}
+
+a.tooltip:hover span {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: none repeat scroll 0 0 white;
+	border-color: #236fbd #cccccc #cccccc;
+	border-image: none;
+	border-radius: 5px;
+	border-right: 1px solid #cccccc;
+	border-style: solid;
+	border-width: 3px 1px 1px;
+	color: #736f6e;
+	display: block;
+	font-size: 10px;
+	padding-left: 5px;
+	padding-top: 5px;
+	position: absolute;
+	width: 150px;
+}
+
+hr {
+	background-color: #d1d0ce;
+	color: #d1d0ce;
+	opacity: 0.3;
+	text-align: center;
+	width: 95%;
+}
+
+.pgblk {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background-color: #f6f6f6;
+	border-color: #003f77 #000 #000;
+	border-image: none;
+	border-right: 1px solid #000;
+	border-style: solid;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-width: 3px 1px 1px;
+	height: 620px;
+	margin: 80px 0 0;
+}
+
+body .pbBody table.list tr.headerRow td,body .pbBody table.list tr.headerRow th
+	{
+	background: none repeat scroll 0 0 #3fa9f5;
+	border-color: #e0e3e5;
+	border-width: 0 0 1px 1px;
+	color: white;
+	font-size: 0.9em;
+	font-weight: bold;
+	padding: 5px 2px 4px 5px;
+}
+
+.container1 {
+	height: auto;
+	overflow: auto;
+}
+
+.div1 {
+	background-color: #e3e3e3;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	font-size: 18px;
+	height: 22px;
+	padding: 9px 0 9px 25px;
+	width: 98%;
+}
+
+.div3 {
+	background-color: #e3e3e3;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	font-size: 18px;
+	height: 22px;
+	padding: 9px 0 9px 25px;
+	width: 96%;
+}
+
+.div2 {
+	background-color: #3fa9f5;
+	color: white;
+	font-size: 14px;
+	height: 16px;
+	padding-left: 20px;
+	padding-top: 6px;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#msform {
+	margin: 20px auto;
+	position: relative;
+	text-align: center;
+	width: 400px;
+}
+
+#msform fieldset {
+	background: none repeat scroll 0 0 white;
+	border: 0 none;
+	border-radius: 3px;
+	box-sizing: border-box;
+	margin: 0 10%;
+	padding: 20px 30px;
+	position: absolute;
+	width: 80%;
+}
+
+#msform
+
+
+
+ 
+
+
+
+fieldset
+
+
+
+
+
+
+:not
+
+
+
+ 
+
+
+
+(
+:first-of-type
+
+
+
+ 
+
+
+
+)
+{
+display
+
+
+
+
+
+
+:
+
+
+
+ 
+
+
+
+none
+
+
+
+
+
+
+;
+}
+#msform input,#msform textarea {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	box-sizing: border-box;
+	color: #2c3e50;
+	font-family: montserrat;
+	font-size: 13px;
+	margin-bottom: 10px;
+	padding: 15px;
+	width: 100%;
+}
+
+#msform .action-button {
+	background: none repeat scroll 0 0 #27ae60;
+	border: 0 none;
+	border-radius: 1px;
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+	margin: 10px 5px;
+	padding: 10px 5px;
+	width: 100px;
+}
+
+#msform .action-button:hover,#msform .action-button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27ae60;
+}
+
+.fs-title {
+	color: #2c3e50;
+	font-size: 15px;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+}
+
+.fs-subtitle {
+	color: #666;
+	font-size: 13px;
+	font-weight: normal;
+	margin-bottom: 20px;
+}
+
+#progressbar {
+	counter-reset: step;
+	margin-bottom: 30px;
+	overflow: hidden;
+}
+
+#progressbar li {
+	color: #333;
+	float: left;
+	font-size: 11px;
+	list-style-type: none;
+	position: relative;
+	text-transform: uppercase;
+	width: 28%;
+}
+
+#progressbar li::before {
+	background: none repeat scroll 0 0 #ccc;
+	border-radius: 3px;
+	color: #333;
+	content: counter(step, decimal);
+	counter-increment: step;
+	display: block;
+	font-size: 15px;
+	line-height: 45px;
+	margin: 0 auto 5px;
+	width: 45px;
+}
+
+#progressbar li::after {
+	background: none repeat scroll 0 0 #ccc;
+	content: "";
+	height: 2px;
+	left: -43%;
+	position: absolute;
+	top: 25px;
+	width: 90%;
+	z-index: 0;
+}
+
+#progressbar li:first-child::after {
+	content: none;
+}
+
+#progressbar li.active::before,#progressbar li.active::after {
+	background: none repeat scroll 0 0 #27ae60;
+	color: white;
+}
+
+body button,body .x-btn,body .btn,body .btnDisabled,body .btnCancel,body .menuButton .menuButtonButton
+	{
+	padding: 2px 6px;
+}
+
+.pending {
+	background-color: #fbc9b1;
+	padding-right: 20px;
+	text-align: left;
+}
+
+.notpending {
+	padding-right: 20px;
+	text-align: left;
+}
+
+.customPopupSmall {
+	left: 50%;
+	margin-left: -262px;
+	position: absolute;
+	z-index: 1;
+	width: 524px;
+	top: 20%;
+}
+
+.dynatree-container {
+	border: 0px !important;
+}
+
+.box-main {
+	width: 100%;
+	margin: 30px auto;
+}
+
+.box-content {
+	background-color: #f7f7f7;
+	padding: 5px;
+	border: 1px solid #cccccc;
+}
+
+.box-content-popup {
+	background-color: #fff;
+	padding: 5px;
+	border: 1px solid #383838;
+	text-align: center;
+	font-size: 12px;
+}
+
+td {
+	font-size: 11px !important;
+}
+
+.box-top {
+	border-top: 3px solid #00335B;
+	-moz-border-top: 3px solid #00335B;
+	-webkit-border-top: 3px solid #00335B;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	-moz-border-top-left-radius: 10px;
+	-moz-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	background-color: #F8F8F8;
+	border-left: 1px solid #383838;
+	border-right: 1px solid #383838;
+	color: #000;
+	padding: 12px 0 0 15px;
+	font-weight: 600;
+	font-size: 18px;
+	height: 30px;
+}
+
+.tablecontent {
+	vertical-align: top;
+	height: 600px;
+	background-color: #fff;
+	margin-left: 20px;
+	border: 1px solid #989898;
+	font-size: 12px;
+	overflow-y: auto;
+}
+
+.box-top-div1 {
+	width: 25%;
+	font-weight: 800;
+	font-size: 16px;
+	float: left;
+	text-align: left;
+	height: 25px;
+	color: #666 !important;
+}
+
+.box-top-div2 {
+	width: 38%;
+	font-weight: 600;
+	font-size: 12px;
+	float: left;
+	text-align: center;
+	height: 25px;
+}
+
+.box-top-div3 {
+	width: 15%;
+	font-weight: 600;
+	font-size: 14px;
+	float: left;
+	height: 25px;
+}
+
+.box-top-div4 {
+	width: 25%;
+	font-weight: 600;
+	font-size: 13px;
+	float: left;
+	height: 25px;
+}
+
+.box-top-div5 {
+	width: 20%;
+	font-size: 13px;
+	text-align: right;
+	float: right;
+	height: 25px;
+	padding-right: 10px;
+}
+
+.box-top-div5-1 {
+	font-size: 13px;
+	text-align: right;
+	float: right;
+	height: 25px;
+	padding-right: 10px;
+}
+
+.searchbutton1 {
+	width: 80px;
+	height: 23px;
+	font-size: 11px !important;
+	margin-left: -80px !important;
+	border: 1px solid #277aa8 !important;
+	background-color: #55a4da !important;
+	z-index: 1;
+}
+
+.searchtxt1 {
+	border: 1px solid #277aa8;
+	border-radius: 5px;
+	height: 21px;
+	/* margin-left: 100px; */
+	padding-top: 0px;
+	width: 235px;
+}
+
+.button {
+	padding: 1px 10px !important;
+	/*border:1px solid #3fa9f5 !important;*/
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	height: 22px !important;
+	text-align: right;
+}
+
+.tree1 {
+	width: 275px;
+	vertical-align: top;
+	float: left;
+	height: 600px;
+	background-color: #fff;
+	border: 1px solid #989898;
+	overflow-y: auto;
+}
+
+.clear {
+	clear: both;
+}
+
+th {
+	color: #fff !important;
+	background-color: #277AA8 !important;
+	font-size: 11.5px !important;
+	line-height: 20px;
+}
+
+.table_header_tree {
+	color: #fff !important;
+	background-color: #277AA8 !important;
+	font-size: 12px !important;
+	font-weight: bold;
+	line-height: 30px !important;
+	padding-left: 12px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.table_header_main {
+	color: #404041 !important;
+	background-color: #277AA8 !important;
+	font-size: 16px !important;
+	text-align: center;
+	line-height: 30px !important;
+}
+
+td {
+	line-height: 20px;
+}
+
+.even {
+	/* background-color: White !important;*/
+	
+}
+
+.odd {
+	/* background-color: #e6f5fc !important; */
+	
+}
+
+.number {
+	text-align: left;
+}
+
+.text {
+	text-align: center;
+}
+
+.table {
+	border: 1px solid;
+	line-height: 25px !important;
+}
+
+.table-side-header {
+	margin-left: 20px;
+	text-align: left;
+	font-weight: bold;
+}
+
+.pure-table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	empty-cells: show;
+	border: 1px solid #cbcbcb
+}
+
+.pure-table caption {
+	color: #000;
+	font: italic 85%/1 arial, sans-serif;
+	padding: 1em 0;
+	text-align: center
+}
+
+.pure-table td,.pure-table th {
+	border-left: 1px solid #cbcbcb;
+	border-width: 0 0 0 1px;
+	font-size: inherit;
+	line-height: 20px;
+	margin: 0;
+	overflow: visible;
+	padding: .25em .50em
+}
+
+.pure-table td:first-child,.pure-table th:first-child {
+	border-left-width: 0
+}
+
+.pure-table thead {
+	background: #e0e0e0;
+	color: #000;
+	text-align: left;
+	vertical-align: bottom
+}
+
+.pure-table td {
+	background-color: transparent
+}
+
+.pure-table-odd td {
+	background-color: #e6f5fc
+}
+
+.pure-table-striped tr:nth-child(2n-1) td {
+	background-color: #f2f2f2
+}
+
+.pure-table-bordered td {
+	border-bottom: 1px solid #cbcbcb
+}
+
+.pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td
+	{
+	border-bottom-width: 0
+}
+
+.pure-table-horizontal td,.pure-table-horizontal th {
+	border-width: 0 0 1px;
+	border-bottom: 1px solid #cbcbcb
+}
+
+.pure-table-horizontal tbody>tr:last-child td {
+	border-bottom-width: 0
+}
+
+span.dynatree-node a {
+	font-size: 11px !important;
+}
+
+.wrapper1 .tooltip {
+	color: black;
+	display: block;
+	left: 92px;
+	margin-bottom: 15px;
+	opacity: 0;
+	padding: 20px;
+	pointer-events: none;
+	position: absolute;
+	-webkit-transform: translateY(10px);
+	-moz-transform: translateY(10px);
+	-ms-transform: translateY(10px);
+	-o-transform: translateY(10px);
+	transform: translateY(10px);
+	-webkit-transition: all .25s ease-out;
+	-moz-transition: all .25s ease-out;
+	-ms-transition: all .25s ease-out;
+	-o-transition: all .25s ease-out;
+	transition: all .25s ease-out;
+	-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.link {
+	text-decoration: underline;
+	color: #0b71be !important;
+	font-weight: normal !important;
+	padding-right: 10px;
+}
+
+.notes {
+	height: 25px;
+	font-weight: bold;
+	text-align: right;
+	font-size: 12px;
+	width: 140px !important;
+	float: left;
+	position: relative;
+}
+
+.notes-text-box {
+	float: left;
+	border: 1px solid #333;
+	width: 180px !important;
+	height: 22px;
+	padding-left: 5px;
+	margin-left: 10px;
+}
+
+.notes-text-box1 {
+	float: left;
+	border: 1px solid #333;
+	width: 187px !important;
+	height: 25px;
+	padding-left: 5px;
+}
+
+.notes-text-box3 {
+	float: left;
+	border: 1px solid #277aa8;
+	width: 150px !important;
+	height: 23px;
+	padding-left: 5px;
+}
+
+.notes1 {
+	font-weight: bold;
+	text-align: right;
+	width: 200px;
+	padding-left: 30px;
+	font-size: 12px;
+	float: left;
+	position: relative;
+}
+
+.notes-textbox {
+	float: left;
+	border: 1px solid #333;
+	width: 400px;
+	height: 50px;
+	padding-left: 5px;
+	position: relative;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.popup_top_info {
+	background-color: #e3e3e3;
+	border-bottom: 1px solid #000;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	font-size: 18px;
+	margin-right: 0;
+	margin-top: 0;
+	padding: 10px 567px 9px 5px !important;
+}
+
+.headerRow1 {
+	color: #fff !important;
+	background-color: #277AA8 !important;
+	font-size: 11.5px !important;
+	line-height: 20px;
+}
+
+.Popup4 {
+	background-color: white;
+	text-align: centre;
+	z-index: 0;
+	left: 50%;
+	position: absolute;
+	width: 600px;
+	height: 360px;
+	margin-left: -250px;
+	valign: top;
+	border-style: solid;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-width: 3px 1px 1px;
+	-moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	-webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	font-size: 12px;
+	top: 20%;
+}
+
+.Popup_Terr {
+	background-color: white;
+	border: #000 1px solid;
+	text-align: center;
+	z-index: 0;
+	left: 50%;
+	position: absolute;
+	width: 600px;
+	height: 250px;
+	margin-left: -450px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	valign: top;
+	-moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	-webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	font-size: 14px;
+	top: 20%;
+}
+
+.popupBackground {
+	background-color: black;
+	opacity: 0.20;
+	filter: alpha(opacity = 20);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+.popupBackgroundworkbench {
+	background-color: black;
+	opacity: 0.20;
+	filter: alpha(opacity = 20);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+.customPopup {
+	padding: 10px;
+	left: 50%;
+	margin-left: -376px;
+	position: absolute;
+	z-index: 2000;
+	width: 924px;
+	top: 20%;
+}
+
+.customPopupSc {
+	background-color: white;
+	border-style: solid;
+	border: #003f77 1px solid;
+	border-top: #003f77 2px solid;
+	padding: 10px;
+	left: 50%;
+	margin-left: -350px;
+	position: absolute;
+	z-index: 2222;
+	width: 700px;
+	top: 20%;
+}
+
+.customPopup_OK {
+	background-color: white;
+	border-style: solid;
+	border: #003f77 1px solid;
+	border-top: #003f77 2px solid;
+	padding: 20px;
+	height: 200px;
+	left: 50%;
+	margin-left: -200px;
+	position: absolute;
+	z-index: 2000;
+	width: 450px;
+	height: 400px;
+	top: 20%;
+}
+
+.pagination {
+	width: 750px;
+	text-align: center;
+	height: 30px;
+	padding: 7px 0px;
+	margin-left: 25%;
+}
+
+.page-buttons {
+	font-size: 12px !important;
+	font-weight: bold !important;
+	height: 22px !important;
+	text-align: right;
+}
+
+.center-popup {
+	text-align: center;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+br {
+	line-height: 10px !important;
+}
+</style>
+	<script type="text/javascript">
+function stopRKey(evt) {
+  var evt = (evt) ? evt : ((event) ? event : null);
+  var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+  if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
+}
+document.onkeypress = stopRKey;
+</script>
+	<form id="msform">
+		<!-- progressbar -->
+
+		<ul id="progressbar">
+			<li class="active"><b>Select Territory</b></li>
+			<!--         <li><span class="active"></span><b>Un-Assign AC </b></li> -->
+			<li><span class="active"></span><b>Assign AC </b></li>
+		</ul>
+
+		<!-- fieldsets -->
+		<!--  <fieldset>
+    <h2 class="fs-title">&nbsp;</h2>
+<input type="button" class="next action-button" value="Next1" onclick="toggleNavSelected(1);" />
+<input type="button" class="next action-button" value="Next2" onclick="toggleNavSelected(2);" />
+<input type="button" class="next action-button" value="Next3" onclick="toggleNavSelected(3);" /> 
+    </fieldset> -->
+	</form>
+	<apex:outputText id="script">
+		<script>
+function toggleNavSelected(el){    
+    var list = document.getElementById('progressbar');    
+    
+    if (el==1) {
+        
+        list.children[0].classList.add("active");       
+        list.children[1].classList.remove("active");        
+        list.children[2].classList.remove("active");
+    }
+    else if (el==2) {
+      
+        list.children[0].classList.add("active");       
+        list.children[1].classList.add("active");       
+        list.children[2].classList.remove("active");
+    }
+    else if (el==3) {
+        
+        list.children[0].classList.add("active");       
+        list.children[1].classList.add("active");       
+        list.children[2].classList.add("active");
+    } 
+}
+
+
+</script>
+	</apex:outputText>
+	<apex:form id="form1">
+
+		<!-- -----------------------------------------VF Page---------------------------------------------- -->
+		<div class="box-main">
+			<div class="box-top">
+				<div class="box-top-div1">{!selTerritory.Region__c}</div>
+				<div class="box-top-div2">
+					<apex:inputtext value="{!searchterm}" styleclass="searchtxt1"></apex:inputtext>
+					<apex:commandbutton value="Search" styleclass="searchbutton1"
+						rerender="TerritoryPanel" action="{!pupulateUsers}"
+						accesskey="Enter" />
+				</div>
+				<div class="box-top-div3">
+					<apex:selectlist size="1" value="{!districtRole}"
+						styleclass="notes-text-box3"
+						disabled="{!$UserRole.Id==districtRole}">
+						<apex:selectOptions value="{!allDistricts}" />
+						<apex:actionsupport event="onchange"
+							rerender="TerritoryPanel,hderpnl" action="{!pupulateUsers}" />
+					</apex:selectlist>
+				</div>
+				<div class="box-top-div5">
+					<!-- -----------------------------------------Action Buttons---------------------------------------------- -->
+					<apex:commandbutton value="Back" action="{!Back}"
+						styleclass="button"></apex:commandbutton>
+					&nbsp;&nbsp;
+					<apex:commandbutton value="Assign" styleclass="button"
+						action="{!openAssignPopup}" rerender="popupAssign"
+						oncomplete="toggleNavSelected(3);"></apex:commandbutton>
+					&nbsp;&nbsp;
+					<!-- -----------------------------------------Action Buttons---------------------------------------------- -->
+				</div>
+			</div>
+			<div class="box-content">
+				<apex:outputPanel id="hderpnl">
+					<h1 style="line-height: 40px;">Available Employees in
+						{!districtRoleName }</h1>
+				</apex:outputPanel>
+				<apex:outputPanel id="TerritoryPanel">
+					<apex:pageBlock id="thePBasd" mode="maindetail">
+						<apex:outputPanel id="msgPnl" rendered="{!!showPopupMsg}"><apex:pageMessages id="myMsg" /></apex:outputPanel>
+						<apex:pageblocktable value="{!lsWrapPosition}" var="wrap"
+							id="maintable" rowClasses="one,two">
+							<apex:column headerValue="Action"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending'     ,'notpending')}">
+								<apex:outputpanel rendered="{!!(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved')}">
+									<input type="radio" name="userid"
+										onclick="passSelected('{!wrap.user.id}');" />
+								</apex:outputpanel>
+							</apex:column>
+							<apex:column headerValue="Employee Name"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                                <apex:outputlink value="/{!wrap.user.id}" target="_blank">{!wrap.user.name}</apex:outputlink>
+                                </apex:column>
+							<apex:column headerValue="District Name"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                                {!districtRoleName}
+                                </apex:column>
+							<apex:column headerValue="Territory"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                                {!wrap.Territory}
+                                </apex:column>
+							<apex:column headerValue="Effective Start Date"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                                {!wrap.effectivestartDate}
+                                </apex:column>
+							<apex:column headerValue="Effective End Date"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+                                {!wrap.effectiveEndDate}
+                                </apex:column>
+							<apex:column headerValue="Availability"
+								styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}">
+								<apex:image url="{!$Resource.SalesIQ__Green_updated}"
+									rendered="{!wrap.available}"
+									styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}"></apex:image>
+								<apex:image url="{!$Resource.SalesIQ__Red_updated}"
+									rendered="{!!wrap.available}"
+									styleclass="{!if(wrap.reqStatus=='Pending'||wrap.reqStatus=='Approved','pending','notpending')}"></apex:image>
+							</apex:column>
+						</apex:pageblocktable>
+					</apex:pageBlock>
+				</apex:outputPanel>
+			</div>
+		</div>
+		<script type="text/javascript">
+         function passSelected(position){
+         
+           //alert(position);
+           document.getElementById("mainpage:form1:input1").value =  position;
+         }
+        </script>
+
+		<apex:inputhidden id="input1" value="{!selectedUserId}" />
+		<!-- ----------------------------Assign AC (Confirm ) PopUp Window------------------------------------------------- -->
+		<apex:outputPanel id="popupAssign">
+			<apex:outputPanel styleClass="popupBackground" layout="block"
+				rendered="{!displayPopUpAssign}" />
+			<apex:outputPanel styleClass="customPopupSmall" layout="block"
+				rendered="{!displayPopUpAssign}">
+				<div class="box-main" style="margin-top: -2px;">
+					<div class="box-top">
+						<div class="box-top-div1">Assign AC</div>
+					</div>
+					<div class="box-content-popup">
+						<apex:pageMessages id="popupMsgUnAv2" />
+						<apex:pageblock mode="maindetail">
+							<apex:outputpanel rendered="{!displayPopUpAssignUnAv}" id="outp2">
+                        <b>"{!selectedUserName}"</b> is already assigned to another territory.Un-assign it.</apex:outputpanel>
+							<!--                                <br/><br/>  Effective End Date :<apex:selectlist size="1" value="{!effectiveEnddate}" > -->
+							<!--                                        <apex:selectOptions value="{!Dates}" /> -->
+
+							<!--                                        <apex:actionsupport event="onchange" rerender="popupAssign"/> -->
+							<!--                        </apex:selectlist> <br/><br/>  -->
+                                  Assign <b>"{!selectedUserName}"</b> to <b>"{!selTerritory.name}"</b>. <br />
+							<br />
+							<div class="notes">Effective Start Date :</div>
+							<apex:selectlist size="1" value="{!effectiveStartdate}"
+								styleclass="notes-text-box" id="pnlstartdate">
+								<apex:selectOptions value="{!StartDates}" />
+								<apex:actionSupport event="onchange" action="{!displaywarning}"
+									rerender="popupMsgUnAv2" />
+
+							</apex:selectlist>
+						</apex:pageblock>
+						<br />
+						<div style="text-align: center">
+
+							<apex:actionStatus id="go">
+								<apex:facet name="stop">
+									<apex:outputPanel >
+										<apex:commandButton value=" Submit "
+											style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+											action="{!confirmAssignUser}"
+											oncomplete="toggleNavSelected(3)"
+											rerender="popupAssign,TerritoryPanel" status="go" />
+							&nbsp;&nbsp;
+							<apex:commandButton value="Cancel"
+											style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+											action="{!closeAssignPopup}" rerender="popupAssign,TerritoryPanel" />
+									</apex:outputPanel>
+								</apex:facet>
+								<apex:facet name="start">
+									<apex:outputPanel >
+										<apex:commandButton value="Processing..." disabled="true"
+											style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+											rerender="popupAssign,TerritoryPanel" />
+							&nbsp;&nbsp;
+							<apex:commandButton value="Processing..." disabled="true"
+											style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;" />
+									</apex:outputPanel>
+								</apex:facet>
+							</apex:actionStatus>
+						</div>
+						<br />
+					</div>
+				</div>
+			</apex:outputPanel>
+		</apex:outputPanel>
+	</apex:form>
+	<script> var previousOnload = window.onload; window.onload = function() { if (previousOnload) { previousOnload(); } toggleNavSelected(1); } </script>
+	   <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

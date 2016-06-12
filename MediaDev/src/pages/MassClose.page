@@ -1,0 +1,32 @@
+<apex:page standardController="Case" recordSetVar="cases" extensions="MassCloseCasesController" showHeader="false" sidebar="false">
+  
+    <apex:form >
+
+        <apex:pageMessages />
+
+        <apex:outputPanel > <!-- this did not show messages on same page id="sectionErrors" rendered="{!!showPageMessages}"--> 
+           
+            <apex:pageBlock title="Mass Close Cases">
+            
+                <apex:pageBlockButtons >
+                    <apex:commandButton action="{!save}" value="Save"/>
+                    <apex:commandButton action="{!doCancel}" value="Cancel"/>
+
+                </apex:pageBlockButtons>
+            
+                <apex:pageBlockSection columns="1" title="Case Information" collapsible="false">
+                    
+                    <apex:outputField value="{!initCase.Status}"/>
+                    <apex:inputField value="{!initCase.Reason}" required="true"/>
+                    <apex:inputField value="{!initCaseComment.CommentBody}" label="Internal Comments"/>
+                
+                
+                </apex:pageBlockSection>
+            
+            </apex:pageBlock>
+        
+         </apex:outputPanel> 
+  
+    </apex:form>
+
+</apex:page>

@@ -1,0 +1,82 @@
+<apex:component id="atg-opp-prod-header" layout="block" selfClosing="true">
+	<apex:attribute name="record" type="Opp_Product__c" required="true" description="The Opportunity Product record the containing form is associated with." />
+	<apex:attribute name="extender" type="OppProdSE2Extender" required="false" description="The page extension record in it's base object form." />
+	<apex:attribute name="currentAppProperties" type="Map" required="true" description="The title of the form." />
+
+<!-- <pre style="position: absolute; top: 113px;">{!currentAppProperties}</pre> -->
+<div class="atg-opp-prod-header">
+<!-- <div class="atg-opp-prod-header" style="top: {!currentAppProperties['Component__Top']}px;"> -->
+	<div id="dealership-id-field"><apex:outputText value="{!record.Opportunity__r.Account.SVOC_Id__c}" /></div>
+	<div id="bill-to-id-field"><apex:inputField value="{!record.Bill_To_ID__c}" /></div>
+	<div id="dealership-name-field"><apex:outputText value="{!record.Opportunity__r.Account.Name}" /></div>
+	<div id="invoice-name-field"><apex:inputField value="{!record.Invoice_Name__c}" /></div>
+	<div id="franchise-field"><apex:outputField value="{!record.Opportunity__r.Account.Dealer_Nameplates__c}" /></div>
+
+	<div id="physical-address-row" class="address-row">
+		<apex:inputCheckbox styleClass="checkbox use-existing-check" value="{!extender.useExistingPhysical}" />
+		<!--
+		The custom address gets flipped by the controller extension so that it will provide the use existing type logic,
+		actions on this field need their logic flipped as well.
+		-->
+		<apex:variable var="physicalLabelStyle" value="{!IF(record.Opportunity__r.Custom_Physical_Address__c, 'display: none;', '')}" />
+		<apex:variable var="physicalInputStyle" value="{!IF(record.Opportunity__r.Custom_Physical_Address__c, '', 'display: none;')}" />
+
+		<div class="editable-field-container street-container">
+			<div style="{!physicalLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.ShippingStreet}" /></div>
+			<apex:inputText style="{!physicalInputStyle}" value="{!record.Opportunity__r.Physical_Street__c}" />
+		</div>
+
+		<div class="editable-field-container city-container">
+			<div style="{!physicalLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.ShippingCity}" /></div>
+			<apex:inputField style="{!physicalInputStyle}" value="{!record.Opportunity__r.Physical_City__c}" />
+		</div>
+
+		<div class="editable-field-container state-container">
+			<div style="{!physicalLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.ShippingState}" /></div>
+			<apex:inputField style="{!physicalInputStyle}" value="{!record.Opportunity__r.Physical_State__c}" />
+		</div>
+
+		<div class="editable-field-container postalcode-container">
+			<div style="{!physicalLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.ShippingPostalCode}" /></div>
+			<apex:inputField style="{!physicalInputStyle}" value="{!record.Opportunity__r.Physical_Zip_Postal_Code__c}" />
+		</div>
+	</div>
+
+	<div id="billing-address-row" class="address-row">
+		<apex:inputCheckbox styleClass="checkbox use-existing-check" value="{!extender.useExistingBilling}" />
+		<!--
+		The custom address gets flipped by the controller extension so that it will provide the use existing type logic,
+		actions on this field need their logic flipped as well.
+		-->
+		<apex:variable var="billingLabelStyle" value="{!IF(record.Opportunity__r.Custom_Billing_Address__c, 'display: none;', '')}" />
+		<apex:variable var="billingInputStyle" value="{!IF(record.Opportunity__r.Custom_Billing_Address__c, '', 'display: none;')}" />
+
+		<div class="editable-field-container street-container">
+			<div style="{!billingLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.BillingStreet}" /></div>
+			<apex:inputText style="{!billingInputStyle}" value="{!record.Opportunity__r.Billing_Street__c}" />
+		</div>
+
+		<div class="editable-field-container city-container">
+			<div style="{!billingLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.BillingCity}" /></div>
+			<apex:inputField style="{!billingInputStyle}" value="{!record.Opportunity__r.Billing_City__c}" />
+		</div>
+
+		<div class="editable-field-container state-container">
+			<div style="{!billingLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.BillingState}" /></div>
+			<apex:inputField style="{!billingInputStyle}" value="{!record.Opportunity__r.Billing_State__c}" />
+		</div>
+
+		<div class="editable-field-container postalcode-container">
+			<div style="{!billingLabelStyle}"><apex:outputText value="{!record.Opportunity__r.Account.BillingPostalCode}" /></div>
+			<apex:inputField style="{!billingInputStyle}" value="{!record.Opportunity__r.Billing_Zip_Postal_Code__c}" />
+		</div>
+	</div>
+
+	<div id="dealership-contact-phone-field"><apex:inputField value="{!record.Opportunity__r.Phone__c}" /></div>
+	<div id="dealership-contact-fax-field"><apex:inputField value="{!record.Opportunity__r.Fax__c}" /></div>
+	<div id="dealership-contact-email-field"><apex:inputField value="{!record.Opportunity__r.Contact_Email__c}" /></div>
+	<div id="dealership-contact-name-field"><apex:inputField value="{!record.Opportunity__r.Contact_Name__c}" /></div>
+	<div id="dealership-contact-title-field"><apex:inputField value="{!record.Opportunity__r.Contact_Title__c}" /></div>
+	<div id="inventory-source-field"><apex:inputField value="{!record.Used_Car_Inventory_Source__c}" /></div>
+</div>
+</apex:component>

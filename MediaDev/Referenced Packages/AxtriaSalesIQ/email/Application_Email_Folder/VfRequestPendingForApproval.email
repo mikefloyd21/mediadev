@@ -1,0 +1,13 @@
+<messaging:emailTemplate subject="{!relatedTo.Request__r.Name}-{!relatedTo.Request__r.SalesIQ__Request_Type__c}-Status-Pending" 
+    recipientType="User" 
+    relatedToType="SalesIQ__ApprovalLineItem__c">
+<messaging:plainTextEmailBody >
+Dear {!relatedTo.Approver__r.Name},
+
+A request "{!relatedTo.Request__r.Name}-{!relatedTo.Request__r.SalesIQ__Request_Type__c}"  has been {!relatedTo.SalesIQ__Approval_Status__c}.
+Please follow the link https://c.na17.visual.force.com/apex/ApprovalAll" to take appropriate action.
+
+Thank You.
+{!recipient.Name}
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

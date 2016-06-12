@@ -1,0 +1,360 @@
+<apex:page >
+<style>
+#li1
+{
+    font-size:12pt;
+}
+.inactiveTab { background-color: lightgrey; color:black; background-image:none}
+</style>
+    <html>
+        <head>
+            <p class="MsoNormal" align="center" style='text-align:center'><b><span
+            style='font-size:14.0pt; line-height:100%; font-family:&quot;Arial&quot;, &quot;sans-serif&quot;'>This is Salesforce - Everything We Do Will Be In This Application</span></b></p>
+        </head>
+    </html>
+    <html>
+            <h3 style='font-size:12pt;'>PREWORK:</h3>
+        <ul>
+                <li id="li1">Videos and Modules to get started</li>
+            <ol>
+                <li id="li1"><a href="#" target="_blank">CRM Overview</a></li>
+                <li id="li1"><a href="#" target="_blank">Logging into Salesforce</a></li>
+                <li id="li1"><a href="#" target="_blank">Navigating Salesforce</a></li>
+            </ol>
+        </ul>
+        
+  <h2 style='font-size:12pt;'>CLASSROOM OUTLINE</h2><br></br><br></br>
+    <h3 style='font-size:10pt; margin-left:25pt;'>WELCOME</h3>
+    <ul>
+        <li id="li1">This is Salesforce, all NGSS Sales related activities will be kept in this  application</li>
+        <ul type="circle">
+            <li id="li1">Required to log everything, phone calls, changes</li>
+            <ul type="square">
+            <li id="li1">Will be checked, they will assume you´re not doing anything if nothing it there</li>
+            </ul> 
+            <li id="li1">Lots of tabs at the top, each tab takes you to a different kind of record</li>
+            <ul type="square">
+            <li id="li1">Edit tabs with plus sign, Customize My Tabs</li>
+            </ul>
+        </ul>
+    </ul>
+    </html>
+    <apex:tabPanel switchType="client" selectedTab="Tab 1" id="theTabPanel1" tabClass="activeTab" inactiveTabClass="inactiveTab">
+        <apex:tab label="Getting Started" name="Getting Started" id="gettingStarted">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+            </html>
+        </apex:tab>
+        <apex:tab label="Home Page" name="Home Page" id="tabdetails">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                
+                <ul type="square">
+                    <li id="li1"><b>Home Page</b></li><br></br>
+                    <ul type="circle">
+                        <li id="li1">Collapsible sidebar - you have the choice to show or hide the sidebar as needed</li>
+                        <li id="li1">Custom Links</li>
+                            <ul type="square">
+                                <li id="li1">Request a change to Salesforce – use this link if you find an error in the application that needs to be corrected</li>
+                                <li id="li1">Log an Issue with Salesforce – use this link if you need assistance with Salesforce</li>
+                                <li id="li1">Post an Idea for Salesforce – use this link to post an Idea that might improve Salesforce functionality</li>
+                            </ul>
+                        <li id="li1">Shortcuts</li>
+                            <ul type="square">
+                                <li id="li1">Calendar – navigates user to full calendar, other user’s calendars and the activity list view</li>
+                                <li id="li1">Unresolved Items - is a list of contacts, events, emails, and tasks that have been added to Salesforce but haven't yet been associated with other Salesforce records. Click <a href="https://help.salesforce.com/HTViewHelpDoc?id=outlookcrm_unresolved_items.htm&language=en_US" target="_blank">here </a> to read more.</li>
+                            </ul>
+                        <li id="li1">Recent Items -short list of up to 10 records (accounts, contacts, opportunities, etc) you’ve most recently added or viewed.<br></br> To see the details of an item click the name of the item.<br></br> Additionally, you can hover your mouse over any item in the Recent Items list to view key information about the record before clicking into that record's detail or edit page. </li>
+                        <li id="li1">Recycle bin - lets you view and restore recently deleted records for 15 days before they are permanently deleted.</li>
+                        <li id="li1">Dashboard – top 3 metrics your Manager/Director has designated as a high priority for your visibility.  </li>
+                    </ul>
+                </ul>
+                <ul type="square">
+                    <li id="li1"><b>Tasks</b> - View a list of tasks assigned to you. Up to fifteen tasks can be displayed; to view all your tasks, click <b>View More</b>.</li><br></br>
+                        <ul type="circle">
+                            <li id="li1">Click New to create a task.  The recurrence icon (icon) identifies tasks that are part of a recurring series.</li>
+                            <li id="li1">Choose a time frame from the drop-down list to change which tasks display: All Open, Today, Overdue, etc</li>
+                            <li id="li1">Assign unresolved emails to related records: to view all your unassigned emails, click “<b>My Unresolved Items</b>”.</li>
+                            <li id="li1">Reminders - </li>
+                        </ul><br></br>
+                    <li id="li1"><b>Calendar</b></li>
+                        <ul type="circle"><br></br>
+                            <li id="li1">Click <b>New Event</b> to create a new event.</li>
+                            <li id="li1">Reminders-</li>
+                            <li id="li1">Click the Scheduled Meetings sub-tab to view a list of the events you have scheduled for the next seven days. This tab displays a maximum of 50 events per day.</li>
+                                <ul type="square">
+                                    <li id="li1">The recurrence icon ( ) identifies events that are part of a recurring series.</li>
+                                    <li id="li1">The multi-person event icon ( ) identifies events with invitees. Multi-person events aren't available in Personal Edition.</li>
+                                    <li id="li1">Hover over the subject of an event to display the details of the event in an interactive overlay. Alternatively, click the subject of an event to open the detail page of that event.</li>
+                                </ul>
+                            <li id="li1">Click the Requested Meetings sub-tab to view meetings you have requested but not confirmed. This tab displays a maximum of 100 requested meetings.</li>
+                                <ul type="square">
+                                    <li id="li1">Click the subject of the meeting to open its detail page where you can <a href="https://help.salesforce.com/HTViewHelpDoc?id=meeting_cancel.htm&language=en_US" target="_blank">cancel</a> and <a href="https://help.salesforce.com/HTViewHelpDoc?id=meeting_cancel.htm&language=en_US" target="_blank">reschedule</a> the meeting.</li>
+                                    <li id="li1">The Status column shows the number of invitees that have responded to your meeting request.</li>
+                                    <li id="li1">Once you <a href="https://help.salesforce.com/HTViewHelpDoc?id=meeting_confirm.htm&language=en_US" target="_blank">confirm a meeting</a>, it appears on the Scheduled Meetings subtab.</li>
+                                </ul>
+                            <li id="li1">View a small calendar of the current month. To change which month displays, click the Previous Month and Next Month icons as appropriate</li>
+                            <li id="li1">Navigate to different views of your calendar: Click the icons underneath the small monthly calendar as appropriate. </li>
+                        </ul><br></br>
+                    <li id="li1"><b>Chatter</b> – allows user to from a community within their business that can be used for secure collaboration and knowledge-sharing.</li>
+                        <ul type="circle"><br></br>
+                            <li id="li1">Connect with Experts -Have a question for the product team—or someone in marketing, sales, or finance—but not sure who to ask? Post it to Chatter and get answers from across the company.</li>
+                            <li id="li1">Collaborate with Remote Employees - Remote employees can feel disconnected. Bring everyone together with Chatter to stay connected and tap into regional expertise.</li>
+                            <li id="li1">Prepare for Sales Presentations - Instead of spending time in endless meetings working on customer presentations, post your slides, questions, and feedback on Chatter to save time and close more business.</li>
+                            <li id="li1">Get Answers - Next time you have a question for the pricing team, marketing, or any other department, don’t send an email blast—post the question to Chatter and get answers from people you wouldn’t think to include.</li>
+                            <li id="li1">Share with Colleagues - When you find interesting articles, videos, or websites that are relevant to your business, post them to Chatter to circulate important information and spark discussion.</li>
+                            <li id="li1">Solve Customer Issues - When a customer has a problem, you often need to work with people across your company to solve the issue quickly. To give the best possible service, use Chatter to get answers in no time.</li>
+                            <li id="li1">Brainstorm Marketing Ideas - Use Chatter as a first-round focus group to test advertising and marketing ideas with your coworkers.  More info – click <a href="https://www.chatter.com/newfeatures/" target="_blank">here.</a></li>
+                        </ul>
+                    <li id="li1"><b>Search</b>– Find records: Accounts, Contacts, Opportunities, files, etc.</li>
+                        <ul type="circle"><br></br>
+                            <li id="li1">You can use the * (asterisk) and ? (question mark) wildcards to refine results. Use * to match one or more characters, or ? to match a single character. For example, searching for bob jo* finds items with Bob Jones and Bob Johnson, and searching for jo?n finds items with john and joan. You can also use the AND, OR, AND NOT, ( ) (parentheses), and " " (quotation marks) operators to refine results.</li>
+                            <li id="li1">Watch Demo - <a href="http://www.youtube.com/watch?v=n0HLO4_d3Vg" target="_blank">Here</a></li>
+                        </ul>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Accounts" name="Accounts" id="Accounts">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul>
+                    <li id="li1"><b>Accounts</b> – are Dealers, OEM’s, Third Parties, Partners, Vendors.  Each is designated by a record type field.  Accounts can be found by using the search function or by accessing the account tab and using views.</li>
+                        <ul type="circle"><br></br>
+                            <li id="li1">A view presents a listing of records based on filters that an Admin has setup</li>
+                            <li id="li1">Anything with a line is a link – click the link to see the record detail or hover to see details</li>
+                            <li id="li1">Dealer accounts have fields that are specific to Dealer information and are not included on the detail pages for OEM’s, Third Parties, Partners and Vendors</li>
+                            <li id="li1">Custom links within a record detail page give quick access to other Salesforce info</li>
+                            <li id="li1">Hovers give quick access to info in a related list.  Click the hover to immediately access the related list.</li>
+                            <li id="li1">Related Lists are other objects in Salesforce that have a relationship to the Account. Contacts, Opportunities, Activities are related lists</li>
+                            <li id="li1">Notes and Attachments</li>
+                                <ul type="square">
+                                    <li id="li1">do not use, not reportable</li> 
+                                    <li id="li1">attach files in Chatter</li>
+                                </ul>
+                        </ul><br></br>
+                    <li id="li1"><b>SWOT’s</b> – (Strength, Weakness, Opportunity, Threat) – allows users to add a unique disposition to an account so that other users can have visibility into the health of the account.</li><br></br>
+                    <li id="li1"><b>ATG Products</b> – Contract and spend data related to each Business Unit.  Updated daily from feeds from each Business Unit.</li><br></br>
+                    <li id="li1"><b>Contacts</b> - Contacts are the people associated with accounts that you need to track in Salesforce. For each contact, you can store various kinds of information, such as phone numbers, addresses, titles, and roles in a deal.</li><br></br>
+                    <li id="li1"><b>Contact Roles</b> – used to link an existing contact into an another account, opportunity or case.  Prevents duplication of contact records.  Allows you to link a contact record to other objects without duplication.</li><br></br>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Opportunities" name="Opportunities" id="opportunities">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul>
+                    <li id="li1"><b>Opportunities</b> – are the sales and pending deals that you want to track. By adding opportunities, you are also building your “pipeline,” which will contribute to your forecast. You can also link opportunities to campaigns to help measure the ROI of your marketing programs. In addition, you can create quotes, which show proposed prices for products and services, from an opportunity. </li><br></br>
+                    <li id="li1"><b>Quotes</b> - A quote is a record showing proposed prices for products and services. </li><br></br>
+                        <ul type="circle">
+                            <li id="li1">You create a quote from an opportunity and its products. </li>
+                            <li id="li1">Each opportunity can have multiple associated quotes, and any one of them can be synced with the opportunity.</li>
+                            <li id="li1">When a quote and an opportunity are synced, any change to line items in the quote will sync with products on the opportunity, and vice versa. </li>
+                            <li id="li1">When your quote is complete, you can generate a PDF and email it to your customer</li>
+                            <li id="li1">Quote PDFs are based on templates that can be created and customized.</li>
+                        </ul><br></br>
+                    <li id="li1"><b>Dashboards</b> - shows data from source reports as visual components, which can be charts, gauges, tables or metrics. The components provide a snapshot of key metrics and performance indicators for your organization. Each dashboard can have up to 20 components.</li><br></br>
+                    <li id="li1"><b>Reporting</b> - returns a set of records that meets certain criteria, and displays it in organized rows and columns. Report data can be filtered, grouped, and displayed graphically as a chart in a report or on a Dashboard.</li><br></br>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Logging" name="Logging" id="logging">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul>
+                    <li id="li1"><b>Activities</b> – calls, tasks, emails and meetings that have been completed.  Related List included on most objects.</li><br></br>
+                    <li id="li1"><b>Open Activities</b> – tasks or meetings that have not been completed.  Related List included on most objects.</li><br></br>
+                    <li id="li1"><b>Reminders</b> - display popup reminders for upcoming tasks and events. Reminders notify the activity assignee of an upcoming task or event. The reminder displays in a small browser popup window when the activity assignee is logged in to Salesforce. When a user logs in, any reminders that have not been dismissed and reminders scheduled to occur since the last time the user logged out are shown in the reminder window.   When you create or edit an event or task, you have an option to set a reminder on it.</li><br></br>
+                    <li id="li1"><b>Re-occurring Tasks</b> - is an event that repeats in a series for example a weekly staff meeting that occurs every Monday at 11:00 AM.  Set the frequency: Daily, weekly, monthly, yearly, weekday, etc.  Select the start and end date and add a reminder if necessary.</li><br></br>
+                    <li id="li1"><b>Shared Calendaring</b> - is a set of features that help users track events organization-wide. Users can view each other’s calendars to see what events are scheduled. If calendar sharing permissions allow it, users can also add events to other users’ calendars and even change the details of other users’ existing events.</li><br></br>
+                        <ul type="circle">
+                            <li id="li1">The multi-user calendar view displays several users’ calendars all at once.</li>
+                            <li id="li1">Public calendars track events that apply to a group of users. For example, department event calendars, project calendars, and production schedules. See help doc <a href="https://na9.salesforce.com/sfc/#version?selectedDocumentId=069E0000000MwAw" target="_blank">here.</a></li><br></br>
+                        </ul>
+                    <li id="li1"><b>HTML Email Status</b> – on Leads and Contacts only. If you use the “Send an Email” button from this related list, you will gain visibility as to if the user opened the email and how many times. Make sure your email format is set to HTML.</li><br></br>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Cool Stuff" name="Cool Stuff" id="coolStuff">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul>
+                    <li id="li1"><b>Content</b> - allows users to organize, share, search, and manage content within your organization and across key areas of the Salesforce application. Content can include all file types, from traditional business documents such as Microsof® PowerPoint® presentations to audio files, video files, Web pages, and Google® docs.</li><br></br>
+                    <li id="li1"><b>Salesforce for Outlook</b>  - Microsoft® Outlook® integration application that lets you log emails in Salesforce. You can also sync contacts, events, and tasks between Outlook and Salesforce  - link to demo <a href="http://youtu.be/oseq895H8RI" target="_blank">here</a></li><br></br>
+                    <li id="li1"><b>Dragon Dictate for Salesforce</b> -  with your  iPhone/iPad you can speak text input for everything from Call Log, Chatter, Email, SMS and more.   Salesforce.com records are automatically updated with each use! </li><br></br>
+                        <ul type="circle">
+                            <li id="li1">Dragon for Salesforce iPad - <a href="http://youtu.be/NEmy7xAKqAk" target="_blank">here</a></li>
+                            <li id="li1">Dragon for Salesforce iPhone - <a href="http://youtu.be/-XP-vm5KL6U" target="_blank">here</a></li>
+                        </ul>"
+                    <li id="li1"><b>Find Nearby</b> - Find all your Accounts, Contacts, Leads in an area. Map “Custom Search” items from list views. Plan your next Sales Trip and get driving directions to each location.  Demo <a href="http://youtu.be/g_t8z8Ubinw" target="_blank">here</a></li><br></br>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Day In The Life" name="Day In The Life" id="dayInTheLife">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul type="square">
+                    <li id="li1"><b>Planning My Day</b></li><br></br>
+                        <ul type="disc">
+                            <li id="li1">Check my Home page to review pending tasks, scheduled meetings/requested meetings, view my dashboard to ensure </li><br></br>
+                        </ul>
+                    <li id="li1"><b>Looking at my book of business, planning my day and my business</b></li><br></br>
+                        <ul type="disc">
+                            <li id="li1"><b>Account Views</b> – views have been created, if you need additional views created to review your book of business, please use the link in the sidebar labeled “Log a Salesforce Issue” and your admin will process your request.  Anything in a view that is underlined is a link to a detail records.  Click on the Account link to go to the account record detail, from there you can create tasks, schedule meetings, update Dealer Product Info or add a SWOT.</li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">My Team’s Accounts – shows ALL accounts where you are listed as an Account Team member.</li>
+                                    <li id="li1">My Team’s Accounts Targeted– shows accounts that you are listed as a team member where the Business Unit target date has been populated</li>
+                                    <li id="li1">“BU” Team Working Accounts – shows accounts that you are listed as the team member with a target date in any of the BU target date fields that equals “this month”</li>
+                                    <li id="li1">My Team’s Accounts – Neglected – shows accounts that you are listed as a team member where the last activity date is blank or is greater than the last 45 days</li>
+                                </ul>
+                        </ul><br></br>
+                    <li id="li1"><b>Prospecting</b></li><br></br>
+                        <ul type="disc">
+                            <li id="li1">Looking at products –  </li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">All contract data and spend for the last 2 years for each Business Unit has been pre-loaded into the object labeled “ATG Products” which is a related list on the Account page.  </li>
+                                    <li id="li1">Each product line contains fields to show the product status (Active, Inactive), BU name, product start date, product end date and end reason.  </li>
+                                    <li id="li1">Product data will be updated daily from scheduled BU feeds.</li>
+                                    <li id="li1">Each BU has fields on the account page that rolls up the total product spend for that BU </li>
+                                    <li id="li1">Each BU has fields on the account page that indicate the status of the Dealer at the BU: Active, Former (cancelled all products), Prospect (never purchased  products)</li>
+                                    <li id="li1">The BU Status updates the Flair at the top of the Account Page</li>
+                                        <ul type="square">
+                                            <li id="li1">Prospect - Greyscale Flair present</li>
+                                            <li id="li1">Active = Fully Visible BU Logo</li>
+                                            <li id="li1">Former – Flair with Red line</li>
+                                        </ul>
+                                </ul><br></br>
+                            <li id="li1">Flagging the Account for Target – </li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">Each account has a BU specific target date that can be set to indicate the start date you will begin the process of targeting the Dealer for product selling</li>
+                                    <li id="li1">Once the target date is set, the account will fall into your “BU Team Working Accounts”.  This view is set to show accounts with the specific BU target date for the current month.  </li>
+                                    <li id="li1">To view all targeted accounts for you or your team, use the view “My Team’s Accounts - Targeted”</li>
+                                </ul>
+                        </ul><br></br>
+                    <li id="li1"><b>PLANNING- COORDINATION + COMMUNICATION WITH MY TEAM</b></li><br></br>
+                        <ul type="disc">
+                            <li id="li1">Building opportunities – from the specific BU working account view</li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">Click on account link, review account</li>
+                                    <li id="li1">Click the button “ Create Opp”   </li>
+                                    <li id="li1">Set the Close Date</li>
+                                    <li id="li1">Set the Business type: New Business, Upsell, etc</li>
+                                    <li id="li1">Set the Business Unit</li>
+                                    <li id="li1">Save</li>
+                                    <li id="li1">Add the product</li>
+                                    <li id="li1">Add your next step</li>
+                                    <li id="li1">Create Tasks/Events (meetings), log calls</li>
+                                </ul><br></br>
+                            <li id="li1">How do I coordinate? </li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">Moderator (RSD) kicks off the call. Review accounts in the following priority:</li><br></br>
+                                        <ul type="square">
+                                            <li id="li1">Multiple Software opportunities on same account</li>
+                                            <li id="li1">Both media and software opportunities on same account</li>
+                                            <li id="li1">Any red SWOTs on accounts</li>
+                                            <li id="li1">Any yellow SWOTs on accounts</li>
+                                            <li id="li1">All other open opportunities (time permitting)</li>
+                                        </ul><br></br>
+                                    <li id="li1">Capture call outcome – update the date the coordination call occurred and add notes to the Coordination Call Notes field</li>
+                                    <li id="li1">Determine whether any accounts must move to escalation call. Escalation calls will close out any disagreements on plan to move forward for accounts</li>
+                                    <li id="li1">MDCs review their monthly plans with their DSMs in their 1:1s (phone, in person or email)</li>
+                                    <li id="li1">All reps build out their next steps on open opportunities </li>
+                                    <li id="li1">Coordination on open opportunities between different reps</li><br></br>
+                                        <ul type="square">
+                                            <li id="li1">Information sharing</li>
+                                            <li id="li1">4-legged sales call</li>
+                                            <li id="li1">Service call – warm intro</li>
+                                            <li id="li1">Referral </li>
+                                        </ul>
+                                </ul><br></br>
+                            <li id="li1">Managing opportunities- stage history</li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">Prospect – all newly created opportunities start in the Prospecting stage.  You can proceed to the Planning stage without a coordination call date (updated by your Manager)</li>
+                                    <li id="li1">Planning – defaults to 25% probability (editable by user)</li>
+                                    <li id="li1">Presentation – defaults to 70% probability (editable by user)</li>
+                                    <li id="li1">Closed Won – 100% probability</li>
+                                    <li id="li1">Closed Lost – Reason is required</li>
+                                </ul><br></br>
+                            <li id="li1">Managing Pipeline – Views, Dashboards, Reports, Planning Wall</li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">Views</li><br></br>
+                                        <ul type="square">
+                                            <li id="li1">My Opportunities</li>
+                                            <li id="li1">Closing This Month</li>
+                                            <li id="li1">Closing Next Month</li>
+                                            <li id="li1">Won</li>
+                                        </ul><br></br>
+                                    <li id="li1">Salesperson Dashboard (each graph links to a report to show detail) link to dashboard <a href="https://na9.salesforce.com/01ZE00000004vUC" target="_blank">here</a></li>
+                                    <li id="li1">Opportunity Accountability Dashboard – shows opportunities that might be falling through the cracks. (each graph links to a report to show detail) link to dashboard <a href="https://na9.salesforce.com/01ZE00000004qhu" target="_blank">here</a></li>
+                                    <li id="li1">Planning Wall - The Opportunity Planning Wall displays sales opportunities as cards on a virtual wall and lets you filter, group and modify on one simple screen view demo <a href="http://youtu.be/vcq71sTSXhU" target="_blank">here</a></li>
+                                </ul><br></br>
+                            <li id="li1">What is my on-going plan </li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">“Next Step” field should always be updated with the next action item you need to complete to progress the opportunity to Closed Won.</li>
+                                    <li id="li1">There should always be an open Tasks created for the next thing to do  w/ reminders to keep you on track for follow-up</li>
+                                </ul><br></br>
+                            <li id="li1">Quotes -  A quote is a record showing proposed prices for products and services. You create a quote from an opportunity and its products.</li><br></br>
+                                <ul type="circle">
+                                    <li id="li1">Each opportunity can have multiple associated quotes, and any one of them can be synced with the opportunity. </li>
+                                    <li id="li1">When a quote and an opportunity are synced, any change to line items in the quote will sync with products on the opportunity, and vice versa.</li>
+                                    <li id="li1">When your quote is complete, you can generate a PDF and email it to your customer. </li>
+                                    <li id="li1">Quote PDFs are based on templates</li>
+                                    <li id="li1">Link to demo <a href="http://youtu.be/FbK0JP5pGMM" target="_blank">http://youtu.be/FbK0JP5pGMM</a></li>
+                                </ul><br></br>
+                        </ul>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Program Information" name="Program Information" id="progInfo">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul>
+                    <li id="li1">What are role specific actions</li><br></br>
+                        <ul type="circle">
+                            <li id="li1">MDC ( Media Dealer Consultant)</li><br></br>
+                                <ul type="square">
+                                    <li id="li1">Manage media customer relationship (incl. customer service as needed)</li>
+                                    <li id="li1">Sell and up-sell media</li>
+                                    <li id="li1">Generate leads for software cross-selling
+                                    </li>
+                                </ul><br></br>
+                            <li id="li1">MS ( Market Specialist)</li><br></br>
+                                <ul type="square">
+                                    <li id="li1">Support new and bundled products</li><br></br>
+                                </ul><br></br>
+                            <li id="li1">PS (Product Specialist)</li><br></br>
+                                <ul type="square">
+                                    <li id="li1">Sell and up-sell software: demo products, close deals</li><br></br>
+                                </ul><br></br>
+                            <li id="li1">PM ( Performance Manager)</li><br></br>
+                                <ul type="square">
+                                    <li id="li1">Manage SW customer relationship</li><br></br>
+                                    <li id="li1">Generate SW up-sell leads</li><br></br>
+                                </ul><br></br>
+                            <li id="li1">Managers (Media/Software)</li><br></br>
+                                <ul type="square">
+                                    <li id="li1">Drive product penetration, support sales force, provide feedback to product dev.</li><br></br>
+                                </ul>
+                                                    </ul>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Learning More...." name="Learning More...." id="learningMore">
+            <apex:detail relatedList="false" title="true"/>
+            <html>
+                <ul>
+                    <li id="li1">How Opportunities work - <a href="http://youtu.be/3yVjb5zngl8" target="_blank"> here</a></li><br></br>
+                    <li id="li1">Track your Customer Interactions - <a href="http://youtu.be/XT4kKJX1O0U" target="_blank"> here</a></li><br></br>
+                    <li id="li1">Find the Information you need - <a href="https://na9.salesforce.com/help/doc/en/salesforce_search_cheatsheet.pdf" target="_blank"> here</a></li><br></br>
+                    <li id="li1">Activity Management Process -<a href="http://www2.sfdcstatic.com/assets/pdf/process-maps/salesforce_activity_management_process_maps.pdf" target="_blank"> here</a></li><br></br>
+                    <li id="li1">Best Practices for Sales Reps - <a href="http://www.youtube.com/embed/eDicf9kH5S0" target="_blank"> here</a></li><br></br>
+                    <li id="li1">Calendaring Sharing - <a href="https://na9.salesforce.com/sfc/#version?selectedDocumentId=069E0000000MwAw" target="_blank"> here</a></li><br></br>
+                </ul>
+            </html>
+        </apex:tab>
+        <apex:tab label="Next Steps" name="Next Steps" id="nextSteps">
+            <apex:detail relatedList="false" title="true" />
+            <html>
+            </html>
+        </apex:tab>
+    </apex:tabPanel>
+</apex:page>

@@ -1,0 +1,13 @@
+<apex:page standardcontroller="SVOC_Request__c" extensions="SVOCRequest_Controller" action="{!redirectDefaultSVOCRequest}">
+
+  <h1>Loading..</h1>
+
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.85;width:100%;"> 
+                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Redirecting......" />
+                        <span class="waitingDescription">Redirecting......</span>
+                    </div>
+                </div>
+
+</apex:page>

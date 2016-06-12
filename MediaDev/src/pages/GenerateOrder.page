@@ -1,0 +1,1 @@
+<apex:page standardController="Opportunity" tabStyle="Opportunity" extensions="GenerateOrderController" action="{!getFlowFinishLocation}"/>

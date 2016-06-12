@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Send this email template to the requester intimating that specified action has been taken on the request.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>RequestProcessed</name>
+    <style>none</style>
+    <subject>{!ApprovalLineItem__c.Request__c}-{!Request__c.Request_Type__c}-Status &quot;{!ApprovalLineItem__c.Approval_Status__c}&quot;</subject>
+    <textOnly>Dear {!ApprovalLineItem__c.Approver__r.Name}, 
+ A request has been generated. Please follow the link below to take action.  https://c.na17.visual.force.com/apex/ApprovalAll  
+
+Thank You</textOnly>
+    <type>custom</type>
+</EmailTemplate>

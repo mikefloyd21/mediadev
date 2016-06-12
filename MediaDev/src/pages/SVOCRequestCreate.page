@@ -1,0 +1,187 @@
+<apex:page standardcontroller="SVOC_Request__c" extensions="SVOCRequest_Controller">
+    <apex:sectionheader title="{!$ObjectType.SVOC_Request__c.label} Edit" subtitle="{!IF(ISNULL(SVOC_Request__c.name), 'New SVOC Request',SVOC_Request__c.name)}"/>
+    <apex:form id="frm" >
+     
+        <apex:pageblock mode="edit" title="{!$ObjectType.SVOC_Request__c.label} Edit" id="pgBlock">
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="{!IF(dupsFound, 'Re-Test for Duplicates','Save')}" action="{!saveSVOCRequest}"/>
+                 <apex:commandbutton value="Force Save" action="{!ForceSave}" rendered="{!dupsFound}" />
+                <apex:commandbutton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockbuttons>
+        <div  style="background-color: #ffc; border-width: 1px; border-style: solid; border-color: #c00; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px">
+       
+       <apex:pageBlockSection rendered="{!dupsFound}"  columns="1" >    
+       
+            <apex:pageMessages escape="false" />
+        
+       <apex:pageBlockTable value="{!dupWarningAccountsList}" var="item" columns="6">
+                    <apex:column >
+                            <apex:facet name="header">Account Name</apex:facet>
+                            <apex:outputLink value="/{!item.Id}" target="_blank">{!item.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">Nameplates</apex:facet>
+                            <apex:outputText value="{!item.Dealer_Nameplates__c}"/>
+                    </apex:column>
+                    
+                    <apex:column >
+                            <apex:facet name="header">Address</apex:facet>
+                            <apex:outputText value="{!item.ShippingStreet}"/><br/>
+                            <apex:outputText value="{!IF(ISNULL(item.ShippingCity), '',item.ShippingCity+',')}"/>&nbsp;
+                            <apex:outputText value="{!item.ShippingState}"/>&nbsp;
+                            <apex:outputText value="{!item.ShippingPostalCode}"/><br/>
+                            <apex:outputText value="{!item.ShippingCountry}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">Website</apex:facet>
+                            <apex:outputText value="{!item.Website}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">Phone</apex:facet>
+                            <apex:outputText value="{!item.Phone}"/>
+                            
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC Status</apex:facet>
+                            <apex:outputText value="{!item.SVOC_Status__c}"/>
+                    </apex:column>
+                    
+       </apex:pageBlockTable> 
+        <br/>
+    </apex:pageBlockSection>
+
+        </div>
+       
+            <!-- ********** Output Panel for Record Type : Create **********  -->
+            <apex:outputpanel rendered="{!OR(ISNULL(SVOC_Request__c.RecordTypeId),CASESAFEID(SVOC_Request__c.RecordTypeId)='012E00000005v42IAA',CASESAFEID(SVOC_Request__c.RecordTypeId)='012E00000005v48IAA',CASESAFEID(SVOC_Request__c.RecordTypeId)='012E00000005v47IAA')}" id="mainPanel">
+                <apex:pageblocksection title="Instructions" showheader="true" columns="2">
+                    <!--<apex:outputfield value="{!SVOC_Request__c.Request_Instructions__c}"/>-->
+                    <apex:pageBlockSectionItem >
+                     <apex:outputLabel for="requestInstruction" value="{!$ObjectType.SVOC_Request__c.fields.Request_Instructions__c.label}"/>
+                     <apex:outputText id="requestInstruction" value="{!$ObjectType.SVOC_Request__c.fields.Request_Instructions__c.defaultValueFormula}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Submit_Request__c}" required="false"/>
+                     <apex:inputfield value="{!SVOC_Request__c.Urgetn_Request__c}" required="false"/>                   
+                </apex:pageblocksection>
+               
+                <apex:pageblocksection title="Information" showheader="true" columns="2">
+                
+                    <apex:inputfield value="{!SVOC_Request__c.New_Customer_Name__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                     <apex:pageblocksectionitem >
+                      <apex:outputLabel for="svocType" value="{!$ObjectType.SVOC_Request__c.fields.SVOC_Type__c.label}"></apex:outputLabel>
+                     <apex:actionRegion >
+                     
+                    
+                   
+                    <apex:inputfield id="svocType" value="{!SVOC_Request__c.SVOC_Type__c}" required="true" >
+                      <apex:actionSupport event="onchange" reRender="dealerInfoPanel,webAddressInfoPanel"  />
+                                  <!--      <apex:actionFunction action="{!Validate}" name="changeSVOCType" rerender="frm" immediate="true">
+    </apex:actionFunction>-->
+                    </apex:inputField>
+                     </apex:actionRegion>
+                    </apex:pageblocksectionitem>
+                    <apex:inputfield value="{!SVOC_Request__c.SVOC_Subtype__c}" required="false"/>
+                    
+                    
+                </apex:pageblocksection>
+
+             
+               <apex:outputPanel id="dealerInfoPanel" style="width:100%;">
+                <apex:pageblocksection title="Dealership Information" showheader="true" columns="2" collapsible="false" rendered="{!IF(SVOC_Request__c.SVOC_Type__c == 'Dealer' || SVOC_Request__c.SVOC_Type__c == 'Dealer Group', true, false)}" >
+                   <apex:inputfield value="{!SVOC_Request__c.Dealer_Type__c}" required="true"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Used_Car_Lot_Size__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.New_Car_Lot_Size__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Dealer_Nameplates__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Dealer_is_part_of_Dealer_Group__c}" required="true"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Dealer_Group_Account__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Dealer_Group_Member_Dealers__c}" required="false" rendered="{!IF(SVOC_Request__c.SVOC_Type__c == 'Dealer Group', true, false)}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+              </apex:outputPanel>
+              
+                <apex:pageblocksection title="Physical Address where the customer resides" showheader="true" columns="2">
+                    <apex:inputfield value="{!SVOC_Request__c.Phone__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Street_Name__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.City__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.State__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Zip_Code__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Billing Address Info" showheader="true" columns="2">
+                    <apex:inputfield value="{!SVOC_Request__c.Billing_Address_Same_as_Physical__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Bill_to_Attention_To__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Billing_Phone__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Billing_Street__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Billing_City__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Billing_State__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Billing_Zip__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.X3rd_Party_Bill_To_IDs__c}" required="false"/>
+                    
+                </apex:pageblocksection>
+                <apex:outputPanel id="webAddressInfoPanel" style="width:100%;">
+                <apex:pageblocksection title="Web Address Info" showheader="true" columns="2" collapsible="false" rendered="{!IF(SVOC_Request__c.SVOC_Type__c == 'Dealer' || SVOC_Request__c.SVOC_Type__c == 'Dealer Group', true, false)}" >
+                    <apex:inputfield value="{!SVOC_Request__c.Web_Address_Same_as_Physical__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Web_Address_Phone__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Web_Address_Street__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Web_Address_City__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Web_Address_State__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Web_Address_Zipcode__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Website_URL__c}" required="true"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                </apex:outputPanel>
+                <apex:pageblocksection title="Notes" showheader="true" columns="1">
+                    <apex:inputfield value="{!SVOC_Request__c.Additional_Notes__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Request Information - updated by CDG Team" showheader="true" columns="2">
+                    <apex:inputfield value="{!SVOC_Request__c.Request_Submitted_Date__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Request_Type__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Request_Complete_Date__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Request_Status__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="SVOC Request to Insert Primary Account - Updated by CDG Team" showheader="true" columns="2">
+                    <apex:inputfield value="{!SVOC_Request__c.SVOC_Id__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Final_Account_Id__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Source_Account__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Final_Account__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:inputfield value="{!SVOC_Request__c.Relationship_Type__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="true" columns="2">
+                    <apex:inputfield value="{!SVOC_Request__c.Created_By_Role__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.CDG_Team_Email__c}" required="false"/>
+                    <apex:inputfield value="{!SVOC_Request__c.Assigned_BU__c}" required="false"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!SVOC_Request__c.RecordTypeId}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+            </apex:outputpanel>
+           
+          
+        </apex:pageblock>
+         
+    </apex:form>
+    <!-- <center><br/>
+        <i style="font-size:10px;color:#aaa;">Generated By LAYOUT PAGE <a href="http://www.clerisoft.com" target="_blank">[http://www.clerisoft.com]</a> (2008-2013) : Wed Nov 06 2013 09:33:34 GMT-0800 (Pacific Standard Time)</i>
+    </center><br/> -->
+</apex:page>

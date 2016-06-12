@@ -1,0 +1,1045 @@
+<apex:page controller="SalesIQ.ProfilingCtlr" sidebar="false" id="mainpage">
+
+    <apex:form id="form1">
+        <apex:outputPanel id="MsgPnl">
+            <apex:pageMessages id="myMsg"
+                rendered="{!!(displayPopUpStatus || displayPopUpEdit)}" />
+        </apex:outputPanel>
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" />
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" />
+        <apex:includeScript value="https://mottie.github.io/tablesorter/js/jquery.tablesorter.js" />
+
+        <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'jquery/jquery-ui.custom.js' )}" />
+        <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'jquery/jquery.cookie.js' )}" />
+        <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'src/jquery.dynatree.js' )}" />
+        <apex:stylesheet value="{!URLFOR($Resource.SalesIQ__DynaTree, 'src/skin/ui.dynatree.css')}" />
+        <script type="text/javascript">
+    $j = jQuery.noConflict();
+    function appendSorting(){ 
+        $j('[id$="maintable"]').tablesorter({
+        });
+    }
+   </script>
+        <head>
+<style>
+body button,body .x-btn,body .btn,body .btnDisabled,body .btnCancel,body .menuButton .menuButtonButton
+    {
+    padding: 2px 6px;
+}
+
+.dynatree-container {
+    border: 0px !important;
+}
+
+.box-main {
+    width: 100%;
+    margin: 30px auto;
+}
+
+.box-content {
+    background-color: #f7f7f7;
+    padding: 5px;
+    border: 1px solid #cccccc;
+}
+
+.box-content-popup {
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #cccccc;
+}
+
+td {
+    font-size: 11px !important;
+    line-height: 16px !important;
+}
+
+.box-top {
+    border-top: 3px solid #00335B;
+    -moz-border-top: 3px solid #00335B;
+    -webkit-border-top: 3px solid #00335B;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    -moz-border-top-left-radius: 10px;
+    -moz-border-top-right-radius: 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    background-color: #F8F8F8;
+    border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    color: #000;
+    padding: 12px 0 0 15px;
+    font-weight: 600;
+    font-size: 18px;
+    height: 30px;
+}
+
+.tablecontent {
+    vertical-align: top;
+    height: 600px;
+    background-color: #fff;
+    margin-left: 290px;
+    border: 1px solid #989898;
+    font-size: 12px;
+    overflow-y: auto;
+}
+
+.box-top-div1 {
+    width: 25%;
+    font-weight: 600;
+    font-size: 18px;
+    float: left;
+    text-align: left;
+    height: 25px;
+    color: #666 !important;
+}
+
+.box-top-div2 {
+    width: 50%;
+    font-weight: 600;
+    font-size: 12px;
+    float: left;
+    text-align: center;
+    height: 25px;
+}
+
+.box-top-div3 {
+    width: 5%;
+    font-weight: 600;
+    font-size: 14px;
+    float: left;
+    height: 25px;
+}
+
+.box-top-div4 {
+    width: 25%;
+    font-weight: 600;
+    font-size: 13px;
+    float: left;
+    height: 25px;
+}
+
+.box-top-div5 {
+    font-size: 13px;
+    text-align: right;
+    float: right;
+    height: 25px;
+    padding-right: 10px;
+}
+
+.box-top-div5-1 {
+    font-size: 13px;
+    text-align: right;
+    float: right;
+    height: 25px;
+    padding-right: 10px;
+}
+
+.searchbutton1 {
+    width: 80px;
+    height: 23px;
+    font-size: 11px !important;
+    margin-left: -80px !important;
+    border: 1px solid #3fa9f5 !important;
+    background-color: #55a4da !important;
+    z-index: 1;
+}
+
+.searchtxt1 {
+    border: 1px solid #3fa9f5;
+    border-radius: 5px;
+    height: 21px;
+    /* margin-left: 100px; */
+    padding-top: 0px;
+    width: 235px;
+}
+
+.button {
+    padding: 1px 10px !important;
+    border: 1px solid #3fa9f5 !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    height: 22px !important;
+    text-align: right;
+}
+
+.tree1 {
+    width: 275px;
+    vertical-align: top;
+    float: left;
+    height: 600px;
+    background-color: #fff;
+    border: 1px solid #989898;
+}
+
+#tree {
+    height: 570px;
+    overflow-y: auto;
+}
+
+.clear {
+    clear: both;
+}
+
+th {
+    color: #fff !important;
+    background-color: #277AA8 !important;
+    font-size: 11.5px !important;
+    line-height: 20px;
+}
+
+.table_header_tree {
+    color: #fff !important;
+    background-color: #277AA8 !important;
+    font-size: 12px !important;
+    font-weight: bold;
+    line-height: 30px !important;
+    padding-left: 12px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table_header_main {
+    color: #404041 !important;
+    background-color: #277AA8 !important;
+    font-size: 16px !important;
+    text-align: center;
+    line-height: 30px !important;
+}
+
+td {
+    line-height: 20px;
+}
+
+.even {
+    /* background-color: White !important;*/
+    
+}
+
+.odd {
+    /* background-color: #e6f5fc !important; */
+    
+}
+
+.number {
+    text-align: left;
+}
+
+.text {
+    text-align: center;
+}
+
+.table {
+    border: 1px solid;
+    line-height: 25px !important;
+}
+
+.table-side-header {
+    margin-left: 20px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.pure-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+    border: 1px solid #cbcbcb
+}
+
+.pure-table caption {
+    color: #000;
+    font: italic 85%/1 arial, sans-serif;
+    padding: 1em 0;
+    text-align: center
+}
+
+.pure-table td,.pure-table th {
+    border-left: 1px solid #cbcbcb;
+    border-width: 0 0 0 1px;
+    font-size: inherit;
+    line-height: 20px;
+    margin: 0;
+    overflow: visible;
+    padding: .25em .50em
+}
+
+.pure-table td:first-child,.pure-table th:first-child {
+    border-left-width: 0
+}
+
+.pure-table thead {
+    background: #e0e0e0;
+    color: #000;
+    text-align: left;
+    vertical-align: bottom
+}
+
+.pure-table td {
+    background-color: transparent
+}
+
+.pure-table-odd td {
+    background-color: #e6f5fc
+}
+
+.pure-table-striped tr:nth-child(2n-1) td {
+    background-color: #f2f2f2
+}
+
+.pure-table-bordered td {
+    border-bottom: 1px solid #cbcbcb
+}
+
+.pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td
+    {
+    border-bottom-width: 0
+}
+
+.pure-table-horizontal td,.pure-table-horizontal th {
+    border-width: 0 0 1px;
+    border-bottom: 1px solid #cbcbcb
+}
+
+.pure-table-horizontal tbody>tr:last-child td {
+    border-bottom-width: 0
+}
+
+span.dynatree-node a {
+    font-size: 11px !important;
+}
+
+.wrapper1 .tooltip {
+    color: black;
+    display: block;
+    left: 92px;
+    margin-bottom: 15px;
+    opacity: 0;
+    padding: 20px;
+    pointer-events: none;
+    position: absolute;
+    -webkit-transform: translateY(10px);
+    -moz-transform: translateY(10px);
+    -ms-transform: translateY(10px);
+    -o-transform: translateY(10px);
+    transform: translateY(10px);
+    -webkit-transition: all .25s ease-out;
+    -moz-transition: all .25s ease-out;
+    -ms-transition: all .25s ease-out;
+    -o-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+    -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.link {
+    text-decoration: underline;
+    color: #0b71be !important;
+    font-weight: normal !important;
+    padding-right: 10px;
+}
+
+.notes {
+    height: 25px;
+    font-weight: bold;
+    text-align: right;
+    font-size: 12px;
+    width: 105px !important;
+    float: left;
+    position: relative;
+}
+
+.notes-text-box {
+    float: left;
+    border: 1px solid #333;
+    width: 180px !important;
+    height: 22px;
+    padding-left: 5px;
+}
+
+.notes-text-box1 {
+    float: left;
+    border: 1px solid #333;
+    width: 187px !important;
+    height: 25px;
+    padding-left: 5px;
+}
+
+.notes-text-box3 {
+    float: left;
+    border: 1px solid #333;
+    width: 75px !important;
+    height: 25px;
+    padding-left: 5px;
+}
+
+.notes1 {
+    font-weight: bold;
+    text-align: right;
+    width: 200px;
+    padding-left: 30px;
+    font-size: 12px;
+    float: left;
+    position: relative;
+}
+
+.notes-textbox {
+    float: left;
+    border: 1px solid #333;
+    width: 400px;
+    height: 50px;
+    padding-left: 5px;
+    position: relative;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.popup_top_info {
+    background-color: #e3e3e3;
+    border-bottom: 1px solid #000;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 18px;
+    margin-right: 0;
+    margin-top: 0;
+    padding: 10px 567px 9px 5px !important;
+}
+
+.headerRow1 {
+    color: #fff !important;
+    background-color: #277AA8 !important;
+    font-size: 11.5px !important;
+    line-height: 20px;
+}
+
+.Popup4 {
+    background-color: white;
+    text-align: centre;
+    z-index: 0;
+    left: 50%;
+    position: absolute;
+    width: 600px;
+    height: 360px;
+    margin-left: -250px;
+    valign: top;
+    border-style: solid;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-width: 3px 1px 1px;
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    font-size: 12px;
+    top: 20%;
+}
+
+.Popup_Terr {
+    background-color: white;
+    border: #000 1px solid;
+    text-align: center;
+    z-index: 0;
+    left: 50%;
+    position: absolute;
+    width: 600px;
+    height: 250px;
+    margin-left: -450px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    valign: top;
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    font-size: 14px;
+    top: 20%;
+}
+
+.popupBackground {
+    background-color: black;
+    opacity: 0.20;
+    filter: alpha(opacity = 20);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.popupBackgroundworkbench {
+    background-color: black;
+    opacity: 0.20;
+    filter: alpha(opacity = 20);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.customPopup {
+    padding: 10px;
+    left: 50%;
+    margin-left: -376px;
+    position: absolute;
+    z-index: 2000;
+    width: 924px;
+    top: 20%;
+}
+
+.customPopupSc {
+    background-color: white;
+    border-style: solid;
+    border: #003f77 1px solid;
+    border-top: #003f77 2px solid;
+    padding: 10px;
+    left: 50%;
+    margin-left: -350px;
+    position: absolute;
+    z-index: 2222;
+    width: 700px;
+    top: 20%;
+}
+
+.customPopup_OK {
+    background-color: white;
+    border-style: solid;
+    border: #003f77 1px solid;
+    border-top: #003f77 2px solid;
+    padding: 20px;
+    height: 200px;
+    left: 50%;
+    margin-left: -200px;
+    position: absolute;
+    z-index: 2000;
+    width: 450px;
+    height: 400px;
+    top: 20%;
+}
+
+.pagination {
+    width: 750px;
+    text-align: center;
+    height: 30px;
+    padding: 7px 0px;
+    margin-left: 25%;
+}
+
+.page-buttons {
+    font-size: 12px !important;
+    font-weight: bold !important;
+    height: 22px !important;
+    text-align: right;
+}
+
+}
+br {
+    line-height: 10px !important;
+}
+</style>
+
+        </head>
+        <!-- Add code to initialize the tree when the document is loaded: -->
+        <script type="text/javascript">
+             $j(function(){
+             
+             //var ele= $('[id="mainpage:form1:thePBasd:maintable"]');
+             //$(".tablesorter").tablesorter();
+                 // Attach the dynatree widget to an existing <div id="tree"> element
+                 // and pass the tree options as an argument to the dynatree() function:
+                 $j("#tree").dynatree({
+                     onActivate: function(node) {
+                         // A DynaTreeNode object is passed to the activation handler
+                         // Note: we also get this event, if persistence is on, and the page is reloaded.
+                         
+                         
+                         document.getElementById("mainpage:form1:input1").value=node.data.key;
+                         document.getElementById("mainpage:form1:input2").value=node.data.title;
+                         console.log("You activated " + document.getElementById("mainpage:form1:input1").value);
+                         document.getElementById("mainpage:form1:input3").value=true;
+                         populateAccounts();
+                     },
+                     
+                     
+                    
+                        onPostInit:function(){
+                    var tree = $j("#tree").dynatree("getTree");
+            // Use it's class methods:
+            
+                     var i = 0;
+                    $j("#tree").dynatree("getRoot").visit(function(node){
+                   
+                    if(i>3)
+            node.expand(false);
+            i++;
+            });
+          //alert('{!activateDefault}'); 
+          
+         tree.activateKey('{!activateDefault}');
+         //alert('hello');
+             },  
+                     
+                     persist: false,
+                     checkbox: {!selectable},
+                     generateIds: false,
+                     classNames: {
+                         checkbox: "dynatree-checkbox",
+                         expanded: "dynatree-expanded"
+                     },
+                     selectMode: 3,
+                     children: {!JsonString},
+                     onSelect: function(select, node) {
+                         // Get a list of all selected nodes, and convert to a key array:
+                         var selKeys = $j.map(node.tree.getSelectedNodes(), function(node){
+                             return node.data.id;
+                         });
+                         jQuery(document.getElementById("{!$Component.selectedKeys}")).val(selKeys.join(", "));
+                         
+                         // Get a list of all selected TOP nodes
+                         var selRootNodes = node.tree.getSelectedNodes(true);
+                         // ... and convert to a key array:
+                         var selRootKeys = $j.map(selRootNodes, function(node){
+                             return node.data.key;
+                         });
+                     },
+                 });
+             });
+        </script>
+
+        <!--  ------------------- Loading Status ---------------------------- -->
+        <apex:actionStatus id="myStatus">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground"></div>
+                    <div class="PopupPanel" style="position: absolute; left: 50%;">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <!-------------------------------------VF Page--------------------------------------->
+        <apex:actionfunction name="populateAccounts"
+            action="{!populateAccounts}" rerender="thePBasd,pnl3,MsgPnl"
+            oncomplete="appendSorting();" status="myStatus" />
+        <!-- Add a <div> element where the tree should appear: -->
+        <div class="box-main">
+            <div class="box-top">
+                <apex:outputpanel id="pnl3">
+                    <div class="box-top-div1">{!selectedNode}</div>
+                    <div class="box-top-div2"><apex:inputText value="{!searchtext}" id="searchBox"/>&nbsp;&nbsp;
+                        <apex:commandButton value="Search" action="{!populateAccounts}" rerender="AccountPanel"  status="myStatus"/>&nbsp;&nbsp;
+                        <apex:commandButton value="Clear" action="{!resetFields}" rerender="AccountPanel, searchBox" status="myStatus"/></div>
+                </apex:outputpanel>
+                <div class="box-top-div5-1">
+                    <apex:commandbutton value="Change Status" action="{!popUpStatus}"
+                        reRender="MsgPnl,myMsg,popupStatus" status="myStatus"
+                        oncomplete="appendSorting();"></apex:commandbutton>
+                    &nbsp;&nbsp;
+                    <apex:commandbutton value="Edit Accounts" action="{!popUpEdit}"
+                        reRender="popupEdit,myMsg,MsgPnl" status="myStatus"
+                        oncomplete="appendSorting();"></apex:commandbutton>
+                    &nbsp;&nbsp;
+                    <apex:commandbutton value="Reviewed" action="{!reviewAccounts}"
+                        reRender="thePBasd,myMsg,MsgPnl" status="myStatus"
+                        oncomplete="appendSorting();"></apex:commandbutton>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="tree1">
+                    <div class="table_header_tree">Territory Organization</div>
+                    <div id="tree"></div>
+                </div>
+                <div class="tablecontent">
+                    <apex:outputPanel id="AccountPanel">
+                        <apex:pageBlock id="thePBasd" mode="maindetail">
+
+
+                            <apex:pageblocktable value="{!Accounts}" var="wrap"
+                                id="maintable" rowClasses="one,two, tablesorter">
+                                <apex:column headerValue="Action"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:inputCheckbox value="{!wrap.selected}" />
+                                </apex:column>
+                                <apex:column headerValue="SVOC ID"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true ,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                        {!wrap.posAcc['Account__r.SVOC_Id__c']} 
+                        </apex:column>
+                                <apex:column headerValue="Group Affiliation"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:outputlink value="/apex/AffiliationNew" target="_blank">{!wrap.posAcc['Account__r.Parent.name']}</apex:outputlink>
+                                </apex:column>
+                                <apex:column headerValue="Account Name"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:outputlink value="/{!wrap.posAcc['Account__r.id']}"
+                                        target="_blank">{!wrap.posAcc['Account__r.name']}</apex:outputlink>
+                                </apex:column>
+                                <apex:column headerValue="Territory"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                        {!wrap.posAcc['position__r.Territory__r.name']}
+                        </apex:column>
+                                <apex:column headerValue="Account Status"
+                                    style="{!IF(wrap.statusRequestPending|| wrap.SVOCRequestPending ||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:outputpanel rendered="{!wrap.accountStatusInReq !=null}">{!wrap.accountStatusInReq}</apex:outputpanel>
+                                    <apex:outputpanel rendered="{!wrap.accountStatusInReq ==null && wrap.accountStatusInSVOCReq ==null && !wrap.SVOCReqLotsizePending }">{!wrap.selectedStatus}</apex:outputpanel>
+
+                                    <apex:outputpanel rendered="{!if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null ,if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Pending',true,false),false) }">{!if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Pending',AccSVOCStatus[wrap.posAcc['Account__r.Id']]['account_Status__c'],''),'') } </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!(wrap.accountStatusInReq ==null)&&(if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['Id'] !=null,if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']!='Pending',true,false),false))}">{!wrap.posAcc['Account__r.Account_Status__c']}</apex:outputpanel>
+                                </apex:column>
+
+                                <apex:column headerValue="Discount Percentage"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                        {!wrap.posAcc['Account__r.Discount_Percentage__c']} 
+                        </apex:column>
+
+                                <apex:column headerValue="Bad Debt"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <!--                                          {!wrap.posAcc['Account__r.Bad_Debt__c']} -->
+                                    <span style="display: none;">{!IF(wrap.badDebt, 0, 1)}</span>
+                                    <apex:inputCheckbox value="{!wrap.badDebt}" disabled="true" />
+                                </apex:column>
+                                <apex:column headerValue="Co-Op"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:left;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <span style="display: none;">{!IF(wrap.coOp, 0, 1)}</span>
+                                    <apex:inputCheckbox value="{!wrap.coOp}" disabled="true" />
+                                </apex:column>
+<!--                                <apex:column style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:center;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}"> -->
+<!--                                    <apex:facet name="header">Lot Size<br />(Used Cars)</apex:facet> -->
+<!--                                        <apex:outputpanel rendered="{!!wrap.SVOCReqLotsizePending }"> -->
+<!--                                            <apex:outputpanel rendered="{!if(wrap.posAcc['Account__r.Updated_Lot_Size_Used__c']=='' || wrap.posAcc['Account__r.Updated_Lot_Size_Used__c']==null,true ,false)}">{!wrap.posAcc['Account__r.Lot_Size_Used__c']}</apex:outputpanel> -->
+<!--                                            <apex:outputpanel rendered="{!if(wrap.posAcc['Account__r.Updated_Lot_Size_Used__c']!='' && wrap.posAcc['Account__r.Updated_Lot_Size_Used__c']!=null,true ,false)}">{!wrap.posAcc['Account__r.Updated_Lot_Size_Used__c']}</apex:outputpanel> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel rendered="{!wrap.SVOCReqLotsizePending }"> -->
+<!--                                            {!wrap.lotSizeUsedInSvocReq} -->
+<!--                                        </apex:outputpanel> -->
+<!--                                </apex:column> -->
+<!--                                <apex:column style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:center;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}"> -->
+<!--                                    <apex:facet name="header">Lot Size<br />(New Cars)</apex:facet> -->
+<!--                                        <apex:outputpanel rendered="{!!wrap.SVOCReqLotsizePending }"> -->
+<!--                                            <apex:outputpanel rendered="{!if(wrap.posAcc['Account__r.Updated_Lot_Size_New__c']=='' || wrap.posAcc['Account__r.Updated_Lot_Size_New__c']==null,true ,false)}">{!wrap.posAcc['Account__r.Lot_Size_New__c']}</apex:outputpanel> -->
+<!--                                            <apex:outputpanel rendered="{!if(wrap.posAcc['Account__r.Updated_Lot_Size_New__c']!='' && wrap.posAcc['Account__r.Updated_Lot_Size_New__c']!=null,true ,false)}">{!wrap.posAcc['Account__r.Updated_Lot_Size_New__c']}</apex:outputpanel> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel rendered="{!wrap.SVOCReqLotsizePending }"> -->
+<!--                                        {!wrap.lotSizeUsedInSvocReq} -->
+<!--                                        </apex:outputpanel> -->
+<!--                                </apex:column> -->
+                                <apex:column style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:center;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:facet name="header">Lot Size<br />(Used Cars)</apex:facet>
+                                        {!wrap.axLotSizeUsed} 
+                                </apex:column>
+                                <apex:column style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:center;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:facet name="header">Lot Size<br />(New Cars)</apex:facet>
+                                        {!wrap.axLotSizeNew}
+                                </apex:column>
+                                <apex:column headerValue="Validation Status"
+                                    style="{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 'background-color:#fbc9b1; padding-right:20px;text-align:center;', if(wrap.posAcc['Reviewed__c']==true,'background-color:#cde7d4; padding-right:20px;text-align:left;','padding-right:20px;text-align:left;'))}}">
+                                    <apex:facet name="header">Validation<br />Status</apex:Facet>
+                                        <span style="display:none;">{!IF(wrap.statusRequestPending||wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending==true, 0, 1)}</span>
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/cirgreen.png')}"
+                                            width="15" height="15"
+                                            rendered="{!if(AccLotSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccLotSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Approved',true,false),false) }" />
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/cirred.png')}"
+                                            width="15" height="15"
+                                            rendered="{!if(AccLotSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccLotSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Rejected',true,false),false) }"  />
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/ciryel.png')}"
+                                            width="15" height="15"
+                                            rendered="{!if(AccLotSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccLotSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Pending',true,false),false) }" />
+
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/sqgreen.png')}"
+                                            width="15" height="15"
+                                            rendered="{!if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Approved',true,false),false) }" />
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/sqred.png')}"
+                                            width="15" height="15"
+                                            rendered="{!if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Rejected',true,false),false) }" />
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/sqyel.png')}"
+                                            width="15" height="15"
+                                            rendered="{!if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['Id']!=null,if(AccSVOCStatus[wrap.posAcc['Account__r.Id']]['SVOC_Status__c']=='Pending',true,false),false) }" />
+                                        
+                                        <apex:outputlink value="/{!wrap.HOreqId}" target="_blank"
+                                            id="theLink">
+                                            <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/triyel.png')}"
+                                                width="15" height="15"
+                                                rendered="{!wrap.statusRequestPending}" />
+                                        </apex:outputlink>
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/trigreen.png')}"
+                                            width="15" height="15"
+                                            rendered="{!wrap.statusRequestApproved}" />
+                                        <apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/trired.png')}"
+                                            width="15" height="15"
+                                            rendered="{!wrap.statusRequestRejected}" />
+
+                                        <!--         <apex:outputpanel rendered="{!wrap.SVOCRequestPending||wrap.SVOCReqLotsizePending}" >Pending</apex:outputpanel> -->
+                                        <!--         {!wrap.SVOCReqLotsizePending } -->
+                                        <apex:outputpanel rendered="{!(!wrap.SVOCRequestPending) && (!wrap.SVOCReqLotsizePending)}"></apex:outputpanel>
+                                </apex:column>
+                            </apex:pageblocktable>
+
+                            <br />
+
+                            <!-- next, previous and page info -->
+
+                            <table width="100%" border="0" cellspacing="10" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <!-- lstWrapperAccount --> <apex:outputPanel rendered="{!IF(lstWrapperAccount.size > 0,true,false)}">
+
+
+                                            <apex:commandLink action="{!doPrevious}"
+                                                rendered="{!hasPrevious}" rerender="thePBasd"
+                                                value="Previous" status="myStatus"
+                                                oncomplete="appendSorting();" />
+
+                                            <apex:outputLabel rendered="{!NOT(hasPrevious)}"
+                                                value="Previous" />
+                                            <apex:outputLabel value=" (page {!page} of {!totalPages}) | showing {!startIdx} to {!endIdx} of {!totalRecords} " />
+
+                                            <apex:commandLink action="{!doNext}" rendered="{!hasNext}"
+                                                value="Next" rerender="thePBasd" status="myStatus"
+                                                oncomplete="appendSorting();" />
+                                            <apex:outputLabel rendered="{!NOT(hasNext)}" value="Next" />
+                                        </apex:outputPanel>
+
+                                    </td>
+                                    <td align="right"><table width="450" border="0"
+                                            cellspacing="3" cellpadding="0">
+                                            <tr>
+                                                <td style="width: 20px;"><apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/triyel.png')}"
+                                                        width="15" height="15" /></td>
+                                                <td style="width: 100px;">Request for HO</td>
+                                                <td style="width: 20px;"><apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/sqyel.png')}"
+                                                        width="15" height="15" /></td>
+                                                <td style="width: 140px;">Account Status Request</td>
+                                                <td style="width: 20px;"><apex:image url="{!URLFOR($Resource.SalesIQ__iconprofile, 'icons/ciryel.png')}"
+                                                        width="15" height="15" /></td>
+                                                <td style="width: 100px;">Lot Size Request</td>
+                                            </tr>
+                                        </table></td>
+                                </tr>
+                            </table>
+
+
+
+
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </div>
+
+            </div>
+        </div>
+
+        <apex:inputhidden id="input1" value="{!selectedPosition}" />
+        <apex:inputhidden id="input2" value="{!selectedNode}" />
+        <apex:inputhidden id="input3" value="{!Clicknode}" />
+        <!--  ------------------- Loading Status ---------------------------- -->
+        <!-----------------------Pop Up Change Status------------------->
+        <apex:outputPanel id="popupStatus">
+            <apex:outputPanel styleClass="popupBackground" layout="block"
+                rendered="{!displayPopUpStatus}" />
+            <apex:outputPanel styleClass="customPopup" layout="block"
+                rendered="{!displayPopUpStatus}">
+
+                <div class="box-main" style="margin-top: -2px;">
+
+                    <div class="box-top">
+
+                        <div class="box-top-div1">Change Status</div>
+
+                    </div>
+
+                    <div class="box-content-popup">
+                        <apex:pageMessages id="popupMsg" />
+                        <apex:pageblock mode="maindetail">
+                            <apex:pageblocktable value="{!listPopAccounts}" var="wrapsel">
+                                <apex:column headervalue="Account ID">
+                            {!wrapsel.posAcc['Account__r.SVOC_Id__c']}
+                        </apex:column>
+                                <apex:column headervalue="Account Name">
+                            {!wrapsel.posAcc['Account__r.name']}
+                         </apex:column>
+                                <apex:column headervalue="Status">
+                                    <apex:outputpanel rendered="{!wrapsel.accountStatusInSVOCReq !=null}">
+                                        <apex:selectList value="{!wrapsel.accountStatusInSVOCReq}"
+                                            size="1" disabled="true" styleClass="notes-text-box1">
+                                            <apex:selectOptions value="{!wrapsel.lstReasonStatus}" />
+
+                                        </apex:selectList>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!wrapsel.accountStatusInSVOCReq ==null}">
+
+                                        <apex:selectList value="{!wrapsel.selectedStatus}" size="1"
+                                            styleClass="notes-text-box1">
+                                            <apex:selectOptions value="{!wrapsel.lstReasonStatus}" />
+                                            <apex:actionSupport event="onchange" reRender="popupStatus"
+                                                status="loadingImage" />
+                                        </apex:selectList>
+                                    </apex:outputpanel>
+                                </apex:column>
+                                <apex:column headervalue="Primary Account">
+                                    <apex:outputpanel rendered="{!(wrapsel.selectedStatus=='Duplicate') && (!wrapsel.SVOCRequestPending) && (!wrapsel.statusRequestPending)}">
+                                        <apex:inputfield value="{!wrapsel.accobj.SalesIQ__Account__c}"></apex:inputfield>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!(wrapsel.selectedStatus!='Duplicate') }">
+                                        <apex:inputText value="{!wrapsel.primaryaccount}"
+                                            disabled="true"></apex:inputText>
+                                    </apex:outputpanel>
+
+                                </apex:column>
+                                <apex:column headervalue="Comments">
+                                    <apex:outputpanel rendered="{!wrapsel.statusRequestPending}">
+                                        <apex:inputtext value="{!wrapsel.ReqComments}" disabled="true"
+                                            styleClass="notes-text-box" />
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!wrapsel.SVOCRequestPending}">
+                                        <apex:inputtext value="{!wrapsel.svocComments}"
+                                            disabled="true" styleClass="notes-text-box" />
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!(!wrapsel.SVOCRequestPending) && (!wrapsel.statusRequestPending)}">
+                                        <apex:inputtext value="{!wrapsel.Comments}"
+                                            styleClass="notes-text-box" />
+                                    </apex:outputpanel>
+                                    <apex:actionStatus id="loadingImage">
+                                        <apex:facet name="start">
+                                            <img src="/img/loading.gif"
+                                                style="padding-left: 6px; padding-top: 4px;" />
+                                        </apex:facet>
+                                    </apex:actionStatus>
+                                </apex:column>
+                            </apex:pageblocktable>
+                        </apex:pageblock>
+                        <br />
+                        <div style="text-align: center">
+                            <!--                         <apex:commandButton value="Submit" style="background:#36647D;color: #FFF; width:80px; height:20px; font-size:12px;" action="{!saveStatus}" rerender="popupStatus,thePBasd,popupMsg" oncomplete="appendSorting();"/> -->
+                            <apex:actionStatus id="go">
+                                <apex:facet name="stop">
+                                    <apex:outputPanel >
+                                        <apex:commandButton value="Submit" status="go"
+                                            style="background:#36647D;color: #FFF; width:80px; height:20px; font-size:12px;"
+                                            action="{!saveStatus}"
+                                            rerender="popupStatus,thePBasd,popupMsg,go,myMsg,MsgPnl" />
+                                        <apex:commandButton value="Cancel" status="go"
+                                            style="background:#36647D;color: #FFF; width:90px; height:20px; font-size:12px;"
+                                            action="{!closePopup}" rerender="popupStatus,thePBasd,myMsg"
+                                            oncomplete="appendSorting();" />
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="start">
+                                    <apex:outputPanel >
+                                        <apex:commandButton style="background:#36647D;color: #FFF; width:120px; height:20px; font-size:12px;"
+                                            value="Processing..." disabled="true"
+                                            rerender="go,popupStatus,thePBasd,popupMsg" />
+                                        <apex:commandButton style="background:#36647D;color: #FFF; width:120px; height:20px; font-size:12px;"
+                                            value="Processing..." disabled="true" />
+                                    </apex:outputPanel>
+                                </apex:facet>
+                            </apex:actionStatus>
+
+                        </div>
+                        <br />
+                    </div>
+                </div>
+
+            </apex:outputPanel>
+        </apex:outputPanel>
+        <!-----------------------Pop Up Edit Accounts------------------->
+        <apex:outputPanel id="popupEdit">
+            <apex:outputPanel styleClass="popupBackground" layout="block"
+                rendered="{!displayPopUpEdit}" />
+            <apex:outputPanel styleClass="customPopup" layout="block"
+                rendered="{!displayPopUpEdit}">
+                <div class="box-main" style="margin-top: -2px;">
+                    <div class="box-top">
+
+                        <div class="box-top-div1">Edit Account</div>
+                    </div>
+                    <div class="box-content-popup">
+                        <apex:pageMessages id="editMsg" />
+                        <apex:pageblock mode="maindetail">
+                            <apex:pageblocktable value="{!listPopAccounts}" var="wrape">
+                                <apex:column headervalue="Account ID">
+                                    {!wrape.posAcc['Account__r.ATC_Dealer_Id__c']}
+                                </apex:column>
+                                <apex:column headervalue="Account Name">
+                                    {!wrape.posAcc['Account__r.name']}
+                                </apex:column>
+                                <apex:column headerValue="Bad Debt">
+
+
+                                    <apex:inputCheckbox value="{!wrape.badDebt}" />
+                                </apex:column>
+                                <apex:column headerValue="Co-Op">
+                                    <apex:inputCheckbox value="{!wrape.coOp}" />
+                                </apex:column>
+                                <apex:column headerValue="Lot Size(Used Cars)">
+                                    <apex:selectList value="{!wrape.axLotSizeUsed}" size="1"
+                                        styleClass="notes-text-box4"
+                                        disabled="{!wrape.SVOCReqLotsizePending}">
+                                        <apex:selectOptions value="{!wrape.lotSizeValues}" />
+                                    </apex:selectList>
+                                </apex:column>
+                                <apex:column headerValue="Lot Size(New Cars)">
+
+                                    <apex:selectList value="{!wrape.axLotSizeNew}" size="1"
+                                        styleClass="notes-text-box4"
+                                        disabled="{!wrape.SVOCReqLotsizePending}">
+                                        <apex:selectOptions value="{!wrape.lotSizeValues}" />
+                                    </apex:selectList>
+                                </apex:column>
+                                <apex:column headervalue="Comments">
+                                    <apex:outputpanel rendered="{!wrape.SVOCReqLotsizePending}">
+                                        <apex:inputtext value="{!wrape.editComments}" disabled="true" />
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!!wrape.SVOCReqLotsizePending}">
+                                        <apex:inputtext value="{!wrape.Comments}" />
+                                    </apex:outputpanel>
+
+                                </apex:column>
+                            </apex:pageblocktable>
+                        </apex:pageblock>
+                        <br />
+                        <!--                             <div style="text-align:center" ><apex:commandButton value="Confirm" style="background:#36647D;color: #FFF; width:100px; height:20px; font-size:12px;" action="{!editAccount}" rerender="popupEdit,thePBasd,editMsg" oncomplete="appendSorting();"/> -->
+                        <div style="text-align: center">
+                            <apex:actionStatus id="go2">
+                                <apex:facet name="stop">
+                                    <apex:outputPanel >
+                                        <apex:commandButton value="Confirm" status="go2"
+                                            style="background:#36647D;color: #FFF; width:100px; height:20px; font-size:12px;"
+                                            action="{!editAccount}"
+                                            rerender="popupEdit,thePBasd,editMsg,go2,myMsg,MsgPnl" />
+
+                                        <apex:commandButton value="Cancel" status="go2"
+                                            style="background:#36647D;color: #FFF; width:90px; height:20px; font-size:12px;"
+                                            action="{!closePopup}" rerender="popupEdit,thePBasd,myMsg" />
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:facet name="start">
+                                    <apex:outputPanel >
+                                        <apex:commandButton style="background:#36647D;color: #FFF; width:120px; height:20px; font-size:12px;"
+                                            value="Processing..." disabled="true"
+                                            rerender="go2,popupEdit,thePBasd,editMsg" />
+
+                                        <apex:commandButton value="Processing..." disabled="true"
+                                            style="background:#36647D;color: #FFF; width:120px; height:20px; font-size:12px;" />
+                                    </apex:outputPanel>
+                                </apex:facet>
+                            </apex:actionStatus>
+
+                        </div>
+                        <br />
+                    </div>
+
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

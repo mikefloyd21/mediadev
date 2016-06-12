@@ -1,0 +1,945 @@
+<apex:page controller="SalesIQ.ACAssignmentCtlr" sidebar="false" id="mainpage"
+	tabstyle="roster__tab">
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" />
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" />
+	<script src="{!$Resource.tablesorter}"></script>
+	<apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'src/jquery.dynatree.js' )}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SalesIQ__DynaTree, 'src/skin/ui.dynatree.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SalesIQ__Roster_CSS, 'Roster_CSS/EmployeeSwap.css')}" />
+
+	<script type="text/javascript">
+
+ $ = jQuery.noConflict();
+   function updateCss(){ 
+//       alert('hii..');
+       var ele=$('[id="mainpage:form1:thePBasd:maintable"]');
+       ele.tablesorter();
+   }
+  
+   </script>
+	<head>
+<style>
+body button,body .x-btn,body .btn,body .btnDisabled,body .btnCancel,body .menuButton .menuButtonButton
+	{
+	padding: 2px 6px;
+}
+
+.dynatree-container {
+	border: 0px !important;
+}
+
+.box-main {
+	width: 100%;
+	margin: 30px auto;
+}
+
+.pending {
+	background-color: #fbc9b1;
+	padding-right: 20px;
+	text-align: left;
+}
+
+.notpending {
+	padding-right: 20px;
+	text-align: left;
+}
+
+.box-content {
+	background-color: #f7f7f7;
+	padding: 5px;
+	border: 1px solid #cccccc;
+}
+
+.box-content-popup {
+	background-color: #fff;
+	padding: 5px;
+	border: 1px solid #000;
+	text-align: center;
+	font-size: 12px;
+}
+
+td {
+	font-size: 11px !important;
+	line-height: 16px !important;
+}
+
+.box-top {
+	border-top: 3px solid #00335B;
+	-moz-border-top: 3px solid #00335B;
+	-webkit-border-top: 3px solid #00335B;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	-moz-border-top-left-radius: 10px;
+	-moz-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	background-color: #F8F8F8;
+	border-left: 1px solid #000;
+	border-right: 1px solid #000;
+	color: #000;
+	padding: 12px 0 0 15px;
+	font-weight: 600;
+	font-size: 18px;
+	height: 30px;
+}
+
+.tablecontent {
+	vertical-align: top;
+	height: 600px;
+	background-color: #fff;
+	margin-left: 290px;
+	border: 1px solid #989898;
+	font-size: 12px;
+	overflow-y: auto;
+}
+
+.box-top-div1 {
+	font-weight: 800;
+	font-size: 16px;
+	float: left;
+	text-align: left;
+	height: 25px;
+	color: #666 !important;
+}
+
+.box-top-div2 {
+	font-weight: 600;
+	font-size: 12px;
+	float: left;
+	text-align: center;
+	height: 25px;
+}
+
+.box-top-div3 {
+	width: 5%;
+	font-weight: 600;
+	font-size: 14px;
+	float: left;
+	height: 25px;
+}
+
+.box-top-div4 {
+	width: 25%;
+	font-weight: 600;
+	font-size: 13px;
+	float: left;
+	height: 25px;
+}
+
+#progressbar li {
+	list-style-type: none;
+	color: #333;
+	text-transform: uppercase;
+	font-size: 11px;
+	width: 28%;
+	float: left;
+	position: relative;
+}
+
+#progressbar li.active:before,#progressbar li.active:after {
+	background: #27AE60;
+	color: white;
+}
+
+#progressbar li:first-child:after {
+	content: none;
+}
+
+#progressbar li:after {
+	content: '';
+	width: 90%;
+	height: 2px;
+	background: #CCC;
+	position: absolute;
+	left: -43%;
+	top: 25px;
+	z-index: 0;
+}
+
+.box-top-div5 {
+	font-size: 12px;
+	text-align: right;
+	float: right;
+	height: 25px;
+	padding-right: 10px;
+}
+
+.box-top-div5-1 {
+	width: 23%;
+	font-size: 13px;
+	text-align: right;
+	float: right;
+	height: 25px;
+	padding-right: 10px;
+}
+
+.searchbutton1 {
+	width: 80px;
+	height: 23px;
+	font-size: 11px !important;
+	margin-left: -80px !important;
+	border: 1px solid #3fa9f5 !important;
+	background-color: #55a4da !important;
+	z-index: 1;
+}
+
+.searchtxt1 {
+	border: 1px solid #3fa9f5;
+	border-radius: 5px;
+	height: 21px;
+	/* margin-left: 100px; */
+	padding-top: 0px;
+	width: 235px;
+}
+
+.button {
+	padding: 1px 10px !important;
+	border: 1px solid #3fa9f5 !important;
+	font-size: 11px !important;
+	font-weight: bold !important;
+	height: 22px !important;
+	text-align: right;
+}
+
+.tree1 {
+	width: 285px;
+	vertical-align: top;
+	float: left;
+	height: 600px;
+	background-color: #fff;
+	border: 1px solid #989898;
+}
+
+#tree {
+	height: 570px;
+	overflow-y: auto;
+}
+
+.clear {
+	clear: both;
+}
+
+th {
+	color: #fff !important;
+	background-color: #277AA8 !important;
+	font-size: 11.5px !important;
+	line-height: 20px;
+}
+
+.table_header_tree {
+	color: #fff !important;
+	background-color: #277AA8 !important;
+	font-size: 12px !important;
+	font-weight: bold;
+	line-height: 30px !important;
+	padding-left: 12px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.table_header_main {
+	color: #404041 !important;
+	background-color: #277AA8 !important;
+	font-size: 16px !important;
+	text-align: center;
+	line-height: 30px !important;
+}
+
+td {
+	line-height: 20px;
+}
+
+.even {
+	/* background-color: White !important;*/
+	
+}
+
+.odd {
+	/* background-color: #e6f5fc !important; */
+	
+}
+
+.number {
+	text-align: left;
+}
+
+.text {
+	text-align: center;
+}
+
+.table {
+	border: 1px solid;
+	line-height: 25px !important;
+}
+
+.table-side-header {
+	margin-left: 20px;
+	text-align: left;
+	font-weight: bold;
+}
+
+.pure-table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	empty-cells: show;
+	border: 1px solid #cbcbcb
+}
+
+.pure-table caption {
+	color: #000;
+	font: italic 85%/1 arial, sans-serif;
+	padding: 1em 0;
+	text-align: center
+}
+
+.pure-table td,.pure-table th {
+	border-left: 1px solid #cbcbcb;
+	border-width: 0 0 0 1px;
+	font-size: inherit;
+	line-height: 20px;
+	margin: 0;
+	overflow: visible;
+	padding: .25em .50em
+}
+
+.pure-table td:first-child,.pure-table th:first-child {
+	border-left-width: 0
+}
+
+.pure-table thead {
+	background: #e0e0e0;
+	color: #000;
+	text-align: left;
+	vertical-align: bottom
+}
+
+.pure-table td {
+	background-color: transparent
+}
+
+.pure-table-odd td {
+	background-color: #e6f5fc
+}
+
+.pure-table-striped tr:nth-child(2n-1) td {
+	background-color: #f2f2f2
+}
+
+.pure-table-bordered td {
+	border-bottom: 1px solid #cbcbcb
+}
+
+.pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td
+	{
+	border-bottom-width: 0
+}
+
+.pure-table-horizontal td,.pure-table-horizontal th {
+	border-width: 0 0 1px;
+	border-bottom: 1px solid #cbcbcb
+}
+
+.pure-table-horizontal tbody>tr:last-child td {
+	border-bottom-width: 0
+}
+
+span.dynatree-node a {
+	font-size: 11px !important;
+}
+
+.wrapper1 .tooltip {
+	color: black;
+	display: block;
+	left: 92px;
+	margin-bottom: 15px;
+	opacity: 0;
+	padding: 20px;
+	pointer-events: none;
+	position: absolute;
+	-webkit-transform: translateY(10px);
+	-moz-transform: translateY(10px);
+	-ms-transform: translateY(10px);
+	-o-transform: translateY(10px);
+	transform: translateY(10px);
+	-webkit-transition: all .25s ease-out;
+	-moz-transition: all .25s ease-out;
+	-ms-transition: all .25s ease-out;
+	-o-transition: all .25s ease-out;
+	transition: all .25s ease-out;
+	-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+.link {
+	text-decoration: underline;
+	color: #0b71be !important;
+	font-weight: normal !important;
+	padding-right: 10px;
+}
+
+.notes {
+	height: 25px;
+	font-weight: bold;
+	text-align: right;
+	font-size: 12px;
+	width: 105px !important;
+	float: left;
+	position: relative;
+}
+
+.notes-text-box {
+	float: left;
+	border: 1px solid #333;
+	width: 180px !important;
+	height: 22px;
+	padding-left: 5px;
+	margin-left: 10px;
+}
+
+.notes-text-box1 {
+	float: left;
+	border: 1px solid #333;
+	width: 187px !important;
+	height: 25px;
+	padding-left: 5px;
+}
+
+.notes-text-box3 {
+	float: left;
+	border: 1px solid #333;
+	width: 75px !important;
+	height: 25px;
+	padding-left: 5px;
+}
+
+.notes1 {
+	font-weight: bold;
+	text-align: right;
+	width: 200px;
+	padding-left: 30px;
+	font-size: 12px;
+	float: left;
+	position: relative;
+}
+
+.notes-textbox {
+	float: left;
+	border: 1px solid #333;
+	width: 400px;
+	height: 50px;
+	padding-left: 5px;
+	position: relative;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.popup_top_info {
+	background-color: #e3e3e3;
+	border-bottom: 1px solid #000;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	font-size: 18px;
+	margin-right: 0;
+	margin-top: 0;
+	padding: 10px 567px 9px 5px !important;
+}
+
+.headerRow1 {
+	color: #fff !important;
+	background-color: #277AA8 !important;
+	font-size: 11.5px !important;
+	line-height: 20px;
+}
+
+.Popup4 {
+	background-color: white;
+	text-align: centre;
+	z-index: 0;
+	left: 50%;
+	position: absolute;
+	width: 600px;
+	height: 360px;
+	margin-left: -250px;
+	valign: top;
+	border-style: solid;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-width: 3px 1px 1px;
+	-moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	-webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	font-size: 12px;
+	top: 20%;
+}
+
+.Popup_Terr {
+	background-color: white;
+	border: #000 1px solid;
+	text-align: center;
+	z-index: 0;
+	left: 50%;
+	position: absolute;
+	width: 600px;
+	height: 250px;
+	margin-left: -450px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	valign: top;
+	-moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	-webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+	font-size: 14px;
+	top: 20%;
+}
+
+.popupBackground {
+	background-color: black;
+	opacity: 0.20;
+	filter: alpha(opacity = 20);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+.popupBackgroundworkbench {
+	background-color: black;
+	opacity: 0.20;
+	filter: alpha(opacity = 20);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 0;
+}
+
+.customPopup {
+	padding: 10px;
+	left: 50%;
+	margin-left: -376px;
+	position: absolute;
+	z-index: 2000;
+	width: 924px;
+	top: 20%;
+}
+
+.customPopupSmall {
+	left: 50%;
+	margin-left: -262px;
+	position: absolute;
+	z-index: 1;
+	width: 524px;
+	top: 20%;
+}
+
+.customPopupSc {
+	background-color: white;
+	border-style: solid;
+	border: #003f77 1px solid;
+	border-top: #003f77 2px solid;
+	padding: 10px;
+	left: 50%;
+	margin-left: -350px;
+	position: absolute;
+	z-index: 2222;
+	width: 700px;
+	top: 20%;
+}
+
+.customPopup_OK {
+	background-color: white;
+	border-style: solid;
+	border: #003f77 1px solid;
+	border-top: #003f77 2px solid;
+	padding: 20px;
+	height: 200px;
+	left: 50%;
+	margin-left: -200px;
+	position: absolute;
+	z-index: 2000;
+	width: 450px;
+	height: 400px;
+	top: 20%;
+}
+
+.pagination {
+	width: 750px;
+	text-align: center;
+	height: 30px;
+	padding: 7px 0px;
+	margin-left: 25%;
+}
+
+.page-buttons {
+	font-size: 12px !important;
+	font-weight: bold !important;
+	height: 22px !important;
+	text-align: right;
+}
+
+}
+br {
+	line-height: 10px !important;
+}
+</style>
+
+
+
+	</head>
+	<!-- Add code to initialize the tree when the document is loaded: -->
+	<script type="text/javascript">
+             $(function(){
+               toggleNavSelected(1) ;
+             
+                 // Attach the dynatree widget to an existing <div id="tree"> element
+                 // and pass the tree options as an argument to the dynatree() function:
+                 $("#tree").dynatree({
+                     onActivate: function(node) {
+                         // A DynaTreeNode object is passed to the activation handler
+                         // Note: we also get this event, if persistence is on, and the page is reloaded.
+                         
+                         
+                         document.getElementById("mainpage:form1:input1").value=node.data.key;
+                         document.getElementById("mainpage:form1:input2").value=node.data.title;
+                         console.log("You activated " + document.getElementById("mainpage:form1:input1").value);
+                         populateAccounts();
+                     },
+                     
+                     
+                    
+                        onPostInit:function(){
+                    var tree = $("#tree").dynatree("getTree");
+            // Use it's class methods:
+            
+                     var i = 0;
+                    $("#tree").dynatree("getRoot").visit(function(node){
+                   
+                    if(i>3)
+            node.expand(false);
+            i++;
+            });
+       // alert('=='+'{!activateDefault}');
+         tree.activateKey('{!activateDefault}');
+         //alert('hello');
+             },  
+                     
+                     persist: false,
+                     checkbox: false,
+                     generateIds: false,
+                     classNames: {
+                         checkbox: "dynatree-checkbox",
+                         expanded: "dynatree-expanded"
+                     },
+                     selectMode: 3,
+                     children: {!JsonString},
+                     onSelect: function(select, node) {
+                         // Get a list of all selected nodes, and convert to a key array:
+                         var selKeys = $.map(node.tree.getSelectedNodes(), function(node){
+                             return node.data.id;
+                         });
+                         jQuery(document.getElementById("{!$Component.selectedKeys}")).val(selKeys.join(", "));
+                         
+                         // Get a list of all selected TOP nodes
+                         var selRootNodes = node.tree.getSelectedNodes(true);
+                         // ... and convert to a key array:
+                         var selRootKeys = $.map(selRootNodes, function(node){
+                             return node.data.key;
+                         });
+                     },
+                 });
+             });
+         </script>
+	<script type="text/javascript">
+                 function passSelected(position){
+                 
+                   //alert(position);
+                   document.getElementById("mainpage:form1:input3").value =  position;
+                 }
+                </script>
+
+	<form id="msform">
+		<!-- progressbar -->
+
+		<ul id="progressbar">
+			<li id="list1" class="active"><b>Select Territory</b></li>
+			<li id="list2"><span class="active"></span><b>Un-Assign AC </b></li>
+			<li id="list3"><span class="active"><b>Assign AC </b></span></li>
+		</ul>
+
+		<!--  <fieldset>
+    <h2 class="fs-title">&nbsp;</h2>
+<input type="button" class="next action-button" value="Next1" onclick="toggleNavSelected(1);" />
+<input type="button" class="next action-button" value="Next2" onclick="toggleNavSelected(2);" />
+<input type="button" class="next action-button" value="Next3" onclick="toggleNavSelected(3);" /> 
+    </fieldset> -->
+	</form>
+	<apex:outputText id="script">
+		<script>
+function toggleNavSelected(el){    
+    var list = document.getElementById('progressbar');    
+  
+   
+    if (el==1) {
+        
+        list.children[0].classList.add("active");        
+        list.children[1].classList.remove("active");        
+        list.children[2].classList.remove("active");
+         document.getElementById('list3').style.display='block';
+       
+    }
+    else if (el==2) {
+       
+        list.children[0].classList.add("active");       
+        list.children[1].classList.add("active");       
+        list.children[2].classList.remove("active");
+        document.getElementById('list3').style.display='none';
+    }
+    else if (el==3) {
+       
+        list.children[0].classList.add("active");       
+        list.children[1].classList.add("active");       
+        list.children[2].classList.add("active");
+       document.getElementById('list2').style.display='none';
+    }  
+}
+</script>
+	</apex:outputText>
+
+	<apex:form id="form1">
+		<apex:outputPanel id="msgPnl" rendered="{!!showPopupMsg}"><apex:pageMessages id="myMsg" /></apex:outputPanel>
+		<!--  ------------------- Loading Status ---------------------------- -->
+		<apex:actionStatus id="myStatus">
+			<apex:facet name="start">
+				<div> 
+					<div class="popupBackground"></div>
+					<div class="PopupPanel" style="position: absolute; left: 50%;">
+						<table border="0" width="100%" height="100%">
+							<tr>
+								<td align="center"><b>Please Wait</b></td>
+							</tr>
+							<tr>
+								<td align="center"><img src="/img/loading.gif" /></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</apex:facet>
+		</apex:actionStatus>
+
+		<!--   -------------------------VF Page-------------------------------------    -->
+		<apex:actionfunction name="populateAccounts"
+			action="{!populateTerritory}" rerender="thePBasd,pnl3"
+			oncomplete="updateCss('true','true');" status="myStatus" />
+		<!-- Add a <div> element where the tree should appear: -->
+		<apex:outputText value="No more request allowed in this quarter"
+			rendered="{!NOT(isSubmissionAllowed)}"  style="color:blue; font-size:15px; font-weight:bold;"/>
+		<div class="box-main">
+			<div class="box-top">
+				<apex:outputpanel id="pnl3">
+					<div class="box-top-div1">{!loggedInUserName}({!loggedInUserProfile})</div>
+					<div class="box-top-div2" style="padding-left: 20px;">
+                        <apex:outputPanel id="buttonPnl">
+                        <apex:commandButton value="Previous" action="{!goPreviousPage}" disabled="{!buttonDisalbePrev}" rerender="AccountPanel, buttonPnl" oncomplete="updateCss('true','true');" status="myStatus"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;showing : {!start + 1} - {!stop} of {!total}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:commandButton value="Next" action="{!goNextPage}"  disabled="{!buttonDisalbeNext}" rerender="AccountPanel, buttonPnl" oncomplete="updateCss('true','true');" status="myStatus"/>
+                        </apex:outputPanel>
+					</div>
+					<div class="box-top-div5">
+						<apex:commandbutton value="Assign / Reassign" status="myStatus"
+							action="{!openAssignPopup}" reRender="popupAssign,myMsg,AccountPanel,input3"
+							oncomplete="toggleNavSelected(3);"
+							rendered="{!isSubmissionAllowed}"></apex:commandbutton>
+						&nbsp;&nbsp;
+						<apex:commandbutton value="UnAssign" status="myStatus"
+							action="{!openUnAssignPopup}" reRender="popupUnAssign,myMsg,AccountPanel,input3"
+							oncomplete="toggleNavSelected(2);"
+							rendered="{!isSubmissionAllowed}"></apex:commandbutton>
+					</div>
+				</apex:outputpanel>
+			</div>
+			<div class="box-content">
+				<div class="tree1">
+					<div class="table_header_tree">Territory Organization</div>
+					<div id="tree"></div>
+				</div>
+				<div class="tablecontent">
+					<apex:outputPanel id="AccountPanel">
+
+						<apex:pageBlock id="thePBasd" mode="maindetail">
+
+
+							<apex:pageblocktable value="{!positionLimited}" var="wrap"
+								id="maintable" rowClasses="one,two">
+								<apex:column headerValue="Action"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">
+									<apex:outputpanel rendered="{!!(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved')}">
+										<input type="radio" name="fam"
+											onclick="passSelected('{!wrap.pos.Id}');toggleNavSelected(1);"
+											reRender="myMsg,input3" />
+									</apex:outputpanel>
+								</apex:column>
+								<apex:column headerValue="Territory"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">
+									<apex:outputlink value="/{!wrap.pos.Id}"
+										styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">{!wrap.pos.Territory__r.name} </apex:outputlink>
+								</apex:column>
+                                <apex:column headerValue="Employee"
+                                    value="{!wrap.pos.user__r.name}"
+                                    styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">
+
+                                </apex:column>
+								<apex:column headerValue="District"
+									value="{!wrap.pos.Territory__r.SalesIQ__District__c}"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}"></apex:column>
+
+								<apex:column headerValue="Region"
+									value="{!wrap.pos.Territory__r.SalesIQ__Region__c}"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}"></apex:column>
+								<apex:column headerValue="Start Date"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">{!wrap.effectiveStartDate}</apex:column>
+								<apex:column headerValue="End Date"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">
+                             
+                             {!wrap.effectiveEndDate}</apex:column>
+								<apex:column headerValue="Request Status"
+									styleclass="{!if(wrap.reqStaus=='Pending'||wrap.reqStaus=='Approved','pending','notpending')}">
+									<apex:outputLink title="{!wrap.reqName}" target="_blank"
+										value="/{!wrap.rosterId}">
+										<apex:outputText value="{!wrap.reqStaus}" />
+									</apex:outputLink>
+								</apex:column>
+
+							</apex:pageblocktable>
+
+
+
+
+
+						</apex:pageBlock>
+					</apex:outputPanel>
+				</div>
+
+			</div>
+		</div>
+
+		<apex:inputhidden id="input1" value="{!selectedPosition}" />
+		<apex:inputhidden id="input2" value="{!selectedNode}" />
+		<apex:inputhidden id="input3" value="{!selectedTerritory}" />
+         `  
+          <!-----------------------Pop Up Assign AC------------------->
+
+
+		<apex:outputPanel id="popupAssign">
+
+			<apex:outputPanel styleClass="popupBackground" layout="block"
+				rendered="{!displayPopUpAssign}" />
+			<apex:outputPanel styleClass="customPopupSmall" layout="block"
+				rendered="{!displayPopUpAssign}">
+				<div class="box-main" style="margin-top: -2px;">
+					<div class="box-top">
+
+						<div class="box-top-div1">Assign Ac</div>
+					</div>
+					<div class="box-content-popup">
+						<br />
+						<apex:pageMessages id="editMsg" />
+						<b>"{!rep}"</b> is already assigned to territory <b>"{!territory}"</b>
+						.<br />Do you want to Un-Assign ? <br /> <br />
+						<div class="notes1">Effective End Date :</div>
+						<apex:selectlist size="1" styleclass="notes-text-box"
+							value="{!effectiveEnddate}">
+
+							<apex:selectOptions value="{!Dates}" />
+						</apex:selectlist>
+						<br /> <br />
+
+						<div style="text-align: center">
+							<apex:commandButton value="Submit" action="{!redirectACRoster}"
+								style="background:#36647D;color: #FFF; width:100px; height:25px; font-size:12px;" />
+							&nbsp;&nbsp;
+							<apex:commandButton value="Cancel"
+								style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+								action="{!closeAssignPopup}" oncomplete="toggleNavSelected(1);"
+								rerender="popupAssign,AccountPanel,input3" />
+						</div>
+						<br />
+					</div>
+
+				</div>
+			</apex:outputPanel>
+		</apex:outputPanel>
+
+		<!-----------------------Pop Up UnAssign AC------------------->
+
+
+		<apex:outputPanel id="popupUnAssign">
+
+			<apex:outputPanel styleClass="popupBackground" layout="block"
+				rendered="{!displayUnAssign}" />
+			<apex:outputPanel styleClass="customPopupSmall" layout="block"
+				rendered="{!displayUnAssign}">
+				<div class="box-main" style="margin-top: -2px;">
+
+					<div class="box-top">
+
+						<div class="box-top-div1">Un-Assign AC</div>
+
+					</div>
+					<div class="box-content-popup">
+						<br />
+						<apex:pageMessages id="editMsg1" />
+
+						Are you sure you want to un-assign <b>"{!rep}"</b> from territory
+						<b>"{!territory}"</b> ?<br />
+						<div class="notes1">Effective End Date :</div>
+						<apex:selectlist size="1" styleclass="notes-text-box"
+							value="{!effectiveEnddate}">
+							<apex:selectOptions value="{!Dates}" />
+
+
+						</apex:selectlist>
+						<br /> <br />
+						<div style="text-align: center">
+							<apex:actionStatus id="go">
+								<apex:facet name="stop">
+									<apex:outputPanel >
+										<apex:commandButton value="Submit"
+											action="{!submitUnassignAC}" status="go"
+											style="background:#36647D;color: #FFF; width:100px; height:25px; font-size:12px;"
+											rerender="popupUnAssign,thePBasd,msgPnl,input3"
+											oncomplete="passSelected('');" />
+										<apex:commandButton value="Cancel"
+											style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+											action="{!closeUnAssignPopup}"
+											oncomplete="toggleNavSelected(1);"
+											rerender="popupUnAssign,thePBasd,input3" />
+									</apex:outputPanel>
+								</apex:facet>
+								<apex:facet name="start">
+									<apex:outputPanel >
+										<apex:commandButton style="background:#36647D;color: #FFF; width:125px; height:25px; font-size:12px;"
+											status="go" value="Processing..." disabled="true"
+											rerender="go,popupUnAssign,thePBasd,msgPnl, input3" />
+										<apex:commandButton style="background:#36647D;color: #FFF; width:90px; height:25px; font-size:12px;"
+											value="Processing..." disabled="true"
+											rerender="popupUnAssign,thePBasd,input3" />
+									</apex:outputPanel>
+								</apex:facet>
+							</apex:actionStatus>
+						</div>
+						&nbsp;&nbsp; <br />
+					</div>
+
+				</div>
+			</apex:outputPanel>
+		</apex:outputPanel>
+	</apex:form>
+	<div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

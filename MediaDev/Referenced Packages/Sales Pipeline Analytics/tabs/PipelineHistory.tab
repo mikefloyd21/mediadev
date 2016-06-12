@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <icon>InsightSquared/Is2_Tab_Logo.png</icon>
+    <label>Sales Pipeline Analytics (Deprecated)</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom290: TV Widescreen</motif>
+    <page>PipelineHistory</page>
+</CustomTab>

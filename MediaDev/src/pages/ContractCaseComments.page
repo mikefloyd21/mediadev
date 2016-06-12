@@ -1,0 +1,38 @@
+<apex:page standardcontroller="Contract" extensions="ContractCaseCommentController">
+<apex:includeScript value="/support/console/32.0/integration.js"/>
+<script> 
+function openPrimaryTab(id, name) {
+ if (sforce.console.isInConsole())
+  sforce.console.openPrimaryTab(undefined, '/' + id + '?isdtp=vw', true, name);
+ else
+  window.top.location.href = '/' + id;
+}
+</script>
+<style>
+.bPageBlockTable {
+    border: 0px  !important;
+}
+.hidden {
+display: none   !important;
+}
+</style>
+<apex:pageMessages />
+<apex:form >
+    <apex:pageBlock mode="maindetail">
+        <apex:pageBlockTable value="{!mCaseComments}" var="c" rendered="{!mCaseComments.size > 0}">
+            <apex:column width="100" value="{!c.casenumber}"/>
+            <apex:column width="200" value="{!c.owner.name}"/>
+            <apex:column width="200" value="{!c.Task_Type__c}"/>
+            <apex:column headerValue="Comments"> 
+                <apex:pageBlockTable styleClass="bPageBlockTable" headerClass="hidden" value="{!c.CaseComments}" var="cm" rendered="{!c.CaseComments.size > 0}">
+                    <apex:column > 
+                        <apex:outputfield value="{!cm.CommentBody}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:column>
+            <apex:column width="200" value="{!c.CreatedDate}"/>
+            <apex:column width="200" value="{!c.ClosedDate}"/>        
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:form>    
+</apex:page>

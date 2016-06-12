@@ -1,0 +1,3 @@
+<apex:page standardController="Event" extensions="dispatcherEventEditController" 
+    action="{!nullValue(redir.url, urlFor($Action.Event.Edit, Event.id, null, true))}">
+</apex:page>

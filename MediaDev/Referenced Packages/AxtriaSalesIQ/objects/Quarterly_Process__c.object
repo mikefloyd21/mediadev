@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Maintains Effective dates and window dates for quarterly process</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Approval_End_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Approval End Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Approval_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Approval Start Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Effective_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Effective Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Quarter__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Quarter</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Submission_End_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Submission End Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Submission_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Submission Start Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Quarterly Process</label>
+    <nameField>
+        <label>Quarterly Process Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Quarterly Processes</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Approval_End_Date_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Approval_End_Date__c)</errorConditionFormula>
+        <errorMessage>Please Enter Approval End Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Approval_End_date_validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>Approval_Start_Date__c &gt; Approval_End_Date__c</errorConditionFormula>
+        <errorMessage>Approval End Date Should be greater than Approval Start Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Approval_Start_Date_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Approval_Start_Date__c)</errorConditionFormula>
+        <errorMessage>Please Enter Approval Start Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Approval_n_sub_End_date_validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>Submission_End_Date__c &gt; Approval_End_Date__c</errorConditionFormula>
+        <errorMessage>Approval End Date Should be greater than Submission End Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Effective_End_date_validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>Approval_End_Date__c &gt;  Effective_Date__c</errorConditionFormula>
+        <errorMessage>Effective Date should be greater than Approval End Date.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Subimission_End_date_validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>Submission_Start_Date__c &gt;  Submission_End_Date__c</errorConditionFormula>
+        <errorMessage>Submission End Date Should be greater than  Submission Start  Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Submission_Start_Date_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Submission_Start_Date__c)</errorConditionFormula>
+        <errorMessage>Please Enter Submission Start Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Submission_end_Date_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Submission_End_Date__c )</errorConditionFormula>
+        <errorMessage>Please Enter Submission End Date</errorMessage>
+    </validationRules>
+</CustomObject>

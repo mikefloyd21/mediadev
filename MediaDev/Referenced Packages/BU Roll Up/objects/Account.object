@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Cox_Auto_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Cox Auto Id for this business until account</description>
+        <externalId>false</externalId>
+        <label>Cox Auto Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Cox_Auto_Major_Account__c</fullName>
+        <deprecated>false</deprecated>
+        <description>From a Cox Automotive perspective, is this a Major account? (Values are: No, Mid, Mega)</description>
+        <externalId>false</externalId>
+        <label>Cox Auto Major Account</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mid</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mega</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Customer_CA_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Cox Auto Id of the customer/rooftop that this account rolls up to. This provides a single Id to a customer across all business units.</description>
+        <externalId>false</externalId>
+        <label>Customer CA Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Dealer_Group_CA_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Cox Auto Id of the dealer group this account is associated to.</description>
+        <externalId>false</externalId>
+        <label>Dealer Group CA Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Owner_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Provides a human readable owner name when accessing this record through Lightning Connect.</description>
+        <externalId>false</externalId>
+        <label>Owner Name</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

@@ -1,0 +1,3 @@
+<apex:page standardController="ATDSA_bookshelf__MobileAppConfig__c">
+        <apex:detail subject="{!ATDSA_bookshelf__MobileAppConfig__c.Id}" relatedList="true" inlineEdit="true"/> 
+</apex:page>

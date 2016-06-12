@@ -1,0 +1,787 @@
+<apex:page controller="SalesIQ.AffiliationCtlr" sidebar="false" tabstyle="Affiliation_1__tab">
+    <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'jquery/jquery.js' )}" />
+    <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'jquery/jquery-ui.custom.js' )}" />
+    <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'jquery/jquery.cookie.js' )}" />
+    <apex:includeScript value="{!URLFOR($Resource.SalesIQ__DynaTree, 'src/jquery.dynatree.js' )}" />
+    <apex:stylesheet value="{!URLFOR($Resource.SalesIQ__jstree, '/jstree/dist/themes/default/style.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SalesIQ__DynaTree, 'src/skin/ui.dynatree.css')}" />
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:form id="form-content" >
+        <style>
+            body button, body .x-btn, body .btn, body .btnDisabled, body .btnCancel, body .menuButton .menuButtonButton {
+                padding: 2px 6px ;
+            }
+            .dynatree-container{
+                border:0px !important;
+            }
+            .box-main{
+                width:100%;
+                margin:30px auto;
+            }
+            .box-main-popup{
+                width:100%;
+                margin:-2px auto;
+            }
+            .box-content{
+                background-color:#f7f7f7;
+                padding:5px;
+                border:1px solid #cccccc;
+            }
+            .box-content-popup{
+                background-color:#fff;
+                padding:5px;
+                border:1px solid #cccccc;
+            }
+            td{
+                font-size:11px !important;
+                line-height:16px !important;
+            }
+            .box-top{
+                border-top:3px solid #00335B;
+                -moz-border-top:3px solid #00335B;
+                -webkit-border-top:3px solid #00335B;
+                border-top-left-radius:10px;
+                border-top-right-radius:10px;
+                -moz-border-top-left-radius:10px;
+                -moz-border-top-right-radius:10px;
+                -webkit-border-top-left-radius:10px;
+                -webkit-border-top-right-radius:10px;
+                background-color:#F8F8F8;
+                border-left:1px solid #cccccc;
+                border-right:1px solid #cccccc;
+                color:#000;
+                padding:12px 0 0 15px;
+                font-weight:600;
+                font-size:18px;
+                height:30px;
+            }
+            .box-top-popup{
+                border-top:3px solid #00335B;
+                -moz-border-top:3px solid #00335B;
+                -webkit-border-top:3px solid #00335B;
+                border-top-left-radius:10px;
+                border-top-right-radius:10px;
+                -moz-border-top-left-radius:10px;
+                -moz-border-top-right-radius:10px;
+                -webkit-border-top-left-radius:10px;
+                -webkit-border-top-right-radius:10px;
+                background-color:#F8F8F8;
+                border-left:1px solid #000;
+                border-right:1px solid #000;
+                color:#000;
+                padding:12px 0 0 15px;
+                font-weight:600;
+                font-size:18px;
+                height:30px;
+            }
+
+            .tablecontent{
+                vertical-align:top;
+                height:450px;
+                background-color:#fff;
+                margin-left:290px;
+                border:1px solid #989898;
+                font-size:12px;
+                overflow-y:auto;
+
+            }
+            .box-top-div1{
+
+                font-weight:800;
+                font-size:16px;
+                float:left;
+                text-align:left;
+                height:25px;
+                color:#666 !important;
+
+            }
+            .box-top-div2{
+                /*width:50%;*/
+                font-weight:600;
+                font-size:12px;
+                float:left;
+                text-align:center;
+                height:25px;
+
+            }
+            .box-top-div3{
+                width:5%;
+                font-weight:600;
+                font-size:14px;
+                float:left;
+                height:25px;
+            }
+            .box-top-div4{
+                width:25%;
+                font-weight:600;
+                font-size:13px;
+                float:left;
+                height:25px;
+
+            }
+            .box-top-div5{
+                width:30%;
+                font-size:13px;
+                text-align:right;
+                float:right;
+                height:25px;
+                padding-right: 10px;
+            }
+            .box-top-div5-1{
+                width:23%;
+                font-size:13px;
+                text-align:right;
+                float:right;
+                height:25px;
+                padding-right: 10px;
+            }
+            .searchbutton1{
+                width:80px;
+                height:21px;
+                font-size:11px !important;
+                margin-left:-80px !important;
+                border:1px solid #ccc !important;
+                background-color:#f0f0f0 !important;
+                color:#000;
+                border-bottom-right-radius:5px;
+                border-top-right-radius:5px;
+                z-index:1;
+            }
+            .searchbutton21{
+                width:80px;
+                height:21px;
+                margin-left:10px !important;
+                border:1px solid #3fa9f5 !important;
+                background-color:#f0f0f0 !important;
+                border-bottom-right-radius:3px;
+                border-top-right-radius:3px;
+                z-index:1;
+            }
+            .searchtxt1{
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                height: 18px;
+               /* margin-left: 100px; */
+                padding-top: 0px;
+                width: 200px;
+            }
+            .button11{
+               padding:1px 10px !important;
+               font-size:11px !important;
+               font-weight:bold !important;
+               height:22px !important;
+               text-align:right;
+            }
+            .tree1{
+                width:275px;
+                vertical-align:top;
+                float:left;
+                height:450px;
+                background-color:#fff;
+                border:1px solid #989898;
+            }
+            #jstree{
+                overflow: auto;
+                width: 275px;
+                height: 420px;
+            }
+            .clear{
+                clear:both;
+            }
+            th{
+                color:#fff !important;
+                background-color:#277AA8 !important;
+                font-size:11.5px !important;
+                line-height:20px;
+            }
+            .table_header_tree{
+                color:#fff !important;
+                background-color:#277AA8 !important;
+                font-size:12px !important;
+                font-weight:bold;
+                line-height:30px !important;
+                padding-left:12px;
+                -webkit-overflow-scrolling: touch;
+                width:96%;
+            }
+            .table_header_main{
+                color:#404041 !important;
+                background-color:#277AA8 !important;
+                font-size:16px !important;
+                text-align:center;
+                line-height:30px !important;
+            }
+            td{
+                line-height:20px ;
+            }
+            .even {
+               /* background-color: White !important;*/
+
+            }
+            .odd {
+               /* background-color: #e6f5fc !important; */
+            }
+            .number{
+
+                text-align: left;
+            }
+            .text{
+                text-align:center;
+            }
+            .table{
+                border:1px solid ;
+                line-height:25px !important;
+            }
+            .pure-table{border-collapse:collapse;border-spacing:0;empty-cells:show; border:1px solid #cbcbcb}
+            .pure-table caption{color:#000;font:italic 85%/1 arial,sans-serif;padding:1em 0;text-align:center}
+            .pure-table td,.pure-table th{
+                border-left:1px solid #cbcbcb;
+                border-width:0 0 0 1px;
+                font-size:inherit;
+                line-height:20px;
+                margin:0;
+                overflow:visible;
+                padding:.25em .50em  ;
+            }
+            .pure-table td:first-child,.pure-table th:first-child{border-left-width:0}
+            .pure-table thead{background:#e0e0e0;color:#000;text-align:left;vertical-align:bottom}
+            .pure-table td{background-color:transparent}
+            .pure-table-odd td{background-color:#e6f5fc}
+            .pure-table-striped tr:nth-child(2n-1) td{background-color:#f2f2f2}
+            .pure-table-bordered td{border-bottom:1px solid #cbcbcb}
+            .pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td{border-bottom-width:0}
+            .pure-table-horizontal td,.pure-table-horizontal th{border-width:0 0 1px;border-bottom:1px solid #cbcbcb}
+            .pure-table-horizontal tbody>tr:last-child td{border-bottom-width:0}
+            span.dynatree-node a{
+                font-size :11px !important ;
+            }
+            .wrapper1 .tooltip {
+                color: black;
+                display: block;
+                left: 92px;
+                margin-bottom: 15px;
+                opacity: 0;
+                padding: 20px;
+                pointer-events: none;
+                position: absolute;
+                -webkit-transform: translateY(10px);
+                -moz-transform: translateY(10px);
+                -ms-transform: translateY(10px);
+                -o-transform: translateY(10px);
+                transform: translateY(10px);
+                -webkit-transition: all .25s ease-out;
+                -moz-transition: all .25s ease-out;
+                -ms-transition: all .25s ease-out;
+                -o-transition: all .25s ease-out;
+                transition: all .25s ease-out;
+                -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+                -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+                -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+                -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+                box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+            }
+            .link{
+                text-decoration:underline;
+                color:#0b71be !important;
+                font-weight:normal !important;
+                padding-right:10px;
+            }
+            .notes{
+                height:25px;
+                font-weight:bold;
+                text-align:right;
+                font-size:12px;
+                width:105px !important;
+                float:left;
+                position:relative;
+            }
+            .notes-text-box{
+                float:left;
+                border:1px solid #333;
+                width:180px !important;
+                height:22px;
+                padding-left: 5px;
+            }
+            .notes-text-box1{
+                float:left;
+                border:1px solid #333;
+                width:187px !important;
+                height:25px;
+                padding-left: 5px;
+            }
+            .notes-text-box3{
+                float:left;
+                border:1px solid #333;
+                width:75px !important;
+                height:25px;
+                padding-left: 5px;
+            }
+            .notes1{
+                font-weight:bold;
+                text-align:right;
+                width:150px;
+                padding-left:10px;
+                font-size:12px;
+                float:left;
+                position:relative;
+            }
+            .notes-textbox{
+                float:left;
+                border:1px solid #333;
+                width:350px;
+                height:50px;
+                padding-left:5px;
+                position:relative;
+                /*margin-left:20px;*/
+                margin-bottom:20px;
+
+            }
+            .popup_top_info{
+                background-color: #e3e3e3;
+                border-bottom: 1px solid #000;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                font-size: 18px;
+                margin-right: 0;
+                margin-top: 0;
+                padding: 10px 567px 9px 5px !important;
+            }
+            .Popup2{
+                background-color:white;
+                text-align:centre;
+                z-index: 0;
+                left: 50%;
+                position: absolute;
+                width: 600px;
+               /* height:360px;*/
+                margin-left: -250px;
+                valign:top;
+                border-style: solid;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                border-width: 3px 1px 1px;
+                -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+                -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+                font-size:12px;
+                top:20%;
+            }
+            .Popup_Terr{
+                background-color: white;
+                border: #000 1px solid;
+                text-align: center;
+                z-index: 0;
+                left: 50%;
+                position: absolute;
+                width: 600px;
+                height: 250px;
+                margin-left: -450px;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                valign: top;
+                -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+                -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+                font-size: 14px;
+                top: 20%;
+            }
+            .popupBackground{
+                background-color:black;
+                opacity: 0.20;
+                filter: alpha(opacity = 20);
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 0;
+            }
+            .popupBackgroundworkbench{
+                background-color:black;
+                opacity: 0.20;
+                filter: alpha(opacity = 20);
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 0;
+            }
+            .customPopup {
+                padding: 10px;
+                left: 50%;
+                margin-left: -376px;
+                position: absolute;
+                 z-index: 2000;
+                width: 924px;
+                top: 20%;
+            }
+            .customPopupSc {
+                background-color: white;
+                border-style: solid;
+                border: #003f77 1px solid;
+                border-top: #003f77 2px solid;
+                padding: 10px;
+                left: 50%;
+                margin-left: -350px;
+                position: absolute;
+                z-index: 2222;
+                width: 700px;
+                top: 20%;
+            }
+            .customPopup_OK {
+                background-color: white;
+                border-style: solid;
+                border: #003f77 1px solid;
+                border-top: #003f77 2px solid;
+                padding: 20px;
+                height: 200px;
+                left: 50%;
+                margin-left: -200px;
+                position: absolute;
+                z-index: 2000;
+                width: 450px;
+                height: 400px;
+                top: 20%;
+            }
+            .pagination{
+                width:750px;
+                text-align:center;
+                height:30px;
+                padding:7px 0px;
+                margin-left:25%;
+            }
+            .page-buttons{
+               font-size:12px !important;
+                font-weight:bold !important;
+                height:22px !important;
+                text-align:right;
+            }
+            br{
+                line-height:10px !important;
+            }
+            .selectedDataRow {
+                background-color:#DCEEF3;
+                font-Weight:bold;
+            }
+            .pbHeader{
+                margin-bottom:-72px !important;
+            }
+            .headerRow1{
+                color:#fff !important;
+                background-color:#277AA8 !important;
+                font-size:11.5px !important;
+                line-height:20px;
+            }
+            .table-side-header{
+                margin-left:20px;
+                text-align:left;
+                font-weight:bold;
+            }
+            .headerCSS1{
+                color:#fff !important;
+            }
+            .popup{
+                z-index: 9999;
+                left: 50%;
+                position: absolute;
+                width: 500px;
+                margin-left: -250px;
+                top:10%;
+            }
+            .popupBg{
+                background-color:black;
+                opacity: 0.20;
+                filter: alpha(opacity = 70);
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 9998;
+            }
+            .hRow{
+                font-weight: bold;
+                background-color: cornsilk;
+            }
+            .dRow{
+                background-color: #cde7d4;
+            }
+        </style>
+        <!-- ------------------------------------------------------------------- VF page ------------------------------------------------------ -->
+        <body class="claro">
+            <!--<apex:outputpanel id="scriptPanel">-->
+            <script type="text/javascript">
+                $.noConflict();
+                var clickedNode = '';
+                $(function(){
+                    // Attach the dynatree widget to an existing <div id="tree"> element
+                    // and pass the tree options as an argument to the dynatree() function:
+                    $("#jstree").dynatree({
+                        onActivate: function(node) {
+                        // A DynaTreeNode object is passed to the activation handler
+                        // Note: we also get this event, if persistence is on, and the page is reloaded.
+                            console.log("You activated " + node.data.key);
+                            clickedNode = node.data.key;
+                            jQuery(document.getElementById("page1:form1:input1")).val( node.data.key);
+                            jQuery(document.getElementById("page1:form1:input2")).val( node.data.title);
+                            populateDealerGroups(clickedNode);
+                        },
+                        clickFolderMode: 1,
+                        onPostInit:function(){
+                            var i = 0;
+                            $("#jstree").dynatree("getRoot").visit(function(node){
+                                if(i>1)
+                                    node.expand(false);
+                                i++;
+                            });
+                           this.activateKey('{!activateDefault}');
+                        },
+                        persist: false,
+                        generateIds: false,
+                        classNames: {
+                            checkbox: "dynatree-checkbox",
+                            expanded: "dynatree-expanded"
+                        },
+                        selectMode: 3,
+                        children: {!JsonString},
+                        onSelect: function(select, node) {
+                            // Get a list of all selected nodes, and convert to a key array:
+                            var selKeys = $.map(node.tree.getSelectedNodes(), function(node){
+                                return node.data.key;
+                            });
+                            jQuery(document.getElementById("{!$Component.input1}")).val(selKeys.join(", "));
+                            // Get a list of all selected TOP nodes
+                            var selRootNodes = node.tree.getSelectedNodes(true);
+                            // ... and convert to a key array:
+                            var selRootKeys = $.map(selRootNodes, function(node){
+                                return node.data.key;
+                            });
+                        }
+                    });
+                });
+
+                var format = function(numStr){
+                    var str = numStr, parts = false, output = [], i = 1, formatted = null;
+                    if(str.indexOf(".") > 0) {
+                        parts = str.split(".");
+                        str = parts[0];
+                    }
+                    str = str.split("").reverse();
+                    for(var j = 0, len = str.length; j < len; j++) {
+                        if(str[j] != ",") {
+                            output.push(str[j]);
+                            if(i%3 == 0 && j < (len - 1)) {
+                                output.push(",");
+                            }
+                            i++;
+                        }
+                    }
+                    formatted = output.reverse().join("");
+                    return("$" + formatted );
+                };
+
+                var $j = jQuery.noConflict();
+                var saveElm;
+                var showCurrencySign = function(){
+                    $j('.currency').each(function(){
+                        $j(this).text(format($j(this).text()));
+                    });
+                    if(saveElm == undefined){
+                        $j("[id$=pbDealerGrp] tr:nth-child(1)>td:nth-child(2)").trigger('click');
+                    }else{
+                        console.log(saveElm);
+                        console.log($j("[id$=pbDealerGrp] tr:nth-child("+saveElm+")>td:nth-child(2)"));
+                        $j("[id$=pbDealerGrp] tr:nth-child("+saveElm+")>td:nth-child(2)").trigger('click');
+                        if($j("[id$=pbDealerGrp] tr:nth-child("+saveElm+")>td:nth-child(2)").length == 0){
+                            $j("[id$=pbDealerGrp] tr:nth-child("+(saveElm-1)+")>td:nth-child(2)").trigger('click');
+                        }
+                    }
+                    //hilightGroup();
+                };
+                var showCurrencySignd = function(){
+                    $j('.currencyd').each(function(){
+                        $j(this).text(format($j(this).text()));
+                    });
+                };
+
+                var highlight = function(elem){
+                    saveElm = $(elem).parent().index()+1;
+                    $j('tr').removeClass('hRow');
+                    $j(elem).parent().addClass('hRow');
+                    clearDlrFilter();
+                }
+
+                var clearGroupFilter = function(){
+                    $("[id$='dgSrch']").val('');
+                    $("[id$='sdlr']").val('');
+                    populateDealerGroups(clickedNode);
+                }
+
+                var clearDlrFilter = function(){
+                    $("[id$='sdlr']").val('');
+                }
+            </script>
+            <div class=" box-main">
+                <apex:pageMessages id="msgPnl"/>
+                <apex:actionStatus id="myStatus" >
+                    <apex:facet name="start" >
+                        <div>
+                            <div class="popupBackground" ></div>
+                            <div class="PopupPanel" style="z-index:2000">
+                                <table border="0" width="100%" height="100%">
+                                    <tr>
+                                        <td align="center"><b>Please Wait</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center"><img src="/img/loading.gif"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+                <div class="box-top">
+                    <div class="box-top-div1" style="width:45%">{!$User.FirstName} {!$User.LastName}({!$Profile.Name})</div>
+                    <div class="box-top-div2">
+                        <apex:inputText value="{!searchString}" id="dgSrch"/>
+                        <apex:commandButton action="{!searchDealerGroups}" value="Search" rerender="dealerGrpPanel, buttonPnl, msgPnl, dealerPanel" oncomplete="showCurrencySign();" status="myStatus"/>
+                        <apex:commandButton onclick="clearGroupFilter();" value="Clear" rerender="dealerGrpPanel, buttonPnl, msgPnl" oncomplete="showCurrencySign();" status="myStatus"/>
+                    </div>
+                    <div class="box-top-div5">
+                        <apex:outputPanel id="buttonPnl">
+                        <apex:commandButton value="Previous" action="{!goPreviousPage}" disabled="{!buttonDisalbePrev}" rerender="dealerGrpPanel, buttonPnl" oncomplete="showCurrencySign();" status="myStatus"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;showing : {!start + 1} - {!stop} of {!total}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:commandButton value="Next" action="{!goNextPage}"  disabled="{!buttonDisalbeNext}"  rerender="dealerGrpPanel, buttonPnl" oncomplete="showCurrencySign();" status="myStatus"/>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <div class="tree1">
+                        <div class="table_header_tree">Territory Organization </div>
+                        <div id="jstree" > </div>
+                    </div>
+                    <div class="tablecontent">
+                        <div class="axtria" ></div>
+                        <div>
+                            <apex:outputPanel id="dealerGrpPanel" >
+                                <apex:pageBlock >
+                                    <apex:pageBlockTable value="{!dealerGroupsPerPage}" var="dg" id="pbDealerGrp">
+                                        <apex:column value="{!dg.dealerGroupId}" headerValue="Dealer Group Id" />
+                                        <apex:column headerValue="Dealer Group Name" >
+                                           <apex:actionSupport action="{!populateDealers}" event="onclick" rerender="msgDlrPnl,msgPnl,dealerPanel, buttonPnl2, linkBtnPnl, groupName" onsubmit="highlight(this)" oncomplete="showCurrencySignd();"  status="myStatus">
+                                               <apex:param name="groupId" assignTo="{!grpId}" value="{!dg.gId}"/>
+                                               {!dg.dealerGroupName}
+                                           </apex:actionSupport>
+                                        </apex:column>
+                                        <apex:column value="{!dg.rooftops}" headerValue="# Rooftops" />
+                                        <apex:column headerValue="Billable">
+                                           <span class="currency">{!dg.billable}</span>
+                                        </apex:column>
+                                        <apex:column headerValue="Opportunity" >
+                                           <span class="currency">{!dg.oppty}</span>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <apex:outputpanel id="pnlRep"  >
+                <apex:pageBlock id="pb1" mode="maindetail" >
+                    <apex:pageMessages id="msgDlrPnl"/>
+                    <div class=" box-main">
+                        <div class="box-top">
+                            <div class="box-top-div1" style="width:25%"><apex:outputText value="{!selectedGroupName}" id="groupName"/></div>
+                            <div class="box-top-div2">
+                                <apex:inputText value="{!searchDlrString}" id="sdlr"/>
+                                <apex:commandButton action="{!searchAllDealers}" value="Search" rerender="dealerPanel, buttonPnl2, linkBtnPnl, msgDlrPnl" oncomplete="showCurrencySignd();" status="myStatus"/>
+                            </div>
+                            <div class="box-top-div4">
+                                <apex:outputpanel id="linkBtnPnl">
+                                    <apex:commandButton action="{!showDLinkPopUp}" rendered="{!!activateLink}" value="De-Link" rerender="dpopup, msgDlrPnl" status="myStatus"/>
+                                    <apex:commandButton action="{!showLinkPupUp}" rendered="{!activateLink}" value="Link" rerender="lpopup, msgDlrPnl" status="myStatus"/>
+                                </apex:outputpanel>
+                                <apex:commandButton onclick="clearDlrFilter();" action="{!populateDealers}" value="Clear" rerender="dealerPanel, buttonPnl2, linkBtnPnl, msgDlrPnl" oncomplete="showCurrencySignd();" status="myStatus"/>
+                            </div>
+                            <div class="box-top-div5">
+                                <apex:outputPanel id="buttonPnl2">
+                                    <apex:commandButton value="Previous" action="{!goPreviousPageD}" disabled="{!dButtonDisalbePrev}"  rerender="dealerPanel, buttonPnl2" oncomplete="showCurrencySignd();" status="myStatus"/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;showing : {!dStart + 1} - {!dStop} of {!dTotal}&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <apex:commandButton value="Next" action="{!goNextPageD}"  disabled="{!dButtonDisalbeNext}"  rerender="dealerPanel, buttonPnl2" oncomplete="showCurrencySignd();" status="myStatus"/>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                        <div class="box-content">
+                            <apex:outputPanel id="dealerPanel">
+                                <apex:pageBlock >
+                                    <apex:pageBlockTable value="{!dealersPerPage}" var="dg">
+                                        <apex:column styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}">
+                                            <apex:inputCheckBox value="{!dg.isSelected}" rendered="{!dg.isEnabled}"/>
+                                        </apex:column>
+                                        <apex:column value="{!dg.dealerName}" headerValue="Dealer Name" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column value="{!dg.groupName}" headerValue="Group" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column value="{!dg.atcId}" headerValue="ATC ID" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column value="{!dg.Address}" headerValue="Address" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column value="{!dg.city}" headerValue="City" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column value="{!dg.state}" headerValue="State" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column value="{!dg.terrId}" headerValue="Territory ID" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}"/>
+                                        <apex:column headerValue="Opportunity" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}">
+                                            <span class="currencyd">{!dg.oppty}</span>
+                                        </apex:column>
+                                        <apex:column headerValue="Billable" styleClass="{!IF(dg.isAffiliated == true, 'dRow', '')}">
+                                            <span class="currencyd">{!dg.billable}</span>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </apex:pageBlock>
+            </apex:outputpanel>
+            <apex:outputPanel id="dpopup">
+                    <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!dLinkPopUp}"/>
+                    <apex:outputPanel styleClass="popup" layout="block" rendered="{!dLinkPopUp}">
+                        <div class="box-main-popup">
+                        <div class="box-top-popup">
+                            <div class="box-top-div1-popup">De-Link</div> </div>
+                            <div class="box-content-popup">
+                            <div style="padding-top:10px;">&nbsp;</div>
+                                <div class="notes">Comment : </div> &nbsp;&nbsp;&nbsp;
+                                <apex:inputTextArea title="Comment : " label="Comment : " value="{!comment}" Styleclass="notes-textbox" />
+                                <div style="text-align:center;" >
+                                    <apex:commandButton action="{!dLinkDealer}" value="Submit De-Link" rerender="dpopup, dealerGrpPanel, dealerPanel, buttonPnl2" oncomplete="showCurrencySign();" status="myStatus"/>&nbsp;&nbsp;
+                                    <apex:commandButton action="{!cancel}" value="Cancel" rerender="dpopup" status="myStatus"/>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:outputPanel id="lpopup">
+                    <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!linkPopUp}"/>
+                    <apex:outputPanel styleClass="popup" layout="block" rendered="{!linkPopUp}">
+                        <div class="box-main-popup">
+                        <div class="box-top-popup">
+                            <div class="box-top-div1-popup">Link</div> </div>
+                            <div class="box-content-popup">
+                             <div style="padding-top:10px;">&nbsp;</div>
+                                <div class="notes">Comment : </div>&nbsp;&nbsp;&nbsp;
+                                <apex:inputTextArea title="Comment : " value="{!comment}" Styleclass="notes-textbox"/>
+                                <div style="text-align:center;">
+                                    <apex:commandButton action="{!linkDealer}" value="Submit Link" rerender="lpopup, dealerGrpPanel, dealerPanel, buttonPnl2" status="myStatus" oncomplete="showCurrencySign();" />&nbsp;&nbsp;
+                                    <apex:commandButton action="{!cancel}" value="Cancel" status="myStatus"/>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+            </apex:outputPanel>
+        </body>
+        <apex:actionFunction action="{!populateAllDealerGroups}" name="populateDealerGroups" rerender="dealerGrpPanel, buttonPnl" oncomplete="showCurrencySign();" status="myStatus">
+            <apex:param name="nodeId" assignTo="{!nodeId}" value="clickedNode"/>
+        </apex:actionFunction>
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

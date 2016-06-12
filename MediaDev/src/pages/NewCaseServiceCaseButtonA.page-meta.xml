@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>31.0</apiVersion>
+    <availableInTouch>true</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Find 00Nc0000000xfqV and replace with 00NE0000005DBMp
+00Nc0000000wuem with 00NE0000005DwAI
+Added creative brief to DMD section.
+Find  00Nc0000000xfqW  and replace 00NE0000005DwAL
+Find 00Nc0000000yXyi and replace 00NE0000005DygQ
+Fix root cause again.
+Modify DMD links.
+Remove contracts queue.</description>
+    <label>NewCaseServiceCaseButtonA</label>
+</ApexPage>

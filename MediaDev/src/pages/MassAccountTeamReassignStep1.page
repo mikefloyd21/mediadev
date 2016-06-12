@@ -1,0 +1,118 @@
+<apex:page controller="MassAccountTeamReassignController">
+  <style>
+  .validationError { color: red; font-weight: strong;}
+  </style>
+   
+
+  <apex:sectionHeader title="Mass Account Team Reassign" subtitle="Step 1 of 2"/>
+  <apex:form > 
+      <apex:pageBlock id="theBlock" title="Search for Accounts" mode="edit">
+          <apex:pageBlockButtons >
+               <apex:commandButton action="{!step2}" value="Next"/>
+               <apex:commandButton action="{!Refresh}" value="Reset" style="margin-left: 90em"/>               
+              
+             
+          </apex:pageBlockButtons>
+          <apex:pageBlockSection title="Search for the accounts whose team member you want to replace:" columns="1">
+           
+              <!--<apex:inputText label="Account Team Member: Last Name" value="{!teamMemberLastName}"/>
+              <apex:inputText label="Account Team Member: First Name" value="{!teamMemberFirstName}"/>             
+              <apex:inputText label="Account Team Member: Role" value="{!accountTeamRole}"/>-->
+              <apex:pageBlockSectionItem >
+              <apex:outputLabel >Account Team Member</apex:outputLabel>
+              <apex:inputField value="{!ExistingTeamMember.UserId}" required="false"/>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+              <apex:outputLabel >Account Team Member: Role</apex:outputLabel>
+              <apex:selectList value="{!accountTeamRole}" multiselect="false" size="1" id="ddAccountRoleList"> 
+                    <apex:selectOptions value="{!accountTeamSearchRoleList}"/>
+              </apex:selectList>
+           </apex:pageBlockSectionItem> 
+              
+              <apex:pageBlockSectionItem >
+              <apex:outputLabel ></apex:outputLabel>
+              <apex:commandButton style="left 60px" id="searchBtn" value="Search" action="{!SearchForAccountsToSelect}" rerender="searchResults" status="searchStatus" /> 
+              </apex:pageBlockSectionItem>
+           <apex:pageBlockSectionItem >
+              <apex:outputLabel ></apex:outputLabel>    
+         <apex:actionstatus id="searchStatus" > 
+            <apex:facet name="start"> 
+            <apex:outputPanel > 
+            <apex:outputLabel id="statusMessage" value="Processing...."></apex:outputLabel> 
+            <apex:image id="currImage" value="{!$Resource.loading16X16}" height="15" /> 
+            </apex:outputPanel> 
+            </apex:facet> 
+         </apex:actionstatus> 
+        </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:pagemessages />
+        <apex:pageBlockSection id="searchResults" columns="1"  >
+         <apex:pageBlockSectionItem id="messagesSelctionItem" rendered="{!ShowMessages}">               
+         <apex:outputLabel >Errors</apex:outputLabel>
+         <apex:inputTextarea value="{!messages}" readonly="true" rows="5" cols="100" styleClass="validationError" />       
+         </apex:pageBlockSectionItem>
+         <apex:pageBlockSectionItem rendered="{!TotalExistingRows > RowsLimit}">
+         <apex:outputLabel value="**Total existing rows: {!TotalExistingRows}, exceeded limit: {!RowsLimit} rows, please try {!RowsLimit} rows at a time.**" style="background-color: #ffc;"></apex:outputLabel>
+         </apex:pageBlockSectionItem>
+         <apex:pageBlockSectionItem rendered="{!ShowSearchResults}">                  
+         <apex:outputLabel value="{!LimitExceededMessage}"></apex:outputLabel>
+         </apex:pageBlockSectionItem>
+                <apex:pageblockTable value="{!SearchAccountResults}" var="rec"   rendered="{!ShowSearchResults}" rowClasses="odd,even"   > 
+                    <apex:column >
+                        <apex:facet name="header"> 
+                            <apex:inputCheckbox onclick="checkAll(this)"  />
+                        </apex:facet>
+                        <apex:inputCheckbox id="checkSelect" value="{!rec.isSelected}"/>
+                    </apex:column>  
+                    <apex:column >
+                            <apex:facet name="header">Account Name</apex:facet>
+                            <apex:outputLink value="{!rec.AccountLink}" target="_blank" id="theAcctLink">{!rec.AccountName}</apex:outputLink>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">ATC Status</apex:facet>
+                            <apex:outputText value="{!rec.ATCStatus}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC Region</apex:facet>
+                            <apex:outputText value="{!rec.Region}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC Master_Id</apex:facet>
+                            <apex:outputText value="{!rec.SVOCId}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">ATC Spend</apex:facet>
+                            <apex:outputText value="{!rec.ATCSpend}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">SVOC District</apex:facet>
+                            <apex:outputText value="{!rec.District}"/>
+                    </apex:column>
+                    <apex:column >
+                            <apex:facet name="header">Billing State/ Province</apex:facet>
+                            <apex:outputText value="{!rec.BillingState}"/>
+                    </apex:column> 
+                    <apex:column >
+                            <apex:facet name="header">Role</apex:facet>
+                            <apex:outputText value="{!rec.TeamMemberRole }"/>
+                    </apex:column>     
+                    <apex:column >
+                            <apex:facet name="header">Account Team Member</apex:facet>
+                            <apex:outputLink value="{!rec.UserLink}" target="_blank" id="theUserLink">{!rec.UserName}</apex:outputLink>
+                    </apex:column>                       
+            </apex:pageblockTable>
+        </apex:pageBlockSection>
+      </apex:pageBlock> 
+  </apex:form>
+  <script>
+function checkAll(cb){
+var inputElem = document.getElementsByTagName("input");
+for(var i=0; i<inputElem.length; i++)
+{
+if(inputElem[i].id.indexOf("checkSelect")!=-1)
+inputElem[i].checked = cb.checked;
+}
+}   
+
+</script>
+</apex:page>

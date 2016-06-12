@@ -1,0 +1,18 @@
+<apex:page controller="ConsultantChartController">
+   <apex:chart data="{!requestedInfo}" 
+               height="{!IF(ISNULL($CurrentPage.parameters.height), 385, $CurrentPage.parameters.height)}"  
+               width="{!IF(ISNULL($CurrentPage.parameters.width), 390, $CurrentPage.parameters.width)}" 
+               background="#DDDDDD">
+        <apex:legend position="right"/>
+        <apex:axis type="Numeric" position="left" grid="true"
+            fields="data1,data2,data3,data4" dashSize="2">
+            <apex:chartLabel />
+        </apex:axis>
+        <apex:axis type="Category" position="bottom" fields="name" >
+            <apex:chartLabel rotate="270"/>
+        </apex:axis>
+        <apex:barSeries orientation="vertical" axis="left" stacked="true"
+            xField="name" yField="data1,data2,data3,data4" title="M-Th,Fr,Sa,Su"/>
+    </apex:chart>
+    <c:NADAChartLVLink />    
+</apex:page>

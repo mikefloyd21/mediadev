@@ -1,0 +1,10 @@
+Dear  {!Receiving_User.FirstName} {!Receiving_User.LastName}   ,
+<br/><br/><br/>
+
+A request  {!ApprovalLineItem__c.Request__c} -{!Request__c.Request_Type__c}  has been generated and pending for your approval.<br/><br/>
+Please follow the link <a>https://c.na17.visual.force.com/apex/ApprovalAll"</a>  to take  appropriate action.
+
+<br/><br/><br/>
+Thank You!
+<br/>
+{!User.Name}

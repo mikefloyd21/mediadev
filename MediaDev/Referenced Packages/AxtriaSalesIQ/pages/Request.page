@@ -1,0 +1,565 @@
+<apex:page controller="SalesIQ.RequestCtlr" sidebar="false" id="mainpage" >
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+    <script src="/soap/ajax/28.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/28.0/apex.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+        var $j = jQuery.noConflict();
+        
+        $j(document).ready(function(){
+            $j("[id$='maintable2']").tablesorter();
+        });
+    </script>
+ 
+<head>
+<script type="text/javascript">
+function cancelrequest(reqId){
+try{
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+result = sforce.connection.query("Select Name, Id ,SalesIQ__request__c,SalesIQ__request__r.createdById  from SalesIQ__approvallineitem__c where SalesIQ__request__c = '"+reqId+"'" );
+
+records = result.getArray("records");
+
+    for (var i=0; i< records.length; i++) {
+     
+      var apl = new sforce.SObject("SalesIQ__approvallineitem__c");
+      apl.Id = records[i].Id ;
+      apl.SalesIQ__approval_status__c = "Cancelled";
+     result1 = sforce.connection.update([apl]);
+    
+    //alert(record.Name + " -- " + record.Id);
+     }
+      
+         var req= new sforce.SObject("SalesIQ__Request__c");
+        
+          req.Id  =reqId ;
+          req.SalesIQ__status__c = "Cancelled";
+    
+          result2 = sforce.connection.update([req]);
+       //  alert(req ) ;
+      
+    alert("Cancelled Successfully");
+    } catch (e) {
+    alert(e);
+}
+
+
+}
+</script>
+    <style> 
+
+  body button, body .x-btn, body .btn, body .btnDisabled, body .btnCancel, body .menuButton .menuButtonButton {
+    padding: 2px 6px ;
+} 
+
+.dynatree-container{
+    border:0px !important;
+    }
+    
+.box-main{
+    width:100%;
+    margin:30px auto;             
+} 
+
+.box-content{
+    background-color:#f7f7f7;
+    padding:5px;
+    border:1px solid #cccccc;
+}
+.box-content-popup{
+    background-color:#fff;
+    padding:5px;
+    border:1px solid #cccccc;
+}
+td{
+    font-size:11px !important;
+}
+.box-top{
+    border-top:3px solid #00335B;
+    -moz-border-top:3px solid #00335B;
+    -webkit-border-top:3px solid #00335B;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    -moz-border-top-left-radius:10px;
+    -moz-border-top-right-radius:10px;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    background-color:#F8F8F8;
+    border-left:1px solid #cccccc;
+    border-right:1px solid #cccccc;
+    color:#000;
+    padding:12px 0 0 15px;
+    font-weight:600;
+    font-size:18px;
+    height:30px;
+} 
+.tablecontent{
+    vertical-align:top;
+    height:600px;
+    background-color:#fff;
+    margin-left:20px;
+    border:1px solid #989898;
+    font-size:12px;
+    overflow-y:auto;
+
+}
+.box-top-div1{
+    width:25%;
+    font-weight:600;
+    font-size:18px;
+    float:left;
+    text-align:left;
+    height:25px;
+    color:#666 !important;
+    
+}
+.box-top-div2{
+    width:50%;
+    font-weight:600;
+    font-size:12px;
+    float:left;
+    text-align:center;
+    height:25px;
+    
+}
+.box-top-div3{
+    width:5%;
+    font-weight:600;
+    font-size:14px;
+    float:left;
+    height:25px;
+}
+.box-top-div4{
+    width:25%;
+    font-weight:600;
+    font-size:13px;
+    float:left;
+    height:25px;
+    
+}
+.box-top-div5{
+    width:30%;
+    font-size:13px;
+    text-align:right;
+    float:right;
+    height:25px;
+    padding-right: 10px;
+}
+.box-top-div5-1{
+    width:23%;
+    font-size:13px;
+    text-align:right;
+    float:right;
+    height:25px;
+    padding-right: 10px;
+}
+.searchbutton1{
+    width:80px;
+    height:23px;
+    font-size:11px !important;
+    margin-left:-80px !important;
+    border:1px solid #3fa9f5 !important;
+    background-color:#55a4da !important;
+    z-index:1;
+}
+.searchtxt1{
+    border: 1px solid #3fa9f5;
+    border-radius: 5px;
+    height: 21px;
+   /* margin-left: 100px; */
+    padding-top: 0px;
+    width: 235px;
+}
+.button{
+   padding:1px 10px !important;
+   border:1px solid #3fa9f5 !important;
+   font-size:11px !important;
+   font-weight:bold !important;
+   height:22px !important;
+   text-align:right;
+    }
+.tree1{
+    width:275px;
+    vertical-align:top;
+    float:left;
+    height:600px;
+    background-color:#fff;
+    border:1px solid #989898;
+    overflow-y:auto;
+}
+.clear{
+    clear:both;
+}
+
+th{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:11.5px !important;
+    line-height:20px;
+}
+
+.table_header_tree{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:12px !important;
+    font-weight:bold;
+    line-height:30px !important;
+    padding-left:12px;
+    -webkit-overflow-scrolling: touch;
+}
+.table_header_main{
+    color:#404041 !important;
+    background-color:#277AA8 !important;
+    font-size:16px !important;
+    text-align:center;
+    line-height:30px !important;
+}
+td{
+    line-height:20px ;
+}
+.even { 
+   /* background-color: White !important;*/
+ 
+}
+.odd {
+   /* background-color: #e6f5fc !important; */
+}
+.number{
+   
+    text-align: left;
+}
+.text{
+    text-align:center;
+}
+.table{
+    border:1px solid ;
+    line-height:25px !important;
+}
+.table-side-header{
+    margin-left:20px;
+    text-align:left;
+    font-weight:bold;
+    }
+.pure-table{border-collapse:collapse;border-spacing:0;empty-cells:show; border:1px solid #cbcbcb}
+.pure-table caption{color:#000;font:italic 85%/1 arial,sans-serif;padding:1em 0;text-align:center}
+.pure-table td,.pure-table th{border-left:1px solid #cbcbcb; border-width:0 0 0 1px; font-size:inherit; line-height:20px; margin:0; overflow:visible; padding:.25em .50em  }
+.pure-table td:first-child,.pure-table th:first-child{border-left-width:0}
+.pure-table thead{background:#e0e0e0;color:#000;text-align:left;vertical-align:bottom}
+.pure-table td{background-color:transparent}
+.pure-table-odd td{background-color:#e6f5fc}
+.pure-table-striped tr:nth-child(2n-1) td{background-color:#f2f2f2}
+.pure-table-bordered td{border-bottom:1px solid #cbcbcb}
+.pure-table-bordered tbody>tr:last-child td,.pure-table-horizontal tbody>tr:last-child td{border-bottom-width:0}
+.pure-table-horizontal td,.pure-table-horizontal th{border-width:0 0 1px;border-bottom:1px solid #cbcbcb}
+.pure-table-horizontal tbody>tr:last-child td{border-bottom-width:0}
+
+span.dynatree-node a{
+    font-size :11px !important ;
+
+}
+.wrapper1 .tooltip {
+    color: black;
+    display: block;
+    left: 92px;
+    margin-bottom: 15px; 
+    opacity: 0;
+    padding: 20px;
+    pointer-events: none;
+    position: absolute;
+    -webkit-transform: translateY(10px);
+    -moz-transform: translateY(10px);
+    -ms-transform: translateY(10px);
+    -o-transform: translateY(10px);
+    transform: translateY(10px);
+    -webkit-transition: all .25s ease-out;
+    -moz-transition: all .25s ease-out;
+    -ms-transition: all .25s ease-out;
+    -o-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+    -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+.link{
+    
+    text-decoration:underline;
+    color:#0b71be !important;
+    font-weight:normal !important;
+    padding-right:10px;
+    }
+.notes{
+    height:25px;
+    font-weight:bold;
+    text-align:right;
+   font-size:12px;
+    width:105px !important;
+    float:left;
+    position:relative;
+}
+.notes-text-box{
+    float:left;
+    border:1px solid #333;
+    width:180px !important;
+    height:22px;
+    padding-left: 5px;
+}
+.notes-text-box1{
+    float:left;
+    border:1px solid #333;
+    width:187px !important;
+    height:25px;
+    padding-left: 5px;
+}
+.notes-text-box3{
+    float:left;
+    border:1px solid #333;
+    width:75px !important;
+    height:25px;
+    padding-left: 5px;
+}
+.notes1{
+   
+    font-weight:bold;
+    text-align:right;
+    width:200px;
+    padding-left:30px;
+    font-size:12px;
+    float:left;
+    position:relative;
+}
+.notes-textbox{
+    float:left;
+    border:1px solid #333;
+    width:400px;
+    height:50px;
+    padding-left:5px;
+    position:relative;
+    margin-left:20px;
+    margin-bottom:20px;
+    
+}
+.popup_top_info{
+            background-color: #e3e3e3;
+            border-bottom: 1px solid #000;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-size: 18px;
+            margin-right: 0;
+            margin-top: 0;
+        padding: 10px 567px 9px 5px !important;
+        }
+.headerRow1{
+    color:#fff !important;
+    background-color:#277AA8 !important;
+    font-size:11.5px !important;
+    line-height:20px;
+}  
+  .Popup4
+    {   
+        background-color:white;         
+        text-align:centre;
+        z-index: 0;
+        left: 50%;
+        position: absolute;
+        width: 600px;
+        height:360px;
+        margin-left: -250px;
+        valign:top;
+        border-style: solid;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-width: 3px 1px 1px;
+        -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        font-size:12px;
+        top:20%;
+    } 
+
+.Popup_Terr
+    {        
+    
+        background-color: white;
+        border: #000 1px solid;
+        text-align: center;
+        z-index: 0;
+        left: 50%;
+        position: absolute;
+        width: 600px;
+        height: 250px;
+        margin-left: -450px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        valign: top;
+        -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        font-size: 14px;
+        top: 20%;
+    
+    }    
+ .popupBackground{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+    
+    .popupBackgroundworkbench{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+.customPopup {
+  
+    padding: 10px;
+    left: 50%;
+    margin-left: -376px;
+    position: absolute;
+     z-index: 2000;
+    width: 924px;
+    top: 20%;
+    }
+.customPopupSc {
+    background-color: white;
+    border-style: solid;
+    border: #003f77 1px solid;
+  
+    border-top: #003f77 2px solid;
+    padding: 10px;
+    left: 50%;
+    margin-left: -350px;
+    position: absolute;
+    z-index: 2222;
+    width: 700px;
+    top: 20%;
+    }   
+.customPopup_OK {
+    background-color: white;
+    border-style: solid;
+    border: #003f77 1px solid;
+ 
+    border-top: #003f77 2px solid;
+    padding: 20px;
+    height: 200px;
+    left: 50%;
+    margin-left: -200px;
+    position: absolute;
+    z-index: 2000;
+    width: 450px;
+    height: 400px;
+    top: 20%;
+    }
+.pagination{
+    width:750px;
+    text-align:center;
+    height:30px;
+    padding:7px 0px;
+    margin-left:25%;
+    }
+    
+.page-buttons{
+   font-size:12px !important;
+    font-weight:bold !important;
+    height:22px !important;
+    text-align:right;
+    }  
+}
+             
+br{
+line-height:10px !important;
+}
+</style>
+</head>
+ <apex:form id="form1">
+         <!--  ------------------- Loading Status ---------------------------- -->
+        <apex:actionStatus id="myStatus">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground" ></div>
+                    <div class="PopupPanel" style="position: absolute; left: 50%; top:7%;">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+ 
+<!-- -----------------------------------------VF Page---------------------------------------------- -->
+<apex:actionfunction name="populateRequests" action="{!populateRequests}" rerender="thePBasd" status="myStatus"/> 
+        <div class="box-main">
+        
+            <div class="box-top">
+                
+                <div class="box-top-div1">  Requests </div>
+                <div class="box-top-div2" >
+                </div>
+                <div class="box-top-div5-1">  
+                </div>   
+            </div>
+            
+            <apex:outputPanel id="RequestPanel">
+                <apex:pageBlock id="thePBasd" mode="maindetail" >
+                    <apex:pageMessages id="myMsg" />
+                    
+                 
+<!-------------------------------------Show this page block table when there is no filter term available----------------------------- -->
+                    <apex:pageblocktable value="{!lsRequests}" var="req" id="maintable2" rowClasses="one,two" rendered="{!!showFilterTermPanel}" >
+                        <apex:column headerValue="Request ID" >
+                            <apex:commandlink action="{!goToDetailPage}"  target="_blank">{!req.name} 
+                                <apex:param name="RequestId" value="{!req.Id}" assignTo="{!requestId}" /> 
+                            </apex:commandlink>
+                        </apex:column>
+                        <apex:column headerValue="Request Type" >
+                            {!req.SalesIQ__Request_Type__c}
+                        </apex:column>
+                        <apex:column headervalue="Created Date">
+                        <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                     <apex:param value="{!req.createddate}" /> 
+                        </apex:outputText>
+                        </apex:column>
+                        
+                        <apex:column headerValue="CreatedBy">
+                            {!req.CreatedBy.name}
+                        </apex:column>
+                        
+                        
+                        <apex:column headerValue="Status" >
+                         <apex:outputLink target="_blank"  value="/{!req['id']}"> 
+                            {!req.SalesIQ__Status__c}</apex:outputLink>
+                        </apex:column>
+                         <apex:column headerValue="Notes" >
+                            {!req.SalesIQ__Notes__c}
+                        </apex:column>
+                         <apex:column headervalue="Action">
+                        <apex:commandbutton onclick="cancelrequest('{!req.id}');" action="{!populateRequests}"  disabled="{!req.SalesIQ__Status__c!='Pending'}" value="Cancel Request" id="theCommandLink" rendered="{!if(req.createdBy.Id==loginUser,true,false)}"/>
+                        </apex:column>
+                    </apex:pageblocktable>
+                </apex:pageBlock>
+            </apex:outputPanel>
+       </div>
+    </apex:form>
+        <div style="width:100%;">
+        <apex:image id="logoImg" url="{!$Resource.SalesIQ__SalesIQ_Logo}" style="float:right;"/>
+    </div>
+</apex:page>

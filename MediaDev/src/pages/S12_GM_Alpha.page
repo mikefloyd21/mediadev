@@ -1,0 +1,229 @@
+<apex:page standardController="Opp_Product__c"  extensions="S12_GM_Alpha"   cache="{!p_cache}"   contentType="{!p_contentType}"   docType="{!p_docType}"   expires="{!p_expires}"   language="{!p_language}"   renderAs="{!renderAs}"   rendered="{!p_rendered}"   setup="{!p_setup}"   showChat="{!p_showChat}"   showHeader="{!p_showHeader}"   sidebar="{!p_sidebar}"   standardStylesheets="{!p_standardStylesheets}"   wizard="{!p_wizard}" >
+<head>
+<script src="/soap/ajax/25.0/connection.js"></script>
+<script src="/soap/ajax/25.0/apex.js"></script>
+<script type="text/javascript">
+	jQuery.noConflict();
+	beenFocused = true;
+	
+	if (typeof SkyEditor === "undefined") {
+		SkyEditor = {};
+	}
+	SkyEditor.messages = {
+		REQUIRED_FIELD_MISSING: "{!Label.RequiredFieldMissing}",
+		UNDOCUMENTED: "{!Label.Undocumented}",
+		DELETEERROR: "{!Label.DeleteError}",
+		SAVESUCCESS: "{!Label.SaveSuccess}",
+		CONFIRMMESSAGE: "{!Label.ConfirmMessage}",
+		UPDATEMESSAGE: "{!Label.UpdateMessage}",
+		CONDITIONSEARCHERROR: "{!Label.ConditionSearchError}",
+		INVALIDSESSION: "{!Label.InvalidSession}",
+		ERRORMESSAG: "{!Label.ErrorMessage}",
+		NOTSELECTERROR: "{!Label.NotSelectError}",
+		NOTROWSELECTERROR: "{!Label.NotRowSelectError}",
+		DELETECONFIRM: "{!Label.DeleteConfirm}",
+		BULKEDITDIALOGTITLE: "{!Label.customBulkEditButtonLabel}",
+		REPORTOBJECTNOTFOUND: "{!Label.ReportObjectNotFound}",
+		DATEFORMATERROE: "{!Label.DateFormatError}",
+		NUMBERFORMATERROE: "{!Label.NumberFormatError}",
+		NUMBERVALUEENPTY: "{!Label.NumberValueEmpty}",
+		CANVASCHECK: "{!Label.CanvasCheck}",
+		REWRITECHECK: "{!Label.RewriteCheck}",
+		QUERY_PAGING_CONFIRMATION: "{!Label.QueryPagingConfirmation}",
+		PAGE_NOT_SUPPORTED_ON_S1: "{!JSENCODE(Label.PageNotSupportedOnS1)}"
+	};
+	SkyEditor.labels = {
+		CANVASTITLE: "{!Label.CanvasTitle}",
+		CheckAllText: "{!Label.CheckAllText}",
+		UnCheckAllText: "{!Label.UnCheckAllText}",
+		NoneSelectedText: "{!Label.NoneSelectedText}",
+		SelectedText: "{!Label.SelectedText}",
+ 		OptionLabelNon: "{!Label.None}",
+		SelectButtonLabel: "{!label.SelectRecord}",
+		SearchButtonLabel: "{!customSearchButtonLabel}"
+	};
+		
+	SkyEditor.SessionId = "{!$Api.Session_ID}";
+	SkyEditor.CurrentPageName = "{!$CurrentPage.Name}";
+	SkyEditor.UserId = "{!$User.Id}";
+	SkyEditor.UserLanguage = "{!userLanguage}";
+	SkyEditor.namespace = "SkyEditor2";
+	SkyEditor.PageMode = "{!mode}";
+	SkyEditor.RecordId = "{!record.Id}";
+	SkyEditor.mainObject = "Opp_Product__c";
+	SkyEditor.setProperty && SkyEditor.setProperty("labels.Picklist.none", "{!label.none}");
+	SkyEditor.canvasSetting = {};
+	SkyEditor.originCanvasSetting = {};
+	SkyEditor.penImages = {
+							"2":"{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/images/pen2.gif')}",
+							"3":"{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/images/pen3.gif')}",
+							"4":"{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/images/pen4.gif')}"
+						  };
+	SkyEditor.canvasFlag = {};
+	SkyEditor.isShowDetailPanel = {!sve_detailPageName != null};
+	SkyEditor.isPageInit = {!isPageInit};
+	
+	SkyEditor.searchConditionFromTo="";
+	SkyEditor.searchConditionItem="";
+	SkyEditor.Mod.Sidebar.ModifiedPinMethod();
+	sforce.connection.sessionId = "{!$Api.SESSION_ID}";
+	SkyEditor.afterScriptLoaded();
+</script>
+<style>
+{!HTMLENCODE(pdfStyleString)}
+</style></head>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/jquery-ui-1.8.19.custom.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/skyeditor2_tablesorter.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/jquery.multiselect.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/skyeditor2_styles.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/pure-grids-nr-min.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'json2.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery-1.7.2.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery-ui-1.8.19.custom.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.math.1.0.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.tablesorter.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/addons/pager/jquery.tablesorter.pager.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/tableSortPageingSetting.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.bgiframe.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.multiselect.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/skyeditor2_core.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.layout.min.js')}" />
+<script type="text/javascript">
+SkyEditor.setProperty('Metadata.CustomObject.Opp_Product__c', {!metadataJSON_Opp_Product_c});
+SkyEditor.setProperty('RecordTypes.Opp_Product__c', {!RecordTypeRecordsJSON_Opp_Product_c});
+SkyEditor.setProperty('PicklistValues.Opp_Product__c.Business_Type__c', {!PicklistValuesJSON_Opp_Product_c_Business_Type_c});
+SkyEditor.setProperty('PicklistValues.Opp_Product__c.iMR_Opt_In__c', {!PicklistValuesJSON_Opp_Product_c_iMR_Opt_In_c});
+
+</script>
+<apex:includeScript value="{!URLFOR($Resource.TerraSkyCustom, 'js/atg-opp-prod-common.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.TerraSkyCustom, 'css/atg-opp-prod-common.css')}"/>
+
+<apex:outputPanel id="messagesPanel">
+<apex:pageMessages id="sveErrMsgs" rendered="{!errorMessages == ''}"/>
+<apex:pageMessage summary="{!errorMessages}" severity="error" strength="2" escape="false" rendered="{!errorMessages != ''}"/>
+<apex:pageMessage summary="{!infoMessages}" severity="info" strength="2" escape="false" rendered="{!infoMessages != ''}"/>
+</apex:outputPanel>
+
+<img src="/img/loading32.gif" id="SkyeditorLoagingImage" style="display:none;"/>
+
+<table border="0" cellpadding="0" cellspacing="0" style="width:100%;" ><tr><td>
+<apex:outputPanel rendered="{! NOT(hidePageBody)}" id="pagePanel" styleClass="base" layout="block">
+<apex:outputPanel style="position:relative;" >
+</apex:outputPanel><apex:form id="sve_form1"   styleClass="sve_form1"   >
+<apex:outputPanel layout="block"   style="position:relative;width:1024px;height:1325px;" >
+<img   src="{!URLFOR($Resource.S12_GM_Alpha)}"   style="width:1024px;height:1325px;left:0px;top:0px;position:absolute;" /><apex:outputPanel id="Component3_wrapper"   >
+<apex:outputPanel styleclass="fieldwrapper " style="left:822px;top:75px;position:absolute;display:none;" >
+<apex:inputField id="Component3"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Business_Type__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <script>
+new SelectRadioButtons({"objectName":"Opp_Product__c","fieldName":"Business_Type__c","targetFieldId":"{!$Component.Component3}","layout":"lineDirection","defaultValue":"{!record.Business_Type__c}","recordTypeFieldId":null,"defaultRecordType":"{!IF(ISNULL(record.RecordTypeId), defaultRecordTypeId_Opp_Product_c, record.RecordTypeId)}","styles":{"label":{"color":"#000000","font-size":"1.0em","font-weight":"Normal"}},"noneOption":false}).create();
+</script></apex:outputPanel><apex:outputPanel id="Component2_Wrapper" layout="block"  style="top:113px;left:0px;width:1024px;height:272px;">
+<apex:variable var="currentAppComID" value="Component2" />
+<apex:variable var="currentAppProperties" value="{!appComponentProperty[currentAppComID]}" />
+
+<c:OppProdFormHeader record="{!record}" extender="{!extender}" currentAppProperties="{!currentAppProperties}" />
+				
+</apex:outputPanel><apex:outputPanel styleclass="fieldwrapper " style="left:207px;top:453px;position:absolute;" >
+<apex:inputField id="Component19"   styleClass="borderless-input"   style="width:188px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Alpha_Make__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:537px;top:453px;position:absolute;" >
+<apex:inputField id="Component18"   styleClass="borderless-input"   style="width:167px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Co_Op_Make__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:765px;top:453px;position:absolute;" >
+<apex:inputField id="Component9"   styleClass="borderless-input"   style="width:154px;height:14px;color:#000000;font-size:1.0em;font-weight:Bold;text-align:right;"   value="{!record.Monthly_Base_Rate_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:739px;top:502px;position:absolute;" >
+<apex:inputField id="Component21"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Platinum_Opt_In__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:110px;top:506px;position:absolute;" >
+<apex:inputField id="Component4"   styleClass="borderless-input"   style="width:338px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.DMA__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:530px;top:506px;position:absolute;" >
+<apex:inputField id="Component5"   styleClass="borderless-input"   style="width:178px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Zone__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:79px;top:556px;position:absolute;" >
+<apex:inputField id="Component20"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Term_Length__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:404px;top:574px;position:absolute;display:block;text-align:left;width:89px;white-space:nowrap;" >
+<apex:inputField id="Component6"   required="true"   styleClass="borderless-input"   style="width:82px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Used_Car_Lot_Size__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:765px;top:575px;position:absolute;" >
+<apex:inputField id="Component16"   styleClass="borderless-input"   style="width:154px;height:14px;color:#000000;font-size:1.0em;font-weight:Bold;text-align:right;"   value="{!record.Monthly_Base_Rate_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:522px;top:576px;position:absolute;" >
+<apex:inputField id="Component7"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Restrict_CPO__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:623px;top:576px;position:absolute;" >
+<apex:inputField id="Component8"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Restrict_New__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:855px;top:605px;position:absolute;" >
+<apex:inputField id="Component17"   styleClass="borderless-input"   style="width:88px;height:14px;color:#000000;font-size:1.0em;font-weight:Bold;text-align:right;"   value="{!record.Monthly_Base_Rate_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:896px;top:844px;position:absolute;" >
+<apex:inputField id="Component12"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Approved_Future_Delivery__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel id="Component15_wrapper"   >
+<apex:outputPanel styleclass="fieldwrapper " style="left:147px;top:888px;position:absolute;display:none;" >
+<apex:inputField id="Component15"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.iMR_Opt_In__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <script>
+new SelectRadioButtons({"objectName":"Opp_Product__c","fieldName":"iMR_Opt_In__c","targetFieldId":"{!$Component.Component15}","layout":"lineDirection","defaultValue":"{!record.iMR_Opt_In__c}","recordTypeFieldId":null,"defaultRecordType":"{!IF(ISNULL(record.RecordTypeId), defaultRecordTypeId_Opp_Product_c, record.RecordTypeId)}","styles":{"label":{"color":"#000000","font-size":"1.0em","font-weight":"Normal"}},"noneOption":false}).create();
+</script></apex:outputPanel><apex:outputPanel styleclass="fieldwrapper  nonDisplayDateFormat" style="left:732px;top:888px;position:absolute;" >
+<apex:inputField id="Component11"   styleClass="borderless-input"   style="width:127px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Delivery_Date__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:144px;top:921px;position:absolute;" >
+<apex:inputField id="Component13"   styleClass="borderless-input"   style="width:107px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.BAC_Code__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:819px;top:948px;position:absolute;" >
+<apex:inputField id="Component10"   styleClass="borderless-input"   style="width:107px;height:14px;color:#000000;font-size:1.0em;font-weight:Bold;text-align:right;"   value="{!record.Total_Monthly_Rate__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:153px;top:952px;position:absolute;" >
+<apex:inputField id="Component14"   styleClass="borderless-input"   style="width:107px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Dealer_Code__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:commandButton action="{!cancel}"   id="Component22"   rendered="{!!sve_showDeleteCancel}"   value="{!customCancelButtonLabel}"   style="left:458px;top:1293px;position:absolute;width:66px;" /><apex:commandButton action="{!doSave}"   id="Component23"   value="{!customSaveButtonLabel}"   style="left:528px;top:1293px;position:absolute;width:50px;"   rendered="{!OR($ObjectType.Opp_Product__c.createable,$ObjectType.Opp_Product__c.updateable)}" />
+</apex:outputPanel></apex:form><script type="text/javascript">
+function aggregateCalc_all(triggerId) {
+}
+</script>
+</apex:outputPanel>
+</td></tr></table>
+<div id="CustomLookupForSFoneDialog" style="display:none;" >
+    <apex:pageBlock >
+        <div id="CustomLookUpForSFoneConditons">
+        </div> 
+        <div id="CustomLookUpForSFoneTextConditons" style="clear:left;">
+        </div><br style="clear:left;" />
+    </apex:pageBlock>
+    <apex:pageBlock >
+        <apex:pageBlockButtons location="top" styleClass="CustomLookUpForSFoneButtons">
+        </apex:pageBlockButtons>
+        <div style="height:480px; overflow-y:scroll;" >
+            <table class="list" id="CustomLookUpForSFoneListTable" cellspacing="0" cellpadding="0" border="0" >
+                <thead class="CustomLookUpForSFoneListHeader">
+                </thead>
+                <tbody class="CustomLookUpForSFoneListBody"> 
+                </tbody>
+            </table>
+        </div>
+    </apex:pageBlock>
+</div>
+</apex:page>

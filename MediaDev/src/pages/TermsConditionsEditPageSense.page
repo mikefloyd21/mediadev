@@ -1,0 +1,3 @@
+<apex:page standardController="Terms_Conditions__c" extensions="TermsConditionsEditController" 
+    action="{!nullValue(redir.url, urlFor($Action.Terms_Conditions__c.Edit, Terms_Conditions__c.id, null, true))}">
+</apex:page>

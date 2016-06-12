@@ -1,0 +1,6 @@
+<apex:page standardcontroller="Terms_Conditions__c">
+<flow:interview name="Edit_Terms_and_Conditions" finishLocation="/{!Terms_Conditions__c.Id}">
+    <apex:param name="varTCId" Value="{!Terms_Conditions__c.Id}"/>
+</flow:interview>
+
+</apex:page>

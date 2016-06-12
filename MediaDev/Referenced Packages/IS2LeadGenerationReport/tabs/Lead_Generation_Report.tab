@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Will your marketing team meet it&apos;s lead goals this month? With InsightSquared&apos;s free report, you can see how your lead generation efforts are progressing this month and where you&apos;re projected to end up.</description>
+    <icon>public/favicon_ico.ico</icon>
+    <label>Lead Generation Report</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom108: TV Widescreen</motif>
+    <page>Lead_Trajectory</page>
+</CustomTab>

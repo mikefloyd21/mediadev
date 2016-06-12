@@ -1,0 +1,17 @@
+<apex:page controller="CTIScreenPopServiceController" id="thepage">
+    <!--Story B-10409: Visualforce page accepts the information that CTI provides on the querystring of the URL and 
+generates a page that searches for Contacts and Accounts.Display open cases, closed cases, email and tasks.
+The records & columns that display in the screen pop will be clickable into that record, similar to the way related lists work. 
+For example, a contact record match will have a column for the account, that will click into the associated account.
+TK-29620 -This page is to be displayed if there is no match at all.
+Pop a screen with the following information:
+Phone number caller is calling from AND Phone number the customer entered OR SVOC ID the customer entered
+-->
+   <apex:pageMessages />
+   <apex:pageblock title="Caller Info" id="pb">
+       <apex:pageBlockSection >
+        <apex:outputText value="Caller Id: {!callerId}"/>
+        <apex:outputText value="Phone number or SVOC number entered by caller: {!UUI2}"/>
+       </apex:pageBlockSection>
+   </apex:pageblock>
+</apex:page>

@@ -1,0 +1,48 @@
+<apex:page standardController="Account">
+
+<head>
+
+<script type='text/javascript' src='https://www.google.com/jsapi' />
+
+<script type="text/javascript">
+
+    //use this function to format the hover text
+    formatCurrencyLabel = function ( value ) 
+    {
+        return "$" + String(value);
+    }
+
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+
+   function drawChart() {
+        // we need a table to act as the datasource for the chart
+        var data = new google.visualization.DataTable();
+        
+        // the table needs two columns
+        data.addColumn('string', 'Business Unit');
+        data.addColumn('number', 'Current Monthly Spend');
+        
+        // add the rows of data which consist of a value and a formatted label
+        data.addRow(['ATC', {v:{!Account.ATC_Spend__c}, f: formatCurrencyLabel({!Account.ATC_Spend__c})}]);
+        data.addRow(['KBB', {v:{!Account.KBB_Spend__c}, f: formatCurrencyLabel({!Account.KBB_Spend__c})}]);
+        data.addRow(['TIM', {v:{!Account.TIM_Spend__c}, f: formatCurrencyLabel({!Account.TIM_Spend__c})}]);
+        data.addRow(['HomeNet', {v:{!Account.Homenet_Spend__c}, f: formatCurrencyLabel({!Account.Homenet_Spend__c})}]);
+        data.addRow(['vAuto', {v:{!Account.vAuto_Spend__c}, f: formatCurrencyLabel({!Account.vAuto_Spend__c})}]);
+        data.addRow(['Vin', {v:{!Account.Vin_Spend__c}, f: formatCurrencyLabel({!Account.Vin_Spend__c})}]);
+        
+
+        //assign the chart to the appropriate div and draw the chart
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, {width: 400, height: 300, title:'Current Monthly Spend by BU', legend:'right',
+                            vAxis: {minValue:0}, hAxis: {slantedTextAngle:45}});
+    };
+
+</script> 
+
+</head>
+
+<body>
+<div id="chart_div" />
+</body>
+</apex:page>

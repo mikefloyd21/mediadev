@@ -1,0 +1,42 @@
+<aura:component controller="LightningSetupControl">
+    <div class="container">
+	    <h3>
+            <b>
+                {!$Label.et4ae5.mCCSetup}
+            </b>  
+        </h3>
+    </div>
+    <div class="container">
+    	<hr></hr>      
+        <div class="row ">
+            <div class="col-xs-12" >
+                <p>
+                    {!$Label.et4ae5.msg0207}
+                </p>
+                <br/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6" >
+                <div class="well">
+                    <b><h4 class="text-center">{!$Label.et4ae5.atmStUp}</h4></b>
+                    <p>
+                        {!$Label.et4ae5.msg0208}
+                    </p>
+                    <br/>
+                    <ui:button label="{!$Label.et4ae5.strtWiz}" press="{!c.start}" />
+                </div>
+            </div>
+            <div class="col-xs-6" >
+                <div class="well">
+                    <b><h4 class="text-center">{!$Label.et4ae5.manlStUp}</h4></b>
+                    <p>
+                        <aura:unescapedHtml value="{!$Label.et4ae5.msg0209}" />
+                    </p> 
+                    <br/>
+                    <ui:button label="{!$Label.et4ae5.configMan}" press="{!c.skip}" />
+                </div>
+            </div>
+        </div>
+	</div>    
+</aura:component>

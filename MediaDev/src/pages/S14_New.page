@@ -1,0 +1,681 @@
+<apex:page standardController="Opp_Product__c"  extensions="S14_New"   cache="{!p_cache}"   contentType="{!p_contentType}"   docType="{!p_docType}"   expires="{!p_expires}"   language="{!p_language}"   renderAs="{!renderAs}"   rendered="{!p_rendered}"   setup="{!p_setup}"   showChat="{!p_showChat}"   showHeader="{!p_showHeader}"   sidebar="{!p_sidebar}"   standardStylesheets="{!p_standardStylesheets}"   wizard="{!p_wizard}" >
+<head>
+<script src="/soap/ajax/25.0/connection.js"></script>
+<script src="/soap/ajax/25.0/apex.js"></script>
+<script type="text/javascript">
+	jQuery.noConflict();
+	beenFocused = true;
+	
+	if (typeof SkyEditor === "undefined") {
+		SkyEditor = {};
+	}
+	SkyEditor.messages = {
+		REQUIRED_FIELD_MISSING: "{!Label.RequiredFieldMissing}",
+		UNDOCUMENTED: "{!Label.Undocumented}",
+		DELETEERROR: "{!Label.DeleteError}",
+		SAVESUCCESS: "{!Label.SaveSuccess}",
+		CONFIRMMESSAGE: "{!Label.ConfirmMessage}",
+		UPDATEMESSAGE: "{!Label.UpdateMessage}",
+		CONDITIONSEARCHERROR: "{!Label.ConditionSearchError}",
+		INVALIDSESSION: "{!Label.InvalidSession}",
+		ERRORMESSAG: "{!Label.ErrorMessage}",
+		NOTSELECTERROR: "{!Label.NotSelectError}",
+		NOTROWSELECTERROR: "{!Label.NotRowSelectError}",
+		DELETECONFIRM: "{!Label.DeleteConfirm}",
+		BULKEDITDIALOGTITLE: "{!Label.customBulkEditButtonLabel}",
+		REPORTOBJECTNOTFOUND: "{!Label.ReportObjectNotFound}",
+		DATEFORMATERROE: "{!Label.DateFormatError}",
+		NUMBERFORMATERROE: "{!Label.NumberFormatError}",
+		NUMBERVALUEENPTY: "{!Label.NumberValueEmpty}",
+		CANVASCHECK: "{!Label.CanvasCheck}",
+		REWRITECHECK: "{!Label.RewriteCheck}",
+		QUERY_PAGING_CONFIRMATION: "{!Label.QueryPagingConfirmation}",
+		PAGE_NOT_SUPPORTED_ON_S1: "{!JSENCODE(Label.PageNotSupportedOnS1)}"
+	};
+	SkyEditor.labels = {
+		CANVASTITLE: "{!Label.CanvasTitle}",
+		CheckAllText: "{!Label.CheckAllText}",
+		UnCheckAllText: "{!Label.UnCheckAllText}",
+		NoneSelectedText: "{!Label.NoneSelectedText}",
+		SelectedText: "{!Label.SelectedText}",
+ 		OptionLabelNon: "{!Label.None}",
+		SelectButtonLabel: "{!label.SelectRecord}",
+		SearchButtonLabel: "{!customSearchButtonLabel}"
+	};
+		
+	SkyEditor.SessionId = "{!$Api.Session_ID}";
+	SkyEditor.CurrentPageName = "{!$CurrentPage.Name}";
+	SkyEditor.UserId = "{!$User.Id}";
+	SkyEditor.UserLanguage = "{!userLanguage}";
+	SkyEditor.namespace = "SkyEditor2";
+	SkyEditor.PageMode = "{!mode}";
+	SkyEditor.RecordId = "{!record.Id}";
+	SkyEditor.mainObject = "Opp_Product__c";
+	SkyEditor.setProperty && SkyEditor.setProperty("labels.Picklist.none", "{!label.none}");
+	SkyEditor.canvasSetting = {};
+	SkyEditor.originCanvasSetting = {};
+	SkyEditor.penImages = {
+							"2":"{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/images/pen2.gif')}",
+							"3":"{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/images/pen3.gif')}",
+							"4":"{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/images/pen4.gif')}"
+						  };
+	SkyEditor.canvasFlag = {};
+	SkyEditor.isShowDetailPanel = {!sve_detailPageName != null};
+	SkyEditor.isPageInit = {!isPageInit};
+	
+	SkyEditor.searchConditionFromTo="";
+	SkyEditor.searchConditionItem="";
+	SkyEditor.Mod.Sidebar.ModifiedPinMethod();
+	sforce.connection.sessionId = "{!$Api.SESSION_ID}";
+	SkyEditor.afterScriptLoaded();
+</script>
+<style>
+{!HTMLENCODE(pdfStyleString)}
+</style></head>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/jquery-ui-1.8.19.custom.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/skyeditor2_tablesorter.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/jquery.multiselect.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/skyeditor2_styles.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/css/pure-grids-nr-min.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'json2.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery-1.7.2.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery-ui-1.8.19.custom.min.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.math.1.0.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.tablesorter.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/addons/pager/jquery.tablesorter.pager.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/tableSortPageingSetting.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.bgiframe.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.multiselect.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/skyeditor2_core.js')}" />
+<apex:includeScript value="{!URLFOR($Resource.SkyEditor2__skyEditor2, 'skyeditor2/3_5/js/jquery.layout.min.js')}" />
+<script type="text/javascript">
+SkyEditor.setProperty('Metadata.CustomObject.Opp_Product__c', {!metadataJSON_Opp_Product_c});
+SkyEditor.setProperty('RecordTypes.Opp_Product__c', {!RecordTypeRecordsJSON_Opp_Product_c});
+SkyEditor.setProperty('PicklistValues.Opp_Product__c.Business_Type__c', {!PicklistValuesJSON_Opp_Product_c_Business_Type_c});
+SkyEditor.setProperty('PicklistValues.Opp_Product__c.Artwork__c', {!PicklistValuesJSON_Opp_Product_c_Artwork_c});
+
+</script>
+<apex:includeScript value="{!URLFOR($Resource.TerraSkyCustom, 'js/atg-opp-prod-common.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.TerraSkyCustom, 'css/atg-opp-prod-common.css')}"/>
+
+<apex:outputPanel id="messagesPanel">
+<apex:pageMessages id="sveErrMsgs" rendered="{!errorMessages == ''}"/>
+<apex:pageMessage summary="{!errorMessages}" severity="error" strength="2" escape="false" rendered="{!errorMessages != ''}"/>
+<apex:pageMessage summary="{!infoMessages}" severity="info" strength="2" escape="false" rendered="{!infoMessages != ''}"/>
+</apex:outputPanel>
+
+<img src="/img/loading32.gif" id="SkyeditorLoagingImage" style="display:none;"/>
+
+<table border="0" cellpadding="0" cellspacing="0" style="width:100%;" ><tr><td>
+<apex:outputPanel rendered="{! NOT(hidePageBody)}" id="pagePanel" styleClass="base" layout="block">
+<apex:outputPanel style="position:relative;" >
+</apex:outputPanel><apex:form id="sve_form1"   styleClass="sve_form1"   >
+<apex:outputPanel layout="block"   style="position:relative;width:1024px;height:1325px;" >
+<img   src="{!URLFOR($Resource.S14_New)}"   style="width:1024px;height:1325px;left:0px;top:0px;position:absolute;" /><apex:outputPanel id="Component122_wrapper"   >
+<apex:outputPanel styleclass="fieldwrapper " style="left:793px;top:84px;position:absolute;display:none;" >
+<apex:inputField id="Component122"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Business_Type__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <script>
+new SelectRadioButtons({"objectName":"Opp_Product__c","fieldName":"Business_Type__c","targetFieldId":"{!$Component.Component122}","layout":"lineDirection","defaultValue":"{!record.Business_Type__c}","recordTypeFieldId":null,"defaultRecordType":"{!IF(ISNULL(record.RecordTypeId), defaultRecordTypeId_Opp_Product_c, record.RecordTypeId)}","styles":{"label":{"color":"#000000","font-size":"1.0em","font-weight":"Normal"}},"noneOption":false}).create();
+</script></apex:outputPanel><apex:outputPanel id="Component32_Wrapper" layout="block"  style="top:122px;left:0px;width:1024px;height:272px;">
+<apex:variable var="currentAppComID" value="Component32" />
+<apex:variable var="currentAppProperties" value="{!appComponentProperty[currentAppComID]}" />
+
+<c:OppProdFormHeader record="{!record}" extender="{!extender}" currentAppProperties="{!currentAppProperties}" />
+				
+</apex:outputPanel><apex:outputPanel styleclass="fieldwrapper " style="left:98px;top:431px;position:absolute;" >
+<apex:inputField id="Component1"   styleClass="borderless-input"   style="width:399px;height:13px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.DMA__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:210px;top:465px;position:absolute;display:block;text-align:left;width:226px;white-space:nowrap;" >
+<apex:inputField id="Component121"   required="true"   styleClass="borderless-input"   style="width:219px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Total_New_Car_Lot_Size__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:560px;position:absolute;" >
+<apex:inputField id="Component21"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:561px;position:absolute;" >
+<apex:inputField id="Component44"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:561px;position:absolute;" >
+<apex:inputField id="Component55"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:561px;position:absolute;" >
+<apex:inputField id="Component66"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:561px;position:absolute;" >
+<apex:inputField id="Component77"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:561px;position:absolute;" >
+<apex:inputField id="Component137"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:562px;position:absolute;" >
+<apex:inputField id="Component10"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:562px;position:absolute;" >
+<apex:inputField id="Component33"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:562px;position:absolute;" >
+<apex:inputField id="Component88"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:562px;position:absolute;" >
+<apex:inputField id="Component126"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_1__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:577px;position:absolute;" >
+<apex:inputField id="Component23"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:578px;position:absolute;" >
+<apex:inputField id="Component47"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:578px;position:absolute;" >
+<apex:inputField id="Component58"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:578px;position:absolute;" >
+<apex:inputField id="Component69"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:578px;position:absolute;" >
+<apex:inputField id="Component80"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:578px;position:absolute;" >
+<apex:inputField id="Component138"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:579px;position:absolute;" >
+<apex:inputField id="Component19"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:580px;position:absolute;" >
+<apex:inputField id="Component34"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:580px;position:absolute;" >
+<apex:inputField id="Component91"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:580px;position:absolute;" >
+<apex:inputField id="Component127"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_2__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:595px;position:absolute;" >
+<apex:inputField id="Component25"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:595px;position:absolute;" >
+<apex:inputField id="Component48"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:595px;position:absolute;" >
+<apex:inputField id="Component59"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:595px;position:absolute;" >
+<apex:inputField id="Component70"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:595px;position:absolute;" >
+<apex:inputField id="Component81"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:595px;position:absolute;" >
+<apex:inputField id="Component139"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:596px;position:absolute;" >
+<apex:inputField id="Component35"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:597px;position:absolute;" >
+<apex:inputField id="Component18"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:597px;position:absolute;" >
+<apex:inputField id="Component92"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:597px;position:absolute;" >
+<apex:inputField id="Component128"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_3__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:612px;position:absolute;" >
+<apex:inputField id="Component26"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:612px;position:absolute;" >
+<apex:inputField id="Component49"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:612px;position:absolute;" >
+<apex:inputField id="Component65"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:612px;position:absolute;" >
+<apex:inputField id="Component71"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:612px;position:absolute;" >
+<apex:inputField id="Component82"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:612px;position:absolute;" >
+<apex:inputField id="Component140"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:613px;position:absolute;" >
+<apex:inputField id="Component17"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:614px;position:absolute;" >
+<apex:inputField id="Component36"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:614px;position:absolute;" >
+<apex:inputField id="Component93"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:614px;position:absolute;" >
+<apex:inputField id="Component129"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_4__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:628px;position:absolute;" >
+<apex:inputField id="Component27"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:629px;position:absolute;" >
+<apex:inputField id="Component50"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:629px;position:absolute;" >
+<apex:inputField id="Component60"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:629px;position:absolute;" >
+<apex:inputField id="Component72"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:629px;position:absolute;" >
+<apex:inputField id="Component83"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:629px;position:absolute;" >
+<apex:inputField id="Component141"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:630px;position:absolute;" >
+<apex:inputField id="Component37"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:630px;position:absolute;" >
+<apex:inputField id="Component94"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:630px;position:absolute;" >
+<apex:inputField id="Component130"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:631px;position:absolute;" >
+<apex:inputField id="Component16"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_5__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:645px;position:absolute;" >
+<apex:inputField id="Component28"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:646px;position:absolute;" >
+<apex:inputField id="Component51"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:646px;position:absolute;" >
+<apex:inputField id="Component61"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:646px;position:absolute;" >
+<apex:inputField id="Component73"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:646px;position:absolute;" >
+<apex:inputField id="Component84"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:646px;position:absolute;" >
+<apex:inputField id="Component142"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:647px;position:absolute;" >
+<apex:inputField id="Component38"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:648px;position:absolute;" >
+<apex:inputField id="Component15"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:648px;position:absolute;" >
+<apex:inputField id="Component95"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:648px;position:absolute;" >
+<apex:inputField id="Component131"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_6__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:662px;position:absolute;" >
+<apex:inputField id="Component29"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:663px;position:absolute;" >
+<apex:inputField id="Component52"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:663px;position:absolute;" >
+<apex:inputField id="Component62"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:663px;position:absolute;" >
+<apex:inputField id="Component74"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:663px;position:absolute;" >
+<apex:inputField id="Component85"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:663px;position:absolute;" >
+<apex:inputField id="Component143"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:665px;position:absolute;" >
+<apex:inputField id="Component14"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:665px;position:absolute;" >
+<apex:inputField id="Component39"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:665px;position:absolute;" >
+<apex:inputField id="Component96"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:665px;position:absolute;" >
+<apex:inputField id="Component132"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_7__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:680px;position:absolute;" >
+<apex:inputField id="Component30"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:680px;position:absolute;" >
+<apex:inputField id="Component53"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:680px;position:absolute;" >
+<apex:inputField id="Component63"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:680px;position:absolute;" >
+<apex:inputField id="Component75"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:680px;position:absolute;" >
+<apex:inputField id="Component86"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:680px;position:absolute;" >
+<apex:inputField id="Component144"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:682px;position:absolute;" >
+<apex:inputField id="Component13"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:682px;position:absolute;" >
+<apex:inputField id="Component40"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:682px;position:absolute;" >
+<apex:inputField id="Component97"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:682px;position:absolute;" >
+<apex:inputField id="Component133"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_8__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:697px;position:absolute;" >
+<apex:inputField id="Component31"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:697px;position:absolute;" >
+<apex:inputField id="Component54"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:697px;position:absolute;" >
+<apex:inputField id="Component64"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:697px;position:absolute;" >
+<apex:inputField id="Component76"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:697px;position:absolute;" >
+<apex:inputField id="Component87"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:697px;position:absolute;" >
+<apex:inputField id="Component145"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:699px;position:absolute;" >
+<apex:inputField id="Component12"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:699px;position:absolute;" >
+<apex:inputField id="Component41"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:700px;position:absolute;" >
+<apex:inputField id="Component98"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:700px;position:absolute;" >
+<apex:inputField id="Component134"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_9__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:714px;position:absolute;" >
+<apex:inputField id="Component22"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:714px;position:absolute;" >
+<apex:inputField id="Component45"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:714px;position:absolute;" >
+<apex:inputField id="Component56"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:714px;position:absolute;" >
+<apex:inputField id="Component67"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:714px;position:absolute;" >
+<apex:inputField id="Component78"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:714px;position:absolute;" >
+<apex:inputField id="Component146"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:717px;position:absolute;" >
+<apex:inputField id="Component11"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:717px;position:absolute;" >
+<apex:inputField id="Component43"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:717px;position:absolute;" >
+<apex:inputField id="Component89"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:717px;position:absolute;" >
+<apex:inputField id="Component135"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_10__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:365px;top:731px;position:absolute;" >
+<apex:inputField id="Component46"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Core_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:441px;top:731px;position:absolute;" >
+<apex:inputField id="Component57"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Featured_Plus_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:731px;position:absolute;" >
+<apex:inputField id="Component68"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Core_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:591px;top:731px;position:absolute;" >
+<apex:inputField id="Component79"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Plus_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:658px;top:731px;position:absolute;" >
+<apex:inputField id="Component147"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Premium_Max_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:212px;top:732px;position:absolute;" >
+<apex:inputField id="Component24"   style="width:38px;color:#000000;font-size:9pt;font-weight:Normal;"   value="{!record.New_Car_Co_op_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:61px;top:733px;position:absolute;" >
+<apex:inputField id="Component20"   styleClass="borderless-input"   style="width:138px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Make_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:294px;top:734px;position:absolute;" >
+<apex:inputField id="Component42"   styleClass="borderless-input"   style="width:39px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Inventory_Per_Make_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:698px;top:734px;position:absolute;" >
+<apex:inputField id="Component90"   styleClass="borderless-input"   style="width:124px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:center;"   value="{!record.Front_line_Pro_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:828px;top:734px;position:absolute;" >
+<apex:inputField id="Component136"   styleClass="borderless-input"   style="width:114px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Base_Rate_11__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel id="Component119_wrapper"   >
+<apex:outputPanel styleclass="fieldwrapper " style="left:66px;top:793px;position:absolute;display:none;" >
+<apex:inputField id="Component119"   style="color:#000000;font-size:6pt;font-weight:Normal;"   value="{!record.Artwork__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <script>
+new SelectRadioButtons({"objectName":"Opp_Product__c","fieldName":"Artwork__c","targetFieldId":"{!$Component.Component119}","layout":"lineDirection","defaultValue":"{!record.Artwork__c}","recordTypeFieldId":null,"defaultRecordType":"{!IF(ISNULL(record.RecordTypeId), defaultRecordTypeId_Opp_Product_c, record.RecordTypeId)}","styles":{"label":{"color":"#000000","font-size":"6pt","font-weight":"Normal"}},"noneOption":false}).create();
+</script></apex:outputPanel><apex:outputPanel styleclass="fieldwrapper " style="left:629px;top:794px;position:absolute;" >
+<apex:inputField id="Component8"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Approved_Future_Delivery__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:817px;top:794px;position:absolute;" >
+<apex:inputField id="Component120"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Video_PRO_Opt_In__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper  nonDisplayDateFormat" style="left:654px;top:819px;position:absolute;" >
+<apex:inputField id="Component9"   styleClass="borderless-input"   style="width:122px;height:14px;color:#000000;font-size:8pt;font-weight:Normal;text-align:center;"   value="{!record.Delivery_Date__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:139px;top:820px;position:absolute;" >
+<apex:inputField id="Component7"   styleClass="borderless-input"   style="width:164px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Co_Op_Pre_Approval_Case__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:841px;top:829px;position:absolute;" >
+<apex:inputField id="Component125"   styleClass="borderless-input"   style="width:100px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;text-align:right;"   value="{!record.Monthly_Rate__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:647px;top:858px;position:absolute;" >
+<apex:inputField id="Component3"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Sitelink_Pro_Opt_In__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:76px;top:881px;position:absolute;" >
+<apex:inputField id="Component110"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Primary_Contact_Email__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:426px;top:884px;position:absolute;" >
+<apex:inputField id="Component2"   styleClass="borderless-input"   style="width:342px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Sitelink__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:813px;top:894px;position:absolute;" >
+<apex:inputField id="Component5"   styleClass="borderless-input"   style="width:127px;height:14px;color:#000000;font-size:1.0em;font-weight:Bold;text-align:right;"   value="{!record.Total_Production_Cost__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:76px;top:913px;position:absolute;" >
+<apex:inputField id="Component111"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Email__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:189px;top:913px;position:absolute;" >
+<apex:inputField id="Component112"   styleClass="borderless-input"   style="width:173px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Car_Email_T__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:475px;top:938px;position:absolute;" >
+<apex:inputField id="Component4"   styleClass="borderless-input"   style="width:283px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.New_Re_Direct__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:76px;top:942px;position:absolute;" >
+<apex:inputField id="Component113"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Other_Email__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:815px;top:943px;position:absolute;" >
+<apex:inputField id="Component6"   styleClass="borderless-input"   style="width:101px;height:14px;color:#000000;font-size:1.0em;font-weight:Bold;text-align:right;"   value="{!record.Total_Monthly_Rate__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:189px;top:945px;position:absolute;" >
+<apex:inputField id="Component114"   styleClass="borderless-input"   style="width:173px;height:14px;color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Other_Email_T__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:396px;top:954px;position:absolute;" >
+<apex:inputField id="Component116"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Call_Record__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:516px;top:954px;position:absolute;" >
+<apex:inputField id="Component118"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Whisper__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:outputPanel styleclass="fieldwrapper " style="left:604px;top:954px;position:absolute;" >
+<apex:inputField id="Component117"   style="color:#000000;font-size:1.0em;font-weight:Normal;"   value="{!record.Enhanced_Call_Tracking__c}">
+</apex:inputField>
+</apex:outputPanel>
+ <apex:commandButton action="{!cancel}"   id="Component124"   rendered="{!!sve_showDeleteCancel}"   value="{!customCancelButtonLabel}"   style="left:441px;top:1294px;position:absolute;width:66px;" /><apex:commandButton action="{!doSave}"   id="Component123"   value="{!customSaveButtonLabel}"   style="left:513px;top:1294px;position:absolute;width:50px;"   rendered="{!OR($ObjectType.Opp_Product__c.createable,$ObjectType.Opp_Product__c.updateable)}" />
+</apex:outputPanel></apex:form><script type="text/javascript">
+function aggregateCalc_all(triggerId) {
+}
+</script>
+</apex:outputPanel>
+</td></tr></table>
+<div id="CustomLookupForSFoneDialog" style="display:none;" >
+    <apex:pageBlock >
+        <div id="CustomLookUpForSFoneConditons">
+        </div> 
+        <div id="CustomLookUpForSFoneTextConditons" style="clear:left;">
+        </div><br style="clear:left;" />
+    </apex:pageBlock>
+    <apex:pageBlock >
+        <apex:pageBlockButtons location="top" styleClass="CustomLookUpForSFoneButtons">
+        </apex:pageBlockButtons>
+        <div style="height:480px; overflow-y:scroll;" >
+            <table class="list" id="CustomLookUpForSFoneListTable" cellspacing="0" cellpadding="0" border="0" >
+                <thead class="CustomLookUpForSFoneListHeader">
+                </thead>
+                <tbody class="CustomLookUpForSFoneListBody"> 
+                </tbody>
+            </table>
+        </div>
+    </apex:pageBlock>
+</div>
+</apex:page>

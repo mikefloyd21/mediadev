@@ -1,0 +1,63 @@
+/*.THIS .uiMessage.error {
+    margin: auto;
+}removed for sidebar addin*/
+.THIS * {
+    font-family: Salesforce Sans, Proxima Nova, Arial, Sans-serif  ;   
+}
+
+.THIS .left_links {
+    padding-left:0px;
+}
+.THIS .uiButton.default {
+    box-shadow: none;
+    text-shadow: none;
+}
+.THIS .uiButton:hover {
+    background: #54698d!important;
+}
+.THIS .uiButton {
+    min-width: 95px;
+    height: 35px;
+    background: #0070D2!important; 
+}
+.THIS .bBody {
+    color:#f2f2f2!important;
+    font-size: medium;
+    font-weight: normal;
+}
+
+.THIS .uiMessage:parent {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.THIS .uiMessage {
+    margin-top: 40px;
+    margin-bottom: 5px;
+    line-height: 1.42857143;
+    margin-left:15px;
+}
+
+.THIS .uiMessage.error {
+    padding-left: 15px;
+}
+
+.THIS .uiMessage h4 {
+    color: #C23934;  
+}
+
+.THIS .uiMessage span {
+    color: #54698d;
+}
+.THIS .mainSpinner{
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+}
+.THIS .uiMessage > .uiBlock {
+    width: 100%;
+}

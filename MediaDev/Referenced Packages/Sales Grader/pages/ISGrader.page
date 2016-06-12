@@ -1,0 +1,175 @@
+<apex:page controller="SalesGrader.ISGraderController" showHeader="true" 
+           standardStylesheets="false" sidebar="false" action="{!initialize}">
+  <apex:form >
+  <apex:stylesheet value="{!$Resource.SalesGrader__ISGraderHeaderCSS}"/>
+  <apex:stylesheet value="{!$Resource.SalesGrader__ISGraderBaseCSS}"/>
+  <apex:includeScript value="{!URLFOR($Resource.SalesGrader__ISGraderLib, '/lib/js/jquery-1.10.2.min.js')}" />
+
+  <div class="content">
+    <div class="header">
+      <h1 align="center" style="padding:0px 0;margin:0;background:#00b3e9;color:#FFF;border-top:3px solid #00b3e9;height:120px;max-height:120px;">
+        <img src="{!URLFOR($Resource.ISGraderLib, '/lib/img/sales_grader_email_hdr.png')}" alt="Sales Grader" height="120" width="640"/>
+      </h1>
+
+      <apex:outputPanel id="grader_header">
+      <apex:outputPanel rendered="{!AND(OR(NOT(loading),NOT(emptyBatchData)),userHasOpps)}">
+        <div style="margin-top: 10px; margin-bottom: 10px; margin-right: 5px;">
+		  <apex:outputPanel id="scoring_panels">
+	          <div id="overall-grade">
+	              <div id="overall-grade-title" class="{!overallColor}">
+	                  OVERALL GRADE
+	              </div>
+	              <span id="overall-grade-score">{!overallGrade}</span>
+	          </div>
+	
+	          <div id="grade-breakdown">
+	              <div class="breakdown-row">
+	                  <div id="pm-grade" class="breakdown-row-grade {!performanceMetricsColor}">{!performanceMetricsGrade}</div> 
+	                  <a href="#performance-metrics" class="header-link">Performance Metrics</a>
+	                  <div class="clear"></div>
+	              </div>
+	              <div class="breakdown-row">
+	                  <div id="pf-grade" class="breakdown-row-grade {!pipelineAndForecastingColor}">{!pipelineAndForecastingGrade}</div> 
+	                  <a href="#pipeline-and-forecasting" class="header-link">Pipeline &amp; Forecasting</a>
+	                  <div class="clear"></div>
+	              </div>
+	              <div class="breakdown-row">
+	                  <div id="sc-grade" class="breakdown-row-grade {!salesforceConfigurationColor}">{!salesforceConfigurationGrade}</div> 
+	                  <a href="#salesforce-configuration" class="header-link">Salesforce.com Configuration</a>
+	                  <div class="clear"></div>
+	              </div>
+	          </div>
+	
+	          <div id="grader-image">
+	              <img src="{!URLFOR($Resource.ISGraderIconPNG)}" />
+	          </div>
+	          <div class="clear"></div>
+          </apex:outputPanel>
+
+		  <apex:outputPanel id="error_msg">
+              <apex:outputText styleClass="error_msg" rendered="{!error}" value="Oh no! We got an error calculating your grade."/>
+          </apex:outputPanel>
+
+          <div class="refresh_btn_form">
+		      <apex:outputPanel id="last_update_container">
+		      <apex:outputPanel rendered="{!NOT(loading)}">
+	              <apex:outputText styleClass="last_update" rendered="{!lastUpdate!=null}" value="Updated {!lastUpdate}" />
+              </apex:outputPanel>
+              </apex:outputPanel>
+
+              <apex:commandButton styleClass="refresh_btn" 
+                                  action="{!refresh}" 
+                                  image="{!URLFOR($Resource.SalesGrader__ISGraderUpdateButtonPNG)}" 
+                                  rerender="spinner1,
+                                            spinner2,
+                                            reports,
+                                            reloadGrade,
+                                            last_update_container,
+                                            grader_header,
+                                            scoring_panels" />
+
+			  <apex:outputPanel id="spinner2">
+			  <apex:outputPanel styleClass="spinner2" rendered="{!loading}">
+			      <div class="spinner_container">
+	              <apex:outputText styleClass="spinner_text2" value="Updating. This may take a few minutes" />
+			      <img src="{!URLFOR($Resource.ISGraderLib, '/lib/img/ajax-loader.gif')}" alt="x" width="25" height="46"/>
+			      </div>
+			  </apex:outputPanel>
+			  </apex:outputPanel>
+
+          </div>
+
+          <div class="clear"></div>
+
+        </div>
+      </apex:outputPanel>
+      </apex:outputPanel>
+    </div><!-- End Header Section -->
+
+    <apex:outputPanel id="spinner1">
+    <apex:outputPanel styleClass="spinner" rendered="{!AND(AND(loading,emptyBatchData),userHasOpps)}">
+        <img src="{!URLFOR($Resource.ISGraderLib, '/lib/img/ajax-loader.gif')}" alt="x" width="25" height="46"/>
+	    <apex:outputText styleClass="spinner_text" value="Calculating Results. This may take a while for large organizations or if other Salesforce processes are running." />
+    </apex:outputPanel>
+    </apex:outputPanel><!-- End Full Page Spinner -->
+
+    <apex:outputPanel id="no_opps_message">
+    <apex:outputPanel styleClass="spinner" rendered="{!NOT(userHasOpps)}">
+		<h1> No Opportunities</h1><br />
+		We're sorry - we can't calculate your results because you don't have any opportunities. <br /> The Grader requires opportunities for its analysis.
+    </apex:outputPanel>
+    </apex:outputPanel><!-- End No Opps Message -->
+
+    <apex:outputPanel id="reports">
+    <apex:outputPanel rendered="{!AND(NOT(emptyBatchData),userHasOpps)}">
+        <c:ISPerformanceMetrics ISGC="{!thisController}" />
+        <c:ISPipelineAndForecasting ISGC="{!thisController}" />
+        <c:ISSalesforceConfig ISGC="{!thisController}" />
+
+        <div class="footer_header">Like the Sales Grader?</div>
+        <div id="footer">
+           <div class="metric_header">
+             <img src="{!URLFOR($Resource.ISGraderLib, '/lib/img/good_sales_grade.png')}" alt="x" width="40" height="46"/>
+             <span class="metric_header_text">
+                 Then you'll love InsightSquared. Get 
+                 <a class="cta_link" href="http://www.insightsquared.com/connectors/salesforce-reporting/?utm_source=apex-grader-results&utm_medium=free-app&utm_campaign=sfdc-product-learn-more" target="_blank">every report you need</a>, ready out-of-the-box.
+             </span>
+           </div>
+        </div>
+    </apex:outputPanel>
+    </apex:outputPanel>
+  </div><!-- End Content -->
+
+  <apex:actionFunction action="{!reloadGrade}" 
+                       name="reloadGrade" 
+                       rerender="spinner1,
+                                 spinner2,
+                                 reports,
+                                 reloadGrade,
+                                 last_update_container,
+                                 scoring_panels,
+                                 error_msg,
+                                 no_opps_message" />
+  <apex:actionFunction action="{!reloadGrade}" 
+                       name="reloadGrade2" 
+                       rerender="spinner1,
+                                 spinner2,
+                                 reports,
+                                 reloadGrade2,
+                                 last_update_container,
+                                 grader_header,
+                                 no_opps_message" />
+
+  <apex:outputPanel id="reloadGrade">
+  <apex:outputPanel rendered="{!AND(NOT(emptyBatchData),userHasOpps)}">
+      <script>
+          if ('{!loading}' === 'true') {
+              setTimeout(reloadGrade, 3000);
+              $('.refresh_btn').hide();
+          } else {
+              $('.refresh_btn').show();
+          }
+      </script>
+  </apex:outputPanel>
+  </apex:outputPanel>
+  <apex:outputPanel id="reloadGrade2">
+  <apex:outputPanel rendered="{!AND(emptyBatchData,userHasOpps)}">
+      <script>
+          setTimeout(reloadGrade2, 3000);
+      </script>
+  </apex:outputPanel>
+  </apex:outputPanel>
+  </apex:form>
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-41556131-4', 'force.com');
+    ga('send', 'pageview');
+  </script> 
+
+</apex:page>

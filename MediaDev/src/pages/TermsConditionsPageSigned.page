@@ -1,0 +1,137 @@
+<apex:page standardcontroller="Terms_Conditions__c">
+<apex:messages />
+    <apex:sectionheader title="{!$ObjectType.Terms_Conditions__c.label} Detail" subtitle="{!Terms_Conditions__c.Name}"/>
+    <chatter:feedwithfollowers entityId="{!Terms_Conditions__c.Id}"/>
+    <apex:form >
+        <apex:pageblock mode="maindetail" title="You Cannot Edit or Delete a Terms and Condition After It Has Been Sent for Signature.">
+            <apex:pageblockbuttons >   
+                    <apex:commandbutton value="Return" action="{!Cancel}"/>             
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2014) *************** -->
+                    <!-- <apex:commandbutton value="Edit" action="{!Edit}"/> -->
+                    <!-- <apex:commandbutton value="Delete" action="{!Delete}"/> -->
+                    <!-- <apex:commandbutton value="Include Offline" action="{!URLFOR($Action.Terms_Conditions__c.IncludeOffline,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Clone" action="{!URLFOR($Action.Terms_Conditions__c.Clone,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Convert" action="{!URLFOR($Action.Terms_Conditions__c.Convert,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Find Duplicates" action="{!URLFOR($Action.Terms_Conditions__c.FindDup,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Request Update" action="{!URLFOR($Action.Terms_Conditions__c.RequestUpdate,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Advanced Setup" action="{!URLFOR($Action.Terms_Conditions__c.AdvancedSetup,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Manage Members" action="{!URLFOR($Action.Terms_Conditions__c.ManageMembers,Terms_Conditions__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Close Case" action="{!URLFOR($Action.Terms_Conditions__c.CloseCase,Terms_Conditions__c.id)}"/> -->
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2014) *************** -->
+            </apex:pageblockbuttons>
+            
+            <!-- **********   [Record Type : Signed ]   **********  -->
+            <apex:outputpanel rendered="{!CASESAFEID(Terms_Conditions__c.RecordTypeId)='012L00000000iSeIAI'}">
+                <apex:pageblocksection title="Information" showheader="false" collapsible="false" columns="2">
+                    <apex:outputfield value="{!Terms_Conditions__c.Name}"/>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Owner"/>
+                            <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.OwnerId}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:outputfield value="{!Terms_Conditions__c.Account__c}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Terms_Conditions__c.Contact__c}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="false" collapsible="false" columns="2">
+                    <apex:pageblocksectionitem />
+                    <apex:pageblocksectionitem />
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.CreatedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Terms_Conditions__c.CreatedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.LastModifiedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Terms_Conditions__c.LastModifiedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+
+            <!-- **********   [Record Type : Ready to Sign ]   **********  -->
+            <apex:outputpanel rendered="{!OR(ISNULL(Terms_Conditions__c.RecordTypeId),CASESAFEID(Terms_Conditions__c.RecordTypeId)='012L00000000iS5IAI')}">
+                <apex:pageblocksection title="Information" showheader="false" collapsible="false" columns="2">
+                    <apex:outputfield value="{!Terms_Conditions__c.Name}"/>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Owner"/>
+                            <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.OwnerId}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:outputfield value="{!Terms_Conditions__c.Account__c}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Terms_Conditions__c.Contact__c}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="false" collapsible="false" columns="2">
+                    <apex:pageblocksectionitem />
+                    <apex:pageblocksectionitem />
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.CreatedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Terms_Conditions__c.CreatedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.LastModifiedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Terms_Conditions__c.LastModifiedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+
+            <!-- **********   [Record Type : Master ]   **********  -->
+            <apex:outputpanel rendered="{!CASESAFEID(Terms_Conditions__c.RecordTypeId)='012000000000000AAA'}">
+                <apex:pageblocksection title="Information" showheader="false" collapsible="false" columns="2">
+                    <apex:outputfield value="{!Terms_Conditions__c.Name}"/>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Owner"/>
+                            <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.OwnerId}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:outputfield value="{!Terms_Conditions__c.Account__c}"/>
+                    <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Terms_Conditions__c.Contact__c}"/>
+                    <apex:pageblocksectionitem />
+                </apex:pageblocksection>
+                <apex:pageblocksection title="System Information" showheader="false" collapsible="false" columns="2">
+                    <apex:pageblocksectionitem />
+                    <apex:pageblocksectionitem />
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.CreatedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Terms_Conditions__c.CreatedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Terms_Conditions__c.LastModifiedById}"/>&nbsp;, 
+                            <apex:outputfield value="{!Terms_Conditions__c.LastModifiedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+
+    <!-- **********   [Related Lists for Record Type : Master ]   **********  -->
+    <apex:outputpanel rendered="{!CASESAFEID(Terms_Conditions__c.RecordTypeId)='012000000000000AAA'}">
+        <apex:relatedlist list="Agreements__r" title="Agreements"/>
+    </apex:outputpanel>
+    <center><br/>
+        <i style="font-size:10px;color:#aaa;">Generated By LAYOUT PAGE <a href="http://www.clerisoft.com" target="_blank">[http://www.clerisoft.com]</a> (2008-2014) : Tue Apr 28 2015 15:26:37 GMT-0400 (Eastern Standard Time)</i>
+    </center><br/>
+</apex:page>

@@ -1,0 +1,4 @@
+<apex:page standardController="Opp_Product__c" Title="Hello there! {!Opp_Product__c.Opportunity__r.Name}">
+Here is the Opp Id: {!Opp_Product__c.Opportunity__r.Id}  You should see it right there
+<flow:interview name="Add_Sales_Order" buttonLocation="bottom" buttonStyle="position: absolute; left: 250px; bottom: 2px" finishLocation="/{!Opp_Product__c.Opportunity__r.id}"/>
+</apex:page>

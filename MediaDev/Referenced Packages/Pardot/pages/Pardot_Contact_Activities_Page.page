@@ -1,0 +1,5 @@
+<apex:page sidebar="false" showHeader="false" showChat="false" >
+<!--     <apex:iframe src="{!$Label.Pardot_Production_Base_Url}prospect/activity/email/{!$CurrentPage.parameters.email
+}{!Contact.Email}{!queryString}" scrolling="true" id="theIframe"/> -->
+<apex:iframe src="{!$Label.Pardot_Production_Base_Url}prospect/activity/email/" scrolling="true" id="theIframe"/>
+</apex:page>

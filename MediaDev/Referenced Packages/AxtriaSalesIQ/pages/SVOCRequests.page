@@ -1,0 +1,35 @@
+<apex:page sidebar="false" >
+<h1>SVOC Requests</h1>
+<style>
+#allBox{display:none;}
+.checkbox{display:none;}
+.title{display:none;}
+.btn{display:none;}
+.listViewport .ASC, .listViewport .DESC{background: #277AA8 !important}
+
+.filterLinks{display:none;}
+.x-grid3-hd-inner x-grid3-hd-ACTION_COLUMN{display:none;}
+.x-grid3-td-ACTION_COLUMN {display:none;!important}
+.listViewportWrapper .listViewport .x-grid3-hd-row .x-grid3-hd-inner {
+    padding-bottom: 9px;
+    padding-top: 10px;
+    color:#fff;
+    background:#277AA8 !important;
+}
+.x-grid3-cell-inner, .x-grid3-hd-inner {
+    overflow: hidden;
+    padding: 6px 3px 6px 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+h1{
+    font-size:18px;
+    color:#666 !important;
+    }
+.x-grid3-td-checkbox {display:none !important;}
+.pageTitleIcon{display:none;}
+</style>
+<!--   <apex:enhancedList height="500" rowsPerPage="10" id="ContactList" -->
+<!--     listName="Account Requests"/> -->
+  <c:ListViewComponent listViewName="SVOC Request" />
+</apex:page>

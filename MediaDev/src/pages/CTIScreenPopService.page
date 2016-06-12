@@ -1,0 +1,83 @@
+<apex:page controller="CTIScreenPopServiceController">
+<!--Story B-10409: Visualforce page accepts the information that CTI provides on the querystring of the URL and 
+generates a page that searches for Contacts and Accounts.Display open cases, closed cases, email and tasks.
+The records & columns that display in the screen pop will be clickable into that record, similar to the way related lists work. 
+For example, a contact record match will have a column for the account, that will click into the associated account.-->
+   <apex:pageMessages />
+   <apex:pageblock title="Caller Info" id="pb">
+       <apex:pageBlockSection >
+        <apex:outputText value="Caller Id: {!callerId}"/>
+        <apex:outputText value="Phone number or SVOC number entered by caller: {!UUI2}"/>
+       </apex:pageBlockSection>
+   </apex:pageblock>
+   <apex:pageBlock title="Accounts">
+      <apex:pageBlockTable value="{!accounts}" var="account" rendered="{!accounts.size!=0}">
+        <apex:column ><a href="/{!account.Id}"><apex:outputText value="{!account.Name}" /></a>
+            <apex:facet name="header">Name</apex:facet>
+        </apex:column>         
+         <apex:column value="{!account.SVOC_Id__c}"/>
+         <apex:column value="{!account.Phone}"/>
+         <apex:column value="{!account.ShippingCity}"/>
+         <apex:column value="{!account.ShippingState}"/>
+         <apex:column value="{!account.ShippingPostalCode}"/>
+      </apex:pageBlockTable>
+   </apex:pageBlock>      
+   <apex:pageBlock title="Contacts">
+      <apex:pageBlockTable value="{!contacts}" var="contact" rendered="{!contacts.size!=0}">
+         <apex:column title="Name"><a href="/{!contact.Id}"><apex:outputText value="{!contact.Name}" /></a>
+            <apex:facet name="header">Name</apex:facet>
+         </apex:column>
+         <apex:column value="{!contact.Account.Name}"/>
+         <apex:column value="{!contact.Phone}"/>
+         <apex:column value="{!contact.MobilePhone}"/>
+         <apex:column value="{!contact.Email}"/>
+         <apex:column value="{!contact.Title}"/>
+      </apex:pageBlockTable>      
+   </apex:pageBlock>   
+   <apex:pageBlock title="Open Cases">
+      <apex:pageBlockTable value="{!openCases}" var="oc" rendered="{!openCases.size!=0}">
+         <apex:column title="Name"><a href="/{!oc.Id}"><apex:outputText value="{!oc.CaseNumber}" /></a>
+            <apex:facet name="header">Case Number</apex:facet>
+         </apex:column>
+         <apex:column value="{!oc.Subject}"/>
+         <apex:column value="{!oc.ATC_Sub_Reason__c}"/>
+         <apex:column value="{!oc.Owner.Name}">         
+             <apex:facet name="header">Owner</apex:facet>
+         </apex:column>
+         <apex:column value="{!oc.Status}"/>
+         <apex:column value="{!oc.CreatedDate}"/>
+      </apex:pageBlockTable>
+   </apex:pageBlock> 
+   <apex:pageBlock title="Closed Cases">
+      <apex:pageBlockTable value="{!closedCases}" var="cc" rendered="{!closedCases.size!=0}">
+         <apex:column title="Name" ><a href="/{!cc.Id}"><apex:outputText value="{!cc.CaseNumber}" /></a>
+            <apex:facet name="header">Case Number</apex:facet>
+         </apex:column>
+         <apex:column value="{!cc.Subject}" />
+         <apex:column value="{!cc.ATC_Sub_Reason__c}" />
+         <apex:column value="{!cc.Owner.Name}" >
+             <apex:facet name="header">Owner</apex:facet>
+         </apex:column>         
+          <!--<apex:column value="{!cc.Status}" />-->
+         <apex:column value="{!cc.ClosedDate}"/>
+      </apex:pageBlockTable>
+   </apex:pageBlock>        
+
+   <apex:pageBlock title="Activities">
+      <apex:pageBlockTable value="{!acts}" var="act" rendered="{!acts.size!=0}">
+
+         <apex:column title="Subject" ><a href="/{!act.Id}"><apex:outputText value="{!act.Subject}" /></a>
+            <apex:facet name="header">Subject</apex:facet>
+         </apex:column>
+         <apex:column value="{!act.WhatId}" />
+         <apex:column value="{!act.Status}" />
+         <apex:column value="{!act.Type}" />
+         <apex:column value="{!act.Owner.Name}" >
+             <apex:facet name="header">Owner</apex:facet>
+         </apex:column>         
+         <apex:column value="{!act.ActivityDate}" />
+         <apex:column value="{!act.Date_Completed__c}" />
+      </apex:pageBlockTable>      
+   </apex:pageBlock>  
+    
+</apex:page>

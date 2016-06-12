@@ -1,0 +1,58 @@
+<apex:page standardController="Account" title="{!Account.Name}">
+<head>
+<apex:includeScript value="/support/console/31.0/integration.js"/>
+
+<!-- <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" /> -->
+<!-- <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js" /> -->
+
+<apex:includeScript value="{!URLFOR($Resource.jQuery, '/jquery-ui-1.11.1.custom/external/jquery/jquery.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jQuery, '/jquery-ui-1.11.1.custom/jquery-ui.js')}"  />
+<apex:stylesheet value="{!URLFOR($Resource.jQuery, '/jquery-ui-1.11.1.custom/jquery-ui.css')}"  />
+<apex:stylesheet value="{!URLFOR($Resource.jQuery, '/jquery-ui-1.11.1.custom/jquery-ui.theme.min.css')}"  />
+
+<script type="text/javascript"> 
+    function setTabTitle() {
+        sforce.console.setTabTitle('{!Account.Name}');
+        }
+        var previousOnload = window.onload;
+        window.onload = function() {
+            if (previousOnload) {
+                previousOnload();
+                }
+            setTimeout('setTabTitle()','500');
+            }
+</script>
+   
+   <script type="text/javascript"> 
+   var j$ = jQuery.noConflict();
+     j$(document).ready(function(){
+        var s = "";
+        var a = "{!JSENCODE(Account.ATC_Service_Alert_Message__c)}";
+        console.log('A Message is:'+a);
+        if (a.length > 0){
+              s = "ATC Service Alert: " + a + "\n"; 
+        } 
+        console.log('S Message is:'+s);
+        if (s.length > 0)
+        { 
+           console.log('s is greater than 0');
+           j$("#ATCdialog").html(s);
+           j$("#ATCdialog").dialog({
+            title: 'Service Alert',
+            modal: true,
+            buttons: 
+               {
+                   Ok: function() {
+                   j$("#ATCdialog").dialog( "close" );
+                   }
+               }});
+        }
+     });
+
+   </script> 
+   </head>
+   <body>
+   <div id="ATCdialog" title="Alert"></div>
+   <apex:detail subject="{!account.Id}" title="true" inlineEdit="true"/>
+   </body>
+</apex:page>

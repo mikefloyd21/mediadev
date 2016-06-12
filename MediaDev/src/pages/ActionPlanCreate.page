@@ -1,0 +1,387 @@
+<apex:page standardcontroller="Action_Plan__c" extensions="APControllerExtension" showHeader="false" sidebar="false"  applyBodyTag="false" applyHtmlTag="false" action="{!redirect}">
+  <style type="text/css">
+    td > label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #4a4a56;
+    }
+    td > span > label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #4a4a56;
+    }
+    .tscSelect {
+    width: 120px;
+    }
+    .bPageBlock .detailList .labelCol {
+    width: 1%;
+    }
+    .bEditBlock .detailList .dataCol, .bEditBlock .detailList .data2Col {
+    padding-left: 0px;
+    }
+    .bPageBlock .labelCol {
+    padding-right: 0px;
+    }
+    textarea {
+    width: 300px;
+    }
+    .textHeader {
+    margin-left: 10px;
+    }
+    .marginbutton {
+    margin-left: 20px;
+    }
+    span.requiredLegend {
+    display: none;
+    }
+    .lastModifiedDate {
+    color: #808080;
+    font-size: 10px;
+    margin-left: 10px;
+    }
+  </style>
+  <apex:pageMessages id="msgs"/>
+  <apex:sectionheader title="{!IF(ISNULL(Action_Plan__c.Name), 'Consultation Summary', 'Consultation Summary - ' + Action_Plan__c.Name)}" 
+                      subtitle="{!IF(OR(ISNULL(Action_Plan__c.Action_Plan_Name2__c), LEN(Action_Plan__c.Action_Plan_Name2__c) == 0), 'Lead', Action_Plan__c.Action_Plan_Name2__c)}"/>
+  <apex:form >
+    <apex:pageblock id="theBlock" mode="edit" title="{!Action_Plan__c.Trade_Show_Name__c}">
+      <apex:pageblockbuttons >
+        <apex:commandbutton value="Save" action="{!Save}"/>
+      <apex:outputpanel rendered="{!NOT(ISNULL(Action_Plan__c.LastModifiedDate))}">
+        <apex:outputText styleClass="lastModifiedDate" value="Last saved at {0,date,MM/dd/yyyy HH:mm:ss z}">
+          <apex:param value="{!Action_Plan__c.LastModifiedDate}" />
+        </apex:outputText>
+      </apex:outputpanel>
+      </apex:pageblockbuttons>
+
+      <apex:outputpanel >
+        <apex:outputText id="actionPlanId" html-name="actionPlanId" style="display:none" value="{!Action_Plan__c.Id}" />
+        <apex:outputText id="actionPlanName" html-name="actionPlanName" style="display:none" value="{!Action_Plan__c.Name}" />
+        <apex:pageblocksection title="Dealership Information" showheader="true" columns="1">
+          <apex:outputPanel rendered="{!Name2Editable}">
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Action_Plan_Name2__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Action_Plan_Name2__c}" required="true"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Additional_Dealer_IDs__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Additional_Dealer_IDs__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Discussion_Date__c.Label}" />
+            <span class="textHeader">
+              <apex:outputText value="{0,date,MM/dd/yyyy}">
+              <apex:param value="{!Action_Plan__c.Discussion_Date__c}" />
+              </apex:outputText>
+              </span>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Consultation_Attendee__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Consultation_Attendee__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Consultation_Attendee_Title__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Consultation_Attendee_Title__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Contact_Phone__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Contact_Phone__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Contact_Email__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Contact_Email__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Contact_Info__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Contact_Info__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.Requested_Follow_up_Date__c.Label}" />
+            <apex:inputfield styleClass="textHeader" value="{!Action_Plan__c.Requested_Follow_up_Date__c}" required="false"/>
+          </apex:outputPanel>
+          <apex:outputPanel >
+            <apex:outputLabel styleClass="labelCol vfLabelColTextWrap" value="{!$ObjectType.Action_Plan__c.fields.ATC_Consultant__c.Label}" />
+            <apex:outputText styleClass="textHeader" value="{!Action_Plan__c.ATC_Consultant__c}" />
+          </apex:outputPanel>
+        </apex:pageblocksection>
+        <apex:pageblocksection title="Trade Show Consultant(s)" showheader="true" columns="1">
+          <!-- apex:inputfield value="{!Action_Plan__c.Trade_Show_Consultant_s__c}" required="false"/ -->
+        <apex:outputpanel >
+        <table cellpadding="3">
+            <tr>
+                <td>
+                    <apex:selectList styleClass="tscSelect" size="8" multiselect="true" value="{!LeftSelectedValues}" id="LeftSelectList">
+                        <apex:selectOptions value="{!LeftSelectList}"/>
+                    </apex:selectList>
+                </td>
+                <td style="vertical-align:middle;text-align:center;">
+                    <apex:commandButton value=">"  action="{!MoveRight}" reRender="LeftSelectList,RightSelectList"/>
+                    <br />
+                    <apex:commandButton value="<" action="{!MoveLeft}" reRender="LeftSelectList,RightSelectList"/>
+                </td>
+                <td>
+                    <apex:selectList styleClass="tscSelect" size="8" multiselect="true" value="{!RightSelectedValues}" id="RightSelectList">
+                        <apex:selectOptions value="{!RightSelectList}"/>
+                    </apex:selectList>
+                </td>
+ 
+            </tr>
+        </table>
+        </apex:outputpanel>
+        </apex:pageblocksection>
+        <apex:pageblocksection title="" showheader="true" columns="1">
+        <!--
+          <apex:pageBlockSectionItem >
+            <apex:inputField id="feclea" value="{!Action_Plan__c.Learn_How_Consumers_Really_Shop__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Learn_How_Consumers_Really_Shop__c.Label}"  for="feclea" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:actionRegion >
+              <apex:inputfield id="fecfro" value="{!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c}" required="false">
+                <apex:actionSupport event="onclick" reRender="frontEndChoicesContainer"/>
+              </apex:inputfield>
+            </apex:actionRegion>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Front_End_Fundamentals_of_Top_Dealership__c.Label}"  for="fecfro" />
+          </apex:pageBlockSectionItem>
+        </apex:pageblocksection>
+        <apex:outputPanel id="frontEndChoicesContainer" >
+        <apex:pageblocksection id="frontEndChoices" showheader="false" columns="2" rendered="{!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == true}">
+          <apex:pageBlockSectionItem id="itemVehicle">
+            <apex:inputfield id="fecVehicle" styleclass="marginbutton" value="{!Action_Plan__c.Vehicle_Selection__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Vehicle_Selection__c.Label}"  for="fecVehicle" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemPhotos">
+            <apex:inputfield id="fecPhotos" value="{!Action_Plan__c.Photos__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Photos__c.Label}"  for="fecPhotos" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemAcquisition">
+            <apex:inputfield id="fecAcquisition" styleclass="marginbutton" value="{!Action_Plan__c.Acquisition_Process__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Acquisition_Process__c.Label}"  for="fecAcquisition" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemDescriptions">
+            <apex:inputfield id="fecDescriptions" value="{!Action_Plan__c.Descriptions__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Descriptions__c.Label}"  for="fecDescriptions" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemTransportation">
+            <apex:inputfield id="fecTransportation" styleclass="marginbutton" value="{!Action_Plan__c.Transportation__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Transportation__c.Label}"  for="fecTransportation" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemPricing">
+            <apex:inputfield id="fecPricing" value="{!Action_Plan__c.Pricing__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Pricing__c.Label}"  for="fecPricing" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemReconditioning">
+            <apex:inputfield id="fecReconditioning" styleclass="marginbutton" value="{!Action_Plan__c.Reconditioning__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Reconditioning__c.Label}"  for="fecReconditioning" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem id="itemCustomer">
+            <apex:inputfield id="fecCustomer" value="{!Action_Plan__c.Customer_Handling__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Customer_Handling__c.Label}"  for="fecCustomer"/>
+          </apex:pageBlockSectionItem>
+          <script>document.getElementById('{!$Component.itemVehicle.fecVehicle}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemPhotos.fecPhotos}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemAcquisition.fecAcquisition}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemDescriptions.fecDescriptions}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemTransportation.fecTransportation}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemPricing.fecPricing}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemReconditioning.fecReconditioning}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+          <script>document.getElementById('{!$Component.itemCustomer.fecCustomer}').disabled = {!Action_Plan__c.Front_End_Fundamentals_of_Top_Dealership__c == false}; </script>
+        </apex:pageblocksection>
+        </apex:outputPanel>
+        <apex:pageblocksection title="X" showheader="false" columns="1">
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="howYour" value="{!Action_Plan__c.How_Your_Dealership_is_Doing__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.How_Your_Dealership_is_Doing__c.Label}"  for="howYour" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:actionRegion >
+              <apex:inputfield id="whatsNew" value="{!Action_Plan__c.What_s_New_at_AutoTrader_Group__c}" required="false">
+                <apex:actionSupport event="onclick" reRender="whatsNewChoicesContainer"/>
+              </apex:inputfield>
+            </apex:actionRegion>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.What_s_New_at_AutoTrader_Group__c.Label}"  for="whatsNew" />
+          </apex:pageBlockSectionItem>
+        </apex:pageblocksection>
+        <apex:outputPanel id="whatsNewChoicesContainer" >
+        <apex:pageblocksection id="whatsNewChoices" showheader="false" columns="2" rendered="{!Action_Plan__c.What_s_New_at_AutoTrader_Group__c == true}">
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="wnListing" styleclass="marginbutton" value="{!Action_Plan__c.Listing_Logic__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Listing_Logic__c.Label}"  for="wnListing" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="wnSEM" value="{!Action_Plan__c.SEM__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.SEM__c.Label}"  for="wnSEM" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:actionRegion >
+              <apex:inputfield id="wnOther" value="{!Action_Plan__c.Other_What_s_New__c}" required="false">
+                <apex:actionSupport event="onclick" reRender="wnOtherTextContainer"/>
+              </apex:inputfield>
+            </apex:actionRegion>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Other_What_s_New__c.Label}"  for="wnOther" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem />
+          <apex:outputPanel id="wnOtherTextContainer">
+            <apex:inputfield id="wnOtherText" value="{!Action_Plan__c.What_s_New_Other_Text__c}" required="false" html-placeholder="Please Type Here for &quot;Other&quot;" />
+            <script>document.getElementById('{!$Component.wnOtherText}').disabled = {!Action_Plan__c.Other_What_s_New__c == false}; </script>
+          </apex:outputPanel>
+        </apex:pageblocksection>
+        </apex:outputPanel>
+        -->
+        </apex:pageblocksection>
+        <apex:pageblocksection title="Dealership2" showheader="false" columns="2">
+          <apex:pageblocksectionitem />
+          <apex:pageblocksectionitem />
+          <apex:pageblocksectionitem labelStyle="font-weight: bold;">
+            <apex:outputText style="font-weight:bold;float:left" value="Reports Reviewed:"/>
+          </apex:pageblocksectionitem>
+          <apex:pageblocksectionitem labelStyle="font-weight: bold;">
+            <apex:outputText style="font-weight:bold;float:left" value="Requested Info:"/>
+          </apex:pageblocksectionitem>
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rUsed"  value="{!Action_Plan__c.Used_Scorecard__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Used_Scorecard__c.Label}"  for="rUsed" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rDealertrack"  value="{!Action_Plan__c.KBB__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.KBB__c.Label}"  for="rDealertrack" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rNew"  value="{!Action_Plan__c.New_Scorecard__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.New_Scorecard__c.Label}"  for="rNew" />
+          </apex:pageBlockSectionItem>
+         <apex:pageBlockSectionItem >
+              <apex:inputfield id="rDealercom"  value="{!Action_Plan__c.Haystak__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Haystak__c.Label}"  for="rDealercom" />     
+          </apex:pageBlockSectionItem>  
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rDealer"  value="{!Action_Plan__c.Dealer_Site__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Dealer_Site__c.Label}"  for="rDealer" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rDealShield"  value="{!Action_Plan__c.DealShield__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.DealShield__c.Label}"  for="rDealShield" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rDealer360"  value="{!Action_Plan__c.Dealer_360__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Dealer_360__c.Label}"  for="rDealer360" />
+          </apex:pageBlockSectionItem>
+           <apex:pageBlockSectionItem >
+            <apex:inputfield id="rFIExpress"  value="{!Action_Plan__c.F_I_Express__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.F_I_Express__c.Label}"  for="rFIExpress" />
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rKBBInstant"  value="{!Action_Plan__c.Trade_In_Marketplace__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Trade_In_Marketplace__c.Label}"  for="rKBBInstant" />
+          </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+            <apex:inputfield id="rGoFinancial"  value="{!Action_Plan__c.GO_Financial__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.GO_Financial__c.Label}"  for="rGoFinancial" />
+          </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+            <apex:inputfield id="rTune"  value="{!Action_Plan__c.Tune_Up_Report__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Tune_Up_Report__c.Label}"  for="rTune" />
+          </apex:pageBlockSectionItem>
+           <apex:pageBlockSectionItem >
+            <apex:inputfield id="rHomenet"  value="{!Action_Plan__c.HomeNet__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.HomeNet__c.Label}"  for="rHomenet" />
+          </apex:pageBlockSectionItem>
+ 
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rLocal"  value="{!Action_Plan__c.Local_Market_Sheets__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Local_Market_Sheets__c.Label}"  for="rLocal" />
+          </apex:pageBlockSectionItem>
+           <apex:pageBlockSectionItem >
+            <apex:inputfield id="rKBBICO2"  value="{!Action_Plan__c.Trade_In_Marketplace_RR__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Trade_In_Marketplace_RR__c.Label}"  for="rKBBICO2" />
+          </apex:pageBlockSectionItem>
+          <!--  apex:inputfield value="{!Action_Plan__c.Other_Reports_Reviewed__c}" required="false"/> -->
+      
+
+          <apex:pageBlockSectionItem >
+            <apex:actionRegion >
+              <apex:inputfield id="RrotCheckbox" value="{!Action_Plan__c.Other_Reports_Reviewed__c}" required="false">
+                <apex:actionSupport event="onclick" reRender="apRrotContainer"/>
+              </apex:inputfield>
+            </apex:actionRegion>
+             
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Other_Reports_Reviewed__c.Label}"  for="RrotCheckbox" />
+          </apex:pageBlockSectionItem>
+          <apex:pageBlockSectionItem >
+             <apex:inputfield id="rMakemydeal"  value="{!Action_Plan__c.Make_My_Deal__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Make_My_Deal__c.Label}"  for="rMakemydeal" />
+          </apex:pageBlockSectionItem>
+
+                    
+          <apex:outputPanel id="apRrotContainer">
+            <apex:inputfield id="apRrot" value="{!Action_Plan__c.Reports_Reviewed_Other_Text__c}" required="false" html-placeholder="Please Type Here for &quot;Other&quot;" />
+            <script>document.getElementById('{!$Component.apRrot}').disabled = {!Action_Plan__c.Other_Reports_Reviewed__c == false}; </script>
+          </apex:outputPanel>
+         
+           <apex:pageBlockSectionItem >
+              <apex:inputfield id="rManheim"  value="{!Action_Plan__c.Manheim__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Manheim__c.Label}"  for="rManheim" />
+           
+          </apex:pageBlockSectionItem> <apex:pageblocksectionitem />
+ 
+         <apex:pageBlockSectionItem >
+            <apex:inputfield id="rNextGear"  value="{!Action_Plan__c.NextGear_Capital__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.NextGear_Capital__c.Label}"  for="rNextGear" />
+          </apex:pageBlockSectionItem>
+ 
+          <apex:pageblocksectionitem />
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rReadyTransport"  value="{!Action_Plan__c.Ready_Transport__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Ready_Transport__c.Label}"  for="rReadyTransport" />
+          </apex:pageBlockSectionItem>
+            <apex:pageblocksectionitem />
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rRMSAuto"  value="{!Action_Plan__c.RMS_Automotive__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.RMS_Automotive__c.Label}"  for="rRMSAuto" />
+          </apex:pageBlockSectionItem>
+
+<apex:pageblocksectionitem />
+            <apex:pageBlockSectionItem >
+            <apex:inputfield id="rVauto"  value="{!Action_Plan__c.vAuto__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.vAuto__c.Label}"  for="rVauto" />
+          </apex:pageBlockSectionItem>
+ 
+<apex:pageblocksectionitem />
+          <apex:pageBlockSectionItem >
+            <apex:inputfield id="rVin"  value="{!Action_Plan__c.Vin_Solutions__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Vin_Solutions__c.Label}"  for="rVin" />
+          </apex:pageBlockSectionItem>
+        <apex:pageblocksectionitem />
+ <apex:pageBlockSectionItem >
+            <apex:inputfield id="rXtime"  value="{!Action_Plan__c.XTime__c}" required="false"/>
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.XTime__c.Label}"  for="rXtime" />
+          </apex:pageBlockSectionItem><apex:pageblocksectionitem />
+          <apex:pageBlockSectionItem >
+            <apex:actionRegion >
+              <apex:inputfield id="RiotCheckbox" value="{!Action_Plan__c.Other_Requested_Info__c}" required="false">
+                <apex:actionSupport event="onclick" reRender="apRiotContainer"/>  
+              </apex:inputfield>
+            </apex:actionRegion>
+            
+            <apex:outputLabel value="{!$ObjectType.Action_Plan__c.fields.Other_Requested_Info__c.Label}"  for="RiotCheckbox" />
+          </apex:pageBlockSectionItem>
+          <apex:pageblocksectionitem />
+          <apex:outputPanel id="apRiotContainer">
+            <apex:inputfield id="apRiot" value="{!Action_Plan__c.Requested_Info_Other_Text__c}" required="false" html-placeholder="Please Type Here for &quot;Other&quot;" />
+            <script>document.getElementById('{!$Component.apRiot}').disabled = {!Action_Plan__c.Other_Requested_Info__c == false}; </script>
+          </apex:outputPanel>
+        </apex:pageblocksection>
+        <apex:pageblocksection id="dg" title="Dealership Goals:" showheader="true" columns="1">
+          <apex:inputfield id="dealershipGoals" value="{!Action_Plan__c.Dealership_Goals__c}" label="" required="false"/>
+        </apex:pageblocksection>
+        <apex:pageblocksection id="nr" title="Notes & Recommendations:" showheader="true" columns="1">
+          <apex:inputfield id="notesRecommendations" value="{!Action_Plan__c.Notes_Recommendations__c}" label="" required="false"/>
+        </apex:pageblocksection>
+      </apex:outputpanel>
+    </apex:pageblock>
+  </apex:form>
+  <apex:outputpanel >
+    <apex:relatedlist list="CombinedAttachments" title="Notes & Attachments"/>
+  </apex:outputpanel>
+  
+</apex:page>
