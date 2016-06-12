@@ -133,9 +133,7 @@ global class OpportunityTeamUpdates {
           
         }
         
-        for(OpportunityTeamMember oppTeamPerson : oppTeamToUpdate){
-        	System.debug('The oppTeamPerson is ' + oppTeamPerson.TeamMemberRole + ' - ' + oppTeamPerson.OpportunityId);
-        }
+        
         try{
            delete oppTeamToRemove;
            insert oppTeamToUpdate;
